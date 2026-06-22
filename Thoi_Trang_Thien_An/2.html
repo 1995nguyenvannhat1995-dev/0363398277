@@ -1,0 +1,1221 @@
+<html><head><meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta property="og:url" content="https://thoitrangthienan.netlify.app/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="THỜI TRANG THIÊN AN">
+<meta property="og:description" content="Thông tin liện hệ: 0363 398 277">
+<meta property="og:image" content="https://i.postimg.cc/Dw7VhrN8/TTTA2.jpg">
+<meta property="fb:app_id" content="3687074671445379">
+    <title>THỜI TRANG THIÊN AN</title>
+    <style>
+
+
+        .info-modal img {
+            display: block;
+            margin: 10px auto; /* khoảng cách giữa các hình ảnh trong thông tin chi tiết*/
+            max-width: 100%;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        header {
+            background-color: #f8fefe;
+            padding: 10px; /*bo viền khung hình TTTA*/
+        }
+
+        .header-image {
+            width: 150px;
+            height: auto;
+        }
+
+        .search-container {
+            margin: 10px; /*khoảng cách khung tìm kiếm*/
+        }
+
+        #search {
+            padding: 10px; /*chiều cao khung tìm kiếm */
+            width: 350px; /*chiều rộng khung tìm kiếm */
+            font-size: 16px;
+        }
+
+        .carousel {
+            position: relative;
+            overflow: hidden;
+            max-width: 800px; /* Chiều rộng tối đa cho carousel */
+            margin: 0 auto; /* Giữa trang */
+        }
+
+        .product-list {
+            display: flex;
+            transition: transform 0.5s ease;
+            will-change: transform; /* Tối ưu hiệu suất */
+        }
+
+        .product {
+            border: 1px solid #ccc;
+            margin: 10px; /*khoảng cách khung sản phẩm*/
+            padding: 10px;
+            text-align: center;
+            min-width: 200px; /* Chiều rộng tối thiểu cho sản phẩm */
+            cursor: pointer;
+            position: relative; /* Để sử dụng absolute cho child */
+            height: 300px; /* Chiều cao cố định */
+        }
+.product-info {
+    position: absolute; /* Định vị tuyệt đối */
+    bottom: 10px; /* Cách đáy khung sản phẩm */
+    left: 0;
+    right: 0; /* Căn giữa nội dung */
+    text-align: center; /* Căn giữa nội dung bên trong */
+}
+
+        .product:hover {
+            background-color: #c3f5f6;
+        }
+
+        .arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            z-index: 10; /* Đảm bảo nút luôn ở trên cùng */
+        }
+
+        .arrow.left {
+            left: 10px;
+        }
+
+        .arrow.right {
+            right: 10px;
+        }
+
+/* Khung hiển thị thông tin chi tiết sản phẩm */
+.info-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    border: 2px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    z-index: 100; /* Nằm trên mọi thứ khác */
+    max-height: 80vh; /* Chiều cao tối đa của modal */
+    overflow-y: auto; /* Kích hoạt thanh cuộn dọc */
+}
+
+/* Chiều rộng khi ở chế độ dọc */
+@media (orientation: portrait) {
+    .info-modal {
+        width: 90% !important; /* Chiều rộng khi ở chế độ dọc */
+    }
+}
+
+/* Chiều rộng khi ở chế độ ngang */
+@media (orientation: landscape) {
+    .info-modal {
+        width: 55% !important; /* Chiều rộng khi ở chế độ ngang */
+    }
+}
+
+        .info-modal p {
+            color: Black; /* Màu chữ đỏ */
+            text-align: left; /* Căn lề trái */
+            margin: 0 0 0 20PX; /* Cách viền khung 0px từ trên xuống và 70px từ bên trái */
+        }
+        .info-modal h5 {
+            color: Red; /* Màu chữ đỏ */
+            font-weight: bold; /* Định dạng chữ in đậm */            
+            text-align: left; /* Căn lề trái */
+            margin: 0 0 0 20PX; /* Cách viền khung 0px từ trên xuống và 70px từ bên trái */
+            font-size: 18px; /* Thay đổi kích thước chữ ở đây */
+        }
+        .info-modal h4 {
+            color: Black; /* Màu chữ đen */
+            font-weight: bold; /* Định dạng chữ in đậm */
+        }
+        .info-modal h3 {
+            color: blue; /* Màu chữ xanh dương */
+            font-size: 28px; /* Thay đổi kích thước chữ ở đây */
+        }
+        .close-btn {
+            display: block;
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            margin: 10px auto; /* Căn giữa và khoảng cách từ trên xuống */
+            width: 150px; /* Chiều rộng của nút, có thể điều chỉnh theo ý muốn */
+        }
+
+        .add-product-container {
+            margin-top: 20px; /* Thêm khoảng cách cho khung thêm sản phẩm */
+        }
+
+
+     
+#edit-product-info {
+    text-align: left; /* Đảm bảo văn bản căn lề trái */
+    border: 2px solid #ccc;
+    padding: 10px;
+    max-height: 150px; /* Chiều cao tối đa của khung sửa thông tin sản phẩm */
+    overflow-y: auto; /* Kích hoạt thanh cuộn dọc khi nội dung vượt quá chiều cao tối đa */
+    background-color: #fff; /* Màu nền để tương thích với nội dung */
+}
+
+
+#new-product-name, #new-product-price, #new-product-code, #edit-product-name, #edit-product-price, #edit-product-code, #new-product-images {
+    width: 100%; /* Kéo dài hết chiều rộng của container */
+    max-width: 400px; /* Giới hạn chiều rộng tối đa */
+}
+
+#edit-product-image {
+    width: 100%; /* Kéo dài hết chiều rộng của container */
+}
+
+        #new-product-info {
+            text-align: left; /* Căn lề trái */
+            border: 2px solid #ccc; /* Viền kiểu gạch ngang */
+            padding: 10px; /* Khoảng cách bên trong */
+            min-height: 80px; /* Chiều cao tối thiểu */
+            background-color: #f9f9f9; /* Màu nền */
+            font-size: 16px; /* Kích thước chữ */
+            margin-top: 10px; /* Khoảng cách phía trên */
+            height: 150px; /* Chiều cao cố định */
+            overflow-y: auto; /* Kích hoạt cuộn dọc */
+        }
+        #editable-info {
+            text-align: left; /* Căn lề trái */
+            border: 1px dashed #ccc; /* Viền kiểu gạch ngang */
+            padding: 10px; /* Khoảng cách bên trong */
+            min-height: 80px; /* Chiều cao tối thiểu */
+            background-color: #f9f9f9; /* Màu nền */
+            font-size: 16px; /* Kích thước chữ */
+            margin-top: 10px; /* Khoảng cách phía trên */
+        }
+    
+        button {
+            padding: 10px 15px;
+            font-size: 16px; /* Kiểu chữ */
+            border: none; /* Không viền */
+            border-radius: 5px; /* Bo góc */
+            cursor: pointer; /* Con trỏ chuột */
+            transition: background-color 0.3s ease; /* Hiệu ứng chuyển màu nền */
+            background-color: red;
+            color: white
+        }
+    
+        button:hover {
+            background-color: #1203ff; /* Màu xanh khi rê chuột */
+            color: white; /* Đổi màu chữ thành trắng khi rê chuột */
+        }
+
+    @media (orientation: portrait) {
+        #responsiveImage {
+            content: url('TTTA2.jpg');
+        }
+    }
+
+    @media (orientation: landscape) {
+        #responsiveImage {
+            content: url('TTTA1.jpg');
+        }
+    }
+    </style>
+</head>
+<body>
+<header style="text-align: center;">
+    <img id="responsiveImage" src="TTTA1.jpg" alt="Hình ảnh A" style="max-width: 100%; height: auto;">
+</header>
+
+    <main>
+        <div class="search-container">
+            <input type="text" id="search" placeholder="Vui lòng nhập Tên hoặc Mã SP để Tìm kiếm...">
+        </div>
+
+
+
+        <div class="carousel">
+            <div class="arrow left" onclick="moveSlide(-1)">❮</div>
+            <div class="arrow right" onclick="moveSlide(1)">❯</div>
+
+            <div class="product-list" id="product-list" style="transform: translateX(0px);">
+                 <!-- Danh sách sản phẩm sẽ được thêm vào đây -->
+            <div class="product" data-info="CẦU ĐIỆN TỬ SIZE 60<div>- Đường kính 40cm</div><div>- Chiều dài 50cm</div><div>- Sử dụng điện 220V</div><div>- Xoay 360 độ&amp;nbsp;</div>" data-images="[&quot;https://i.postimg.cc/nhC5qG1g/C02418024-02520024-4.jpg&quot;,&quot;https://i.postimg.cc/K8wWf3qz/C02418024-02520024-3.jpg&quot;,&quot;https://i.postimg.cc/cJ3bb12c/C02418024-02520024-2.jpg&quot;]" data-code="02418024" data-price="250.000vnđ" style="display: block;"><h2 style="color: blue;">CẦU ĐIỆN TỬ SIZE 60</h2>
+            <img src="https://i.postimg.cc/nhC5qG1g/C02418024-02520024-4.jpg" alt="GIÀY THỂ THAO" width="100">
+            <div class="product-info">
+                <p style="color: Red;">Mã SP: 02418024</p>
+                <p style="color: Red;">Giá SP: 250.000vnđ</p>
+            </div></div><div class="product" data-info="CẦU ĐIỆN TỬ SIZE 80<div>- Đường kính 50cm</div><div>- Chiều dài 60cm</div><div>- Sử dụng điện 220V</div><div>- Xoay 360 độ&amp;nbsp;</div>" data-images="[&quot;https://i.postimg.cc/nhC5qG1g/C02418024-02520024-4.jpg&quot;,&quot;https://i.postimg.cc/K8wWf3qz/C02418024-02520024-3.jpg&quot;,&quot;https://i.postimg.cc/cJ3bb12c/C02418024-02520024-2.jpg&quot;]" data-code="02520024" data-price="300 000 VNĐ" style="display: block;"><h2 style="color: blue;">CẦU ĐIỆN TỬ SIZE 80</h2>
+            <img src="https://i.postimg.cc/nhC5qG1g/C02418024-02520024-4.jpg" alt="GIÀY THỂ THAO" width="100">
+            <div class="product-info">
+                <p style="color: Red;">Mã SP: 02520024</p>
+                <p style="color: Red;">Giá SP: 300 000 VNĐ</p>
+            </div></div><div class="product" data-info="CẦU NHUNG 3D SIZE 60<div>- Đường kính 40cm</div><div>- Chiều dài 85cm</div><div>- Chất liệu vải nhung dầy, đẹp</div><div>- Hoạ tiết phủ kim tuyến&amp;nbsp;</div>" data-images="[&quot;https://i.postimg.cc/L6TYjzst/C02605024.jpg&quot;]" data-code="02605024" data-price="100 000 VNĐ/1 quả" style="display: block;"><h2 style="color: blue;">CẦU NHUNG 3D SIZE 60</h2>
+            <img src="https://i.postimg.cc/L6TYjzst/C02605024.jpg" alt="GIÀY THỂ THAO" width="100">
+            <div class="product-info">
+                <p style="color: Red;">Mã SP: 02605024</p>
+                <p style="color: Red;">Giá SP: 100 000 VNĐ/1 quả</p>
+            </div></div><div class="product" data-info="<div>CẦU NHUNG 3D SIZE 80<div>- Đường kính 52cm</div><div>- Chiều dài 100cm</div><div>- Chất liệu vải nhung dầy, đẹp</div><div>- Hoạ tiết phủ kim tuyến&amp;nbsp;</div></div>" data-images="[&quot;https://i.postimg.cc/66CGpsJ1/C02706024.jpg&quot;]" data-code="02706024" data-price="120 000 VNĐ/1 quả" style="display: block;"><h2 style="color: blue;">CẦU NHUNG 3D SIZE 80</h2>
+            <img src="https://i.postimg.cc/66CGpsJ1/C02706024.jpg" alt="GIÀY THỂ THAO" width="100">
+            <div class="product-info">
+                <p style="color: Red;">Mã SP: 02706024</p>
+                <p style="color: Red;">Giá SP: 120 000 VNĐ/1 quả</p>
+            </div></div><div class="product" data-info="CẦU NHUNG SIZE 60<div>- Đường kính 40cm</div><div>- Chiều dài 85cm</div><div>- Chất liệu vải nhung</div><div>- Hoạ tiết phủ kim tuyến&amp;nbsp;</div>" data-images="[&quot;https://i.postimg.cc/gkdLwMGc/C02803524.jpg&quot;]" data-code="02803524" data-price="80 000 VNĐ/1 quả"><h2 style="color: blue;">CẦU NHUNG SIZE 60</h2>
+            <img src="https://i.postimg.cc/gkdLwMGc/C02803524.jpg" alt="GIÀY THỂ THAO" width="100">
+            <div class="product-info">
+                <p style="color: Red;">Mã SP: 02803524</p>
+                <p style="color: Red;">Giá SP: 80 000 VNĐ/1 quả</p>
+            </div></div><div class="product" data-info="CẦU NHUNG SIZE 80<div>- Đường kính 52cm</div><div>- Chiều dài 100cm</div><div>- Chất liệu vải nhung</div><div>- Hoạ tiết phủ kim tuyến&amp;nbsp;</div>" data-images="[&quot;https://i.postimg.cc/8zzF4jFq/C02904524.jpg&quot;]" data-code="02904524" data-price="100 000 VNĐ/1 quả"><h2 style="color: blue;">CẦU NHUNG SIZE 80</h2>
+    <img src="https://i.postimg.cc/8zzF4jFq/C02904524.jpg" alt="GIÀY THỂ THAO" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 02904524</p>
+        <p style="color: Red;">Giá SP: 100 000 VNĐ/1 quả</p>
+    </div></div><div class="product" data-info="<p class=&quot;MsoNormal&quot;>CẦU NILON SIZE 15<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Đường kính 10cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều dài 33cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chất liệu nilon đỏ<b><o:p></o:p></b></p>
+
+<p class=&quot;MsoNormal&quot;><b><span style=&quot;color:#0070C0&quot;>&amp;nbsp;</span></b></p>
+
+<p class=&quot;MsoNormal&quot;><b><span style=&quot;color:#0070C0&quot;>Giá: 30 000 VNĐ/1 túi</span></b><span style=&quot;color:#0070C0&quot;><o:p></o:p></span></p>
+
+<p class=&quot;MsoNormal&quot;><b><span style=&quot;color:#0070C0&quot;>(1 túi từ 19 đến 21 quả)</span></b><span style=&quot;color:#0070C0&quot;><o:p></o:p></span></p>" data-images="[&quot;https://i.postimg.cc/j5dkd6CM/C03000124-0310-624-0320-624-2.jpg&quot;]" data-code="03000124" data-price="1.500 VNĐ"><h2 style="color: blue;">CẦU NILON SIZE 15</h2>
+    <img src="https://i.postimg.cc/j5dkd6CM/C03000124-0310-624-0320-624-2.jpg" alt="GIÀY THỂ THAO" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 03000124</p>
+        <p style="color: Red;">Giá SP: 1.500 VNĐ</p>
+    </div></div><div class="product" data-info="<p class=&quot;MsoNormal&quot;>CẦU NILON SIZE 20</p>
+
+<p class=&quot;MsoNormal&quot;>- Đường kính 15cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều dài 35cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chất liệu nilon đỏ<b><o:p></o:p></b></p>
+
+<p class=&quot;MsoNormal&quot;><b><span style=&quot;color:#0070C0&quot;>&amp;nbsp;</span></b></p>
+
+<p class=&quot;MsoNormal&quot;><b><span style=&quot;color:#0070C0&quot;>Giá: 20 000 VNĐ/1 túi</span></b><span style=&quot;color:#0070C0&quot;><o:p></o:p></span></p>
+
+<p class=&quot;MsoNormal&quot;><b><span style=&quot;color:#0070C0&quot;>(1 túi từ 9 đến 10 quả)</span></b><span style=&quot;color:#0070C0&quot;><o:p></o:p></span></p>" data-images="[&quot;https://i.postimg.cc/j5dkd6CM/C03000124-0310-624-0320-624-2.jpg&quot;]" data-code="0310.624" data-price="2 000 VNĐ"><h2 style="color: blue;">CẦU NILON SIZE 20</h2>
+    <img src="https://i.postimg.cc/j5dkd6CM/C03000124-0310-624-0320-624-2.jpg" alt="GIÀY THỂ THAO" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 0310.624</p>
+        <p style="color: Red;">Giá SP: 2 000 VNĐ</p>
+    </div></div><div class="product" data-info="<p class=&quot;MsoNormal&quot;>CẦU NILON SIZE 25</p><p class=&quot;MsoNormal&quot;>- Đường kính 20cm<o:p></o:p></p><p class=&quot;MsoNormal&quot;>- Chiều dài 38cm<o:p></o:p></p><p class=&quot;MsoNormal&quot;>- Chất liệu nilon đỏ<b><o:p></o:p></b></p><p class=&quot;MsoNormal&quot;><b><span style=&quot;color: rgb(0, 112, 192);&quot;>&amp;nbsp;</span></b></p><p class=&quot;MsoNormal&quot;><b><span style=&quot;color: rgb(0, 112, 192);&quot;>Giá: 20 000 VNĐ/1 túi</span></b><span style=&quot;color: rgb(0, 112, 192);&quot;><o:p></o:p></span></p><p class=&quot;MsoNormal&quot;><b><span style=&quot;color: rgb(0, 112, 192);&quot;>(1 túi từ 9 đến 10 quả)</span></b></p>" data-images="[&quot;https://i.postimg.cc/j5dkd6CM/C03000124-0310-624-0320-624-2.jpg&quot;]" data-code="0320.624" data-price="2 000 VNĐ"><h2 style="color: blue;">CẦU NILON SIZE 25</h2>
+    <img src="https://i.postimg.cc/j5dkd6CM/C03000124-0310-624-0320-624-2.jpg" alt="GIÀY THỂ THAO" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 0320.624-BK</p>
+        <p style="color: Red;">Giá SP: 2 000 VNĐ</p>
+    </div></div><div class="product" data-info="PHÁO ĐIỆN TỬ SIZE 17<div>- Chiều dài 170cm</div><div>- 18 quả<br><div>- Có remote điều khiển</div><div>- Không đèn led hộp</div><div>- Có đèn led dây</div><div>- Chữ Việt Nam</div><div>- Tiếng nổ to</div><div>- Sử dụng điện 220V</div></div>" data-images="[&quot;https://i.postimg.cc/wMFNxJyQ/D03331024-03434524-03536524-2.jpg&quot;]" data-code="03331024-BK" data-price="410 000 VNĐ"><h2 style="color: blue;">PHÁO ĐIỆN TỬ SIZE 17</h2>
+    <img src="https://i.postimg.cc/wMFNxJyQ/D03331024-03434524-03536524-2.jpg" alt="GIÀY THỂ THAO" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 03331024-BK</p>
+        <p style="color: Red;">Giá SP: 410 000 VNĐ</p>
+    </div></div><div class="product" data-info="PHÁO ĐIỆN TỬ SIZE 17<div>- Chiều dài 170cm</div><div>- 18 quả<br><div>- Có remote điều khiển</div><div>- Có đèn led hộp</div><div>- Có đèn led dây</div><div>- Chữ Việt Nam</div><div>- Tiếng nổ to</div><div>- Sử dụng điện 220V</div></div>" data-images="[&quot;https://i.postimg.cc/wMFNxJyQ/D03331024-03434524-03536524-2.jpg&quot;]" data-code="03331024-AC" data-price="430 000 VNĐ"><h2 style="color: blue;">PHÁO ĐIỆN TỬ SIZE 17</h2>
+    <img src="https://i.postimg.cc/wMFNxJyQ/D03331024-03434524-03536524-2.jpg" alt="GIÀY THỂ THAO" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 03331024-AC</p>
+        <p style="color: Red;">Giá SP: 430 000 VNĐ</p>
+    </div></div><div class="product" data-info="<p class=&quot;MsoNormal&quot;>PHÁO ĐIỆN TỬ SIZE 19</p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều dài 190cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- 18 quả<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Có remote điều khiển<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Có đèn led hộp<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Có đèn led dây<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chữ Việt Nam<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Tiếng nổ to<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Sử dụng điện 220V<b><o:p></o:p></b></p>" data-images="[&quot;https://i.postimg.cc/wMFNxJyQ/D03331024-03434524-03536524-2.jpg&quot;]" data-code="03434524" data-price="450 000 VNĐ"><h2 style="color: blue;">PHÁO ĐIỆN TỬ SIZE 19</h2>
+    <img src="https://i.postimg.cc/wMFNxJyQ/D03331024-03434524-03536524-2.jpg" alt="GIÀY THỂ THAO" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 03434524</p>
+        <p style="color: Red;">Giá SP: 450 000 VNĐ</p>
+    </div></div><div class="product" data-info="<p class=&quot;MsoNormal&quot;>PHÁO ĐIỆN TỬ SIZE 22</p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều dài 220cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- 18 quả<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Có remote điều khiển<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Có đèn led hộp<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Có đèn led dây<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chữ Việt Nam<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Tiếng nổ to<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Sử dụng điện 220V<b><o:p></o:p></b></p>" data-images="[&quot;https://i.postimg.cc/wMFNxJyQ/D03331024-03434524-03536524-2.jpg&quot;]" data-code="03536524" data-price="470 000 VNĐ"><h2 style="color: blue;">PHÁO ĐIỆN TỬ SIZE 22</h2>
+    <img src="https://i.postimg.cc/wMFNxJyQ/D03331024-03434524-03536524-2.jpg" alt="PHÁO ĐIỆN TỬ SIZE 22" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 03536524</p>
+        <p style="color: Red;">Giá SP: 470 000 VNĐ</p>
+    </div></div><div class="product" data-info="CẶP CÂU ĐỐI<div>- Chiều rộng 18cm</div><div>- Chiều dài 120cm</div><div>- Chật liệu nhung</div>" data-images="[&quot;https://i.postimg.cc/d3JdKn10/D03605123.jpg&quot;]" data-code="03605123" data-price="100 000 VNĐ"><h2 style="color: blue;">CẶP CÂU ĐỐI</h2>
+    <img src="https://i.postimg.cc/d3JdKn10/D03605123.jpg" alt="CẶP CÂU ĐỐI" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 03605123</p>
+        <p style="color: Red;">Giá SP: 100 000 VNĐ</p>
+    </div></div><div class="product" data-info="CẶP CÂU ĐỐI<div>- Chiều rộng 20cm</div><div>- Chiều dài 100cm</div><div>- Chật liệu nhung dầy, đẹp</div>" data-images="[&quot;https://i.postimg.cc/HL289X3D/D03710024-2.jpg&quot;]" data-code="03710024" data-price="140 000 VNĐ"><h2 style="color: blue;">CẶP CÂU ĐỐI</h2>
+    <img src="https://i.postimg.cc/HL289X3D/D03710024-2.jpg" alt="CẶP CÂU ĐỐI" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 03710024</p>
+        <p style="color: Red;">Giá SP: 140 000 VNĐ</p>
+    </div></div>
+<div class="product" data-info="CẶP CÂU ĐỐI<div>- Chiều rộng 18cm</div><div>- Chiều dài 90cm</div><div>- Chật liệu nhung đẹp</div>" data-images="[&quot;https://i.postimg.cc/FR2HnZ5H/F07005324.jpg&quot;]" data-code="07005324" data-price="100 000 VNĐ"><h2 style="color: blue;">CẶP CÂU ĐỐI</h2>
+    <img src="https://i.postimg.cc/FR2HnZ5H/F07005324.jpg" alt="CẶP CÂU ĐỐI" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 07005324</p>
+        <p style="color: Red;">Giá SP: 100 000 VNĐ</p>
+    </div></div>
+<div class="product" data-info="<span style=&quot;font-size: medium; background-color: rgb(255, 255, 255);&quot;>CẶP CÂU ĐỐI</span><div style=&quot;font-size: medium; background-color: rgb(255, 255, 255);&quot;>- Chiều rộng 24cm</div><div style=&quot;font-size: medium; background-color: rgb(255, 255, 255);&quot;>- Chiều dài 60cm</div><div style=&quot;font-size: medium; background-color: rgb(255, 255, 255);&quot;>- Chật liệu nhung</div>" data-images="[&quot;https://i.postimg.cc/TPGWbCVJ/D03806524-2.jpg&quot;]" data-code="03806524" data-price="100 000 VNĐ"><h2 style="color: blue;">CẶP CÂU ĐỐI</h2>
+    <img src="https://i.postimg.cc/TPGWbCVJ/D03806524-2.jpg" alt="CẶP CÂU ĐỐI" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 03806524</p>
+        <p style="color: Red;">Giá SP: 100 000 VNĐ</p>
+    </div></div><div class="product" data-info="LIỄN TREO TẾT&amp;nbsp;00102123<div>- Chiều rộng 36cm</div><div>- Chiều dài 65cm</div><div>- Chất liệu giấy nhung</div>" data-images="[&quot;https://i.postimg.cc/QtCCgPH1/A00102123.jpg&quot;]" data-code="00102123" data-price="40 000 VNĐ"><h2 style="color: blue;">LIỄN TREO TẾT</h2>
+    <img src="https://i.postimg.cc/QtCCgPH1/A00102123.jpg" alt="LIỄN TREO TẾT" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 00102123</p>
+        <p style="color: Red;">Giá SP: 40 000 VNĐ</p>
+    </div></div><div class="product" data-info="<p class=&quot;MsoNormal&quot;>LIỄN TREO TẾT&amp;nbsp;00202123<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều rộng 36cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều dài 65cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chất liệu giấy nhung</p>" data-images="[&quot;https://i.postimg.cc/SKDjMqNm/A00202123.jpg&quot;]" data-code="00202123" data-price="40 000 VNĐ"><h2 style="color: blue;">LIỄN TREO TẾT</h2>
+    <img src="https://i.postimg.cc/SKDjMqNm/A00202123.jpg" alt="LIỄN TREO TẾT" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 00202123</p>
+        <p style="color: Red;">Giá SP: 40 000 VNĐ</p>
+    </div></div><div class="product" data-info="<p class=&quot;MsoNormal&quot;>LIỄN TREO TẾT&amp;nbsp;00302123<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều rộng 37cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều dài 80cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chất liệu giấy nhung</p>" data-images="[&quot;https://i.postimg.cc/Znyq2dPq/A00302123.jpg&quot;]" data-code="00302123" data-price="40 000 VNĐ"><h2 style="color: blue;">LIỄN TREO TẾT</h2>
+    <img src="https://i.postimg.cc/Znyq2dPq/A00302123.jpg" alt="LIỄN TREO TẾT" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 00302123</p>
+        <p style="color: Red;">Giá SP: 40 000 VNĐ</p>
+    </div></div><div class="product" data-info="<p class=&quot;MsoNormal&quot;>LIỄN TREO TẾT&amp;nbsp;00402123<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều rộng 36cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều dài 65cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chất liệu giấy nhung</p>" data-images="[&quot;https://i.postimg.cc/CdTKgxJs/A00402123.jpg&quot;]" data-code="00402123" data-price="40 000 VNĐ"><h2 style="color: blue;">LIỄN TREO TẾT</h2>
+    <img src="https://i.postimg.cc/CdTKgxJs/A00402123.jpg" alt="LIỄN TREO TẾT" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 00402123</p>
+        <p style="color: Red;">Giá SP: 40 000 VNĐ</p>
+    </div></div><div class="product" data-info="<p class=&quot;MsoNormal&quot;>LIỄN TREO TẾT&amp;nbsp;00502123<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều rộng 36cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều dài 65cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chất liệu giấy nhung</p>" data-images="[&quot;https://i.postimg.cc/fLPL8K9F/A00502123.jpg&quot;]" data-code="00502123" data-price="40 000 VNĐ"><h2 style="color: blue;">LIỄN TREO TẾT</h2>
+    <img src="https://i.postimg.cc/fLPL8K9F/A00502123.jpg" alt="LIỄN TREO TẾT" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 00502123</p>
+        <p style="color: Red;">Giá SP: 40 000 VNĐ</p>
+    </div></div><div class="product" data-info="<p class=&quot;MsoNormal&quot;>LIỄN TREO TẾT&amp;nbsp;00602323<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều rộng 47cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều dài 90cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chất liệu giấy nhung</p>" data-images="[&quot;https://i.postimg.cc/5jd8R1CZ/A00602323.jpg&quot;]" data-code="00602323" data-price="40 000 VNĐ"><h2 style="color: blue;">LIỄN TREO TẾT </h2>
+    <img src="https://i.postimg.cc/5jd8R1CZ/A00602323.jpg" alt="LIỄN TREO TẾT " width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 00602323</p>
+        <p style="color: Red;">Giá SP: 40 000 VNĐ</p>
+    </div></div><div class="product" data-info="<p class=&quot;MsoNormal&quot;>LIỄN TREO TẾT&amp;nbsp;00702323<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều rộng 47cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều dài 90cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chất liệu giấy nhung<o:p></o:p></p>" data-images="[&quot;https://i.postimg.cc/9X4SKp9p/A00702323.jpg&quot;]" data-code="00702323" data-price="40 000 VNĐ"><h2 style="color: blue;">LIỄN TREO TẾT</h2>
+    <img src="https://i.postimg.cc/9X4SKp9p/A00702323.jpg" alt="LIỄN TREO TẾT" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 00702323</p>
+        <p style="color: Red;">Giá SP: 40 000 VNĐ</p>
+    </div></div><div class="product" data-info="<p class=&quot;MsoNormal&quot;>LIỄN TREO TẾT&amp;nbsp;00802323<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều rộng 47cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều dài 90cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chất liệu giấy nhung<o:p></o:p></p>" data-images="[&quot;https://i.postimg.cc/bYKMhtHj/A00802323.jpg&quot;]" data-code="00802323" data-price="40 000 VNĐ"><h2 style="color: blue;">LIỄN TREO TẾT</h2>
+    <img src="https://i.postimg.cc/bYKMhtHj/A00802323.jpg" alt="LIỄN TREO TẾT" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 00802323</p>
+        <p style="color: Red;">Giá SP: 40 000 VNĐ</p>
+    </div></div><div class="product" data-info="<p class=&quot;MsoNormal&quot;>LIỄN TREO TẾT&amp;nbsp;00902323<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều rộng 47cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều dài 90cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chất liệu giấy nhung<o:p></o:p></p>" data-images="[&quot;https://i.postimg.cc/FzJjp17y/A00902323.jpg&quot;]" data-code="00902323" data-price="40 000 VNĐ"><h2 style="color: blue;">LIỄN TREO TẾT</h2>
+    <img src="https://i.postimg.cc/FzJjp17y/A00902323.jpg" alt="LIỄN TREO TẾT" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 00902323</p>
+        <p style="color: Red;">Giá SP: 40 000 VNĐ</p>
+    </div></div><div class="product" data-info="<p class=&quot;MsoNormal&quot;>LIỄN TREO TẾT&amp;nbsp;01002323<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều rộng 45cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều dài 70cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chất liệu giấy nhung<o:p></o:p></p>" data-images="[&quot;https://i.postimg.cc/BbgMHXym/A01002323.jpg&quot;]" data-code="01002323" data-price="40 000 VNĐ"><h2 style="color: blue;">LIỄN TREO TẾT</h2>
+    <img src="https://i.postimg.cc/BbgMHXym/A01002323.jpg" alt="LIỄN TREO TẾT" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 01002323</p>
+        <p style="color: Red;">Giá SP: 40 000 VNĐ</p>
+    </div></div><div class="product" data-info="<p class=&quot;MsoNormal&quot;>LIỄN TREO TẾT&amp;nbsp;01102323<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều rộng 45cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều dài 70cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chất liệu giấy nhung<o:p></o:p></p>" data-images="[&quot;https://i.postimg.cc/Y2fXJs9Q/A01102323.jpg&quot;]" data-code="01102323" data-price="40 000 VNĐ"><h2 style="color: blue;">LIỄN TREO TẾT</h2>
+    <img src="https://i.postimg.cc/Y2fXJs9Q/A01102323.jpg" alt="LIỄN TREO TẾT" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 01102323</p>
+        <p style="color: Red;">Giá SP: 40 000 VNĐ</p>
+    </div></div><div class="product" data-info="<p class=&quot;MsoNormal&quot;>LIỄN TREO TẾT&amp;nbsp;01202323<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều rộng 45cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều dài 70cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chất liệu giấy nhung<o:p></o:p></p>" data-images="[&quot;https://i.postimg.cc/Wzj5dM9D/A01202323.jpg&quot;]" data-code="01202323" data-price="40 000 VNĐ"><h2 style="color: blue;">LIỄN TREO TẾT </h2>
+    <img src="https://i.postimg.cc/Wzj5dM9D/A01202323.jpg" alt="LIỄN TREO TẾT " width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 01202323</p>
+        <p style="color: Red;">Giá SP: 40 000 VNĐ</p>
+    </div></div><div class="product" data-info="<p class=&quot;MsoNormal&quot;>LIỄN TREO TẾT&amp;nbsp;0130232<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều rộng 45cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều dài 70cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chất liệu giấy nhung<o:p></o:p></p>" data-images="[&quot;https://i.postimg.cc/JnjT7TQV/A01302323.jpg&quot;]" data-code="0130232" data-price="40 000 VNĐ"><h2 style="color: blue;">LIỄN TREO TẾT </h2>
+    <img src="https://i.postimg.cc/JnjT7TQV/A01302323.jpg" alt="LIỄN TREO TẾT " width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 0130232</p>
+        <p style="color: Red;">Giá SP: 40 000 VNĐ</p>
+    </div></div><div class="product" data-info="THẦN TÀI LẮC LƯ&amp;nbsp;02006123<div>- Chiều rộng 40cm</div><div>- Chiều dài 100cm</div><div>- Chất liệu giấy nhung dầy, đẹp</div><div>- Tặng kèm Pin và móc dán tường</div>" data-images="[&quot;https://i.postimg.cc/8P76h7qs/B02006123.jpg&quot;]" data-code="02006123" data-price="100 000 VNĐ"><h2 style="color: blue;">THẦN TÀI LẮC LƯ</h2>
+    <img src="https://i.postimg.cc/8P76h7qs/B02006123.jpg" alt="THẦN TÀI LẮC LƯ" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 02006123</p>
+        <p style="color: Red;">Giá SP: 100 000 VNĐ</p>
+    </div></div><div class="product" data-info="<p class=&quot;MsoNormal&quot;>THẦN TÀI LẮC LƯ&amp;nbsp;02106024<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều rộng 38cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều dài 84cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chất liệu giấy nhung dầy, đẹp<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Tặng kèm Pin và móc dán tường<o:p></o:p></p>" data-images="[&quot;https://i.postimg.cc/BQR1Nq0p/B02106024.jpg&quot;]" data-code="02106024" data-price="100 000 VNĐ"><h2 style="color: blue;">THẦN TÀI LẮC LƯ</h2>
+    <img src="https://i.postimg.cc/BQR1Nq0p/B02106024.jpg" alt="THẦN TÀI LẮC LƯ" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 02106024</p>
+        <p style="color: Red;">Giá SP: 100 000 VNĐ</p>
+    </div></div><div class="product" data-info="<p class=&quot;MsoNormal&quot;>THẦN TÀI LẮC LƯ&amp;nbsp;02206024<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều rộng 38cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều dài 90cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chất liệu giấy nhung dầy, đẹp<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Tặng kèm Pin và móc dán tường<o:p></o:p></p>" data-images="[&quot;https://i.postimg.cc/VkM0V3s8/B02206024.jpg&quot;]" data-code="02206024" data-price="100 000 VNĐ"><h2 style="color: blue;">THẦN TÀI LẮC LƯ</h2>
+    <img src="https://i.postimg.cc/VkM0V3s8/B02206024.jpg" alt="THẦN TÀI LẮC LƯ" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 02206024</p>
+        <p style="color: Red;">Giá SP: 100 000 VNĐ</p>
+    </div></div><div class="product" data-info="<p class=&quot;MsoNormal&quot;>THẦN TÀI LẮC LƯ&amp;nbsp;02306024<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều rộng 38cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều dài 84cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chất liệu giấy nhung dầy, đẹp<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Tặng kèm Pin và móc dán tường<o:p></o:p></p>" data-images="[&quot;https://i.postimg.cc/GpCTwq9s/B02306024.jpg&quot;]" data-code="02306024" data-price="100 000 VNĐ"><h2 style="color: blue;">THẦN TÀI LẮC LƯ</h2>
+    <img src="https://i.postimg.cc/GpCTwq9s/B02306024.jpg" alt="THẦN TÀI LẮC LƯ" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 02306024</p>
+        <p style="color: Red;">Giá SP: 100 000 VNĐ</p>
+    </div></div><div class="product" data-info="KHÁNH TREO TẾT&amp;nbsp;01406323<div>
+
+<p class=&quot;MsoNormal&quot;>- Chiều rộng 48cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều dài 90cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chất liệu vải nhung dầy, đẹp<br></p></div>" data-images="[&quot;https://i.postimg.cc/sfGz7SVM/B01406323.jpg&quot;]" data-code="01406323" data-price="120 000 VNĐ"><h2 style="color: blue;">KHÁNH TREO</h2>
+    <img src="https://i.postimg.cc/MHJzvKfP/B01406323.jpg" alt="KHÁNH TREO TẾT" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 01406323</p>
+        <p style="color: Red;">Giá SP: 120 000 VNĐ</p>
+    </div></div><div class="product" data-info="<p class=&quot;MsoNormal&quot;>KHÁNH TREO TẾT&amp;nbsp;01509123<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều rộng 33cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều dài 85cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chất liệu vải nhung, gỗ</p>" data-images="[&quot;https://i.postimg.cc/SR9p40Z6/B01509123.jpg&quot;]" data-code="01509123" data-price="120 000 VNĐ"><h2 style="color: blue;">KHÁNH TREO</h2>
+    <img src="https://i.postimg.cc/SR9p40Z6/B01509123.jpg" alt="KHÁNH TREO" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 01509123</p>
+        <p style="color: Red;">Giá SP: 120 000 VNĐ</p>
+    </div></div><div class="product" data-info="<p class=&quot;MsoNormal&quot;>KHÁNH TREO TẾT&amp;nbsp;01606923<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều rộng 26cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều dài 80cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chất liệu nhựa mạ vàng</p>" data-images="[&quot;https://i.postimg.cc/VLy8R66D/B01606923.jpg&quot;]" data-code="01606923" data-price="120 000 VNĐ"><h2 style="color: blue;">KHÁNH TREO</h2>
+    <img src="https://i.postimg.cc/762xHThJ/B01606923.jpg" alt="KHÁNH TREO" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 01606923</p>
+        <p style="color: Red;">Giá SP: 120 000 VNĐ</p>
+    </div></div><div class="product" data-info="<p class=&quot;MsoNormal&quot;>KHÁNH TREO TẾT&amp;nbsp;01705623<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều rộng 23cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều dài 60cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chất liệu nhựa mạ vàng</p>" data-images="[&quot;https://i.postimg.cc/Z54zGM6N/B01705623.jpg&quot;]" data-code="01705623" data-price="90 000 VNĐ"><h2 style="color: blue;">KHÁNH TREO</h2>
+    <img src="https://i.postimg.cc/YSVrBxrw/B01705623.jpg" alt="KHÁNH TREO" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 01705623</p>
+        <p style="color: Red;">Giá SP: 90 000 VNĐ</p>
+    </div></div><div class="product" data-info="<p class=&quot;MsoNormal&quot;>KHÁNH TREO TẾT&amp;nbsp;01807423<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều rộng 20cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều dài 60cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chất liệu vải nhung, nhựa mạ vàng</p>" data-images="[&quot;https://i.postimg.cc/rwj2MN9P/B01807423.jpg&quot;]" data-code="01807423" data-price="100 000 VNĐ"><h2 style="color: blue;">KHÁNH TREO</h2>
+    <img src="https://i.postimg.cc/rwj2MN9P/B01807423.jpg" alt="KHÁNH TREO" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 01807423</p>
+        <p style="color: Red;">Giá SP: 100 000 VNĐ</p>
+    </div></div><div class="product" data-info="<p class=&quot;MsoNormal&quot;>KHÁNH TREO TẾT&amp;nbsp;01905823<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều rộng 20cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chiều dài 70cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Chất liệu vải nhung dầy, đẹp<o:p></o:p></p>" data-images="[&quot;https://i.postimg.cc/9FGjNhwV/B01905823.jpg&quot;]" data-code="01905823" data-price="100 000 VNĐ"><h2 style="color: blue;">KHÁNH TREO</h2>
+    <img src="https://i.postimg.cc/9FGjNhwV/B01905823.jpg" alt="KHÁNH TREO" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 01905823</p>
+        <p style="color: Red;">Giá SP: 100 000 VNĐ</p>
+    </div></div><div class="product" data-info="PHÁO SÁNG<br>- Không tiếng nổ<div>- An toàn khi sử dụng</div><div><br></div><div><b>Giá: 20 000 VNĐ/ 1 viên</b></div>" data-images="[&quot;https://i.postimg.cc/15C5KSkt/D03900924.jpg&quot;,&quot;https://i.postimg.cc/FHwr2ZsX/D03900924-1.jpg&quot;,&quot;https://i.postimg.cc/6p86jSKh/D03900924-2.jpg&quot;,&quot;https://i.postimg.cc/KYLGFMRk/D03900924-3.jpg&quot;,&quot;https://i.postimg.cc/5y9bwKpL/D03900924-4.jpg&quot;,&quot;https://i.postimg.cc/br68L0FM/D03900924-5.jpg&quot;]" data-code="03900924" data-price="20 000 VNĐ"><h2 style="color: blue;">PHÁO SÁNG</h2>
+    <img src="https://i.postimg.cc/15C5KSkt/D03900924.jpg" alt="PHÁO SÁNG" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 03900924</p>
+        <p style="color: Red;">Giá SP: 20 000 VNĐ</p>
+    </div></div><div class="product" data-info="CẦU NHUNG TREO TRANG TRÍ<div>- Đường kính 6cm</div><div><br></div><div><b>Giá: 10 000 VNĐ/ 2 quả</b></div>" data-images="[&quot;https://i.postimg.cc/zB091zSH/04000224.jpg&quot;]" data-code="04000224" data-price="10 000 VNĐ"><h2 style="color: blue;">CẦU NHUNG</h2>
+    <img src="https://i.postimg.cc/zB091zSH/04000224.jpg" alt="CẦU NHUNG" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 04000224</p>
+        <p style="color: Red;">Giá SP: 10 000 VNĐ</p>
+    </div></div><div class="product" data-info="<p class=&quot;MsoNormal&quot;>CẦU NHUNG TREO TRANG TRÍ<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Đường kính 5cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;><o:p>&amp;nbsp;</o:p></p>
+
+<p class=&quot;MsoNormal&quot;><b>Giá: 10 000 VNĐ/3 quả</b><o:p></o:p></p>" data-images="[&quot;https://i.postimg.cc/zBJ9MbW1/0411-424.jpg&quot;]" data-code="0411-424" data-price="10 000 VNĐ"><h2 style="color: blue;">CẦU NHUNG</h2>
+    <img src="https://i.postimg.cc/zBJ9MbW1/0411-424.jpg" alt="CẦU NHUNG" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 0411-424</p>
+        <p style="color: Red;">Giá SP: 10 000 VNĐ</p>
+    </div></div><div class="product" data-info="<p class=&quot;MsoNormal&quot;>CẦU NHUNG TREO TRANG TRÍ<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Đường kính 4cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;><o:p>&amp;nbsp;</o:p></p>
+
+<p class=&quot;MsoNormal&quot;><b>Giá: 10 000 VNĐ/ 4 quả</b><o:p></o:p></p>" data-images="[&quot;https://i.postimg.cc/zvv4zs0t/04200124.jpg&quot;]" data-code="04200124" data-price="10 000 VNĐ"><h2 style="color: blue;">CẦU NHUNG</h2>
+    <img src="https://i.postimg.cc/zvv4zs0t/04200124.jpg" alt="CẦU NHUNG" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 04200124</p>
+        <p style="color: Red;">Giá SP: 10 000 VNĐ</p>
+    </div></div><div class="product" data-info="<p class=&quot;MsoNormal&quot;>CẦU NHUNG TREO TRANG TRÍ<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;>- Đường kính 3cm<o:p></o:p></p>
+
+<p class=&quot;MsoNormal&quot;><o:p>&amp;nbsp;</o:p></p>
+
+<p class=&quot;MsoNormal&quot;><b>Giá: 10 000 VNĐ/ 5 quả</b><o:p></o:p></p>" data-images="[&quot;https://i.postimg.cc/q7cPjXNL/04300124.jpg&quot;]" data-code="04300124" data-price="10 000 VNĐ"><h2 style="color: blue;">CẦU NHUNG</h2>
+    <img src="https://i.postimg.cc/q7cPjXNL/04300124.jpg" alt="CẦU NHUNG" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 04300124</p>
+        <p style="color: Red;">Giá SP: 10 000 VNĐ</p>
+    </div></div><div class="product" data-info="<span style=&quot;font-size: medium; background-color: rgb(255, 255, 255);&quot;>KHÁNH TREO TẾT&amp;nbsp;</span><font size=&quot;3&quot;>04400524</font>" data-images="[&quot;https://i.postimg.cc/cJnYwMc4/DA04400524.jpg&quot;]" data-code="04400524" data-price="10 000 VNĐ"><h2 style="color: blue;">KHÁNH TREO</h2>
+    <img src="https://i.postimg.cc/cJnYwMc4/DA04400524.jpg" alt="KHÁNH TREO" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 04400524</p>
+        <p style="color: Red;">Giá SP: 10 000 VNĐ</p>
+    </div></div><div class="product" data-info="<span style=&quot;font-size: medium; background-color: rgb(255, 255, 255);&quot;>KHÁNH TREO TẾT&amp;nbsp;</span><font size=&quot;3&quot;>0454-624</font>" data-images="[&quot;https://i.postimg.cc/JzgZsdZ2/DB0454-624.jpg&quot;]" data-code="0454-624" data-price="10 000 VNĐ"><h2 style="color: blue;">KHÁNH TREO</h2>
+    <img src="https://i.postimg.cc/JzgZsdZ2/DB0454-624.jpg" alt="KHÁNH TREO" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 0454-624</p>
+        <p style="color: Red;">Giá SP: 10 000 VNĐ</p>
+    </div></div><div class="product" data-info="<span style=&quot;font-size: medium; background-color: rgb(255, 255, 255);&quot;>KHÁNH TREO TẾT&amp;nbsp;</span><font size=&quot;3&quot;>0463-424</font>" data-images="[&quot;https://i.postimg.cc/MZNSr708/DC0463-424.jpg&quot;]" data-code="0463-424" data-price="7 000 VNĐ"><h2 style="color: blue;">KHÁNH TREO</h2>
+    <img src="https://i.postimg.cc/MZNSr708/DC0463-424.jpg" alt="KHÁNH TREO" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 0463-424</p>
+        <p style="color: Red;">Giá SP: 7 000 VNĐ</p>
+    </div></div><div class="product" data-info="<span style=&quot;font-size: medium; background-color: rgb(255, 255, 255);&quot;>KHÁNH TREO TẾT&amp;nbsp;</span><font size=&quot;3&quot;>0471-524</font>" data-images="[&quot;https://i.postimg.cc/sDWrFMKG/DD0471-524.jpg&quot;]" data-code="0471-524" data-price="5 000 VNĐ"><h2 style="color: blue;">KHÁNH TREO</h2>
+    <img src="https://i.postimg.cc/sDWrFMKG/DD0471-524.jpg" alt="KHÁNH TREO" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 0471-524</p>
+        <p style="color: Red;">Giá SP: 5 000 VNĐ</p>
+    </div></div><div class="product" data-info="<span style=&quot;font-size: medium; background-color: rgb(255, 255, 255);&quot;>KHÁNH TREO TẾT&amp;nbsp;</span><font size=&quot;3&quot; style=&quot;font-size: medium; background-color: rgb(255, 255, 255);&quot;>0463-424</font>" data-images="[&quot;https://i.postimg.cc/L8B3nMm6/EA0485-624.jpg&quot;]" data-code="0485-624" data-price="10 000 VNĐ"><h2 style="color: blue;">KHÁNH TREO</h2>
+    <img src="https://i.postimg.cc/L8B3nMm6/EA0485-624.jpg" alt="KHÁNH TREO" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 0485-624</p>
+        <p style="color: Red;">Giá SP: 10 000 VNĐ</p>
+    </div></div><div class="product" data-info="<span style=&quot;font-size: medium; background-color: rgb(255, 255, 255);&quot;>KHÁNH TREO TẾT&amp;nbsp;</span><font size=&quot;3&quot;>0493-624</font>" data-images="[&quot;https://i.postimg.cc/qRgsbhyz/EA0493-624.jpg&quot;]" data-code="0493-624" data-price="10 000 VNĐ"><h2 style="color: blue;">KHÁNH TREO</h2>
+    <img src="https://i.postimg.cc/qRgsbhyz/EA0493-624.jpg" alt="KHÁNH TREO" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 0493-624</p>
+        <p style="color: Red;">Giá SP: 10 000 VNĐ</p>
+    </div></div><div class="product" data-info="<span style=&quot;font-size: medium; background-color: rgb(255, 255, 255);&quot;>KHÁNH TREO TẾT&amp;nbsp;</span><font size=&quot;3&quot;>0505-624</font>" data-images="[&quot;https://i.postimg.cc/k5TNvFV0/EA0505-624.jpg&quot;]" data-code="0505-624" data-price="10 000 VNĐ"><h2 style="color: blue;">KHÁNH TREO</h2>
+    <img src="https://i.postimg.cc/k5TNvFV0/EA0505-624.jpg" alt="KHÁNH TREO" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 0505-624</p>
+        <p style="color: Red;">Giá SP: 10 000 VNĐ</p>
+    </div></div><div class="product" data-info="<span style=&quot;font-size: medium; background-color: rgb(255, 255, 255);&quot;>KHÁNH TREO TẾT&amp;nbsp;</span><font size=&quot;3&quot;>05100224</font>" data-images="[&quot;https://i.postimg.cc/Qxcpyr9k/EA05100224.jpg&quot;]" data-code="05100224" data-price="10 000 VNĐ"><h2 style="color: blue;">KHÁNH TREO</h2>
+    <img src="https://i.postimg.cc/Qxcpyr9k/EA05100224.jpg" alt="KHÁNH TREO" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 05100224</p>
+        <p style="color: Red;">Giá SP: 10 000 VNĐ</p>
+    </div></div><div class="product" data-info="<span style=&quot;font-size: medium; background-color: rgb(255, 255, 255);&quot;>KHÁNH TREO TẾT&amp;nbsp;</span><font size=&quot;3&quot;>0525-624</font>" data-images="[&quot;https://i.postimg.cc/yd5Fw1yn/EA0525-624.jpg&quot;]" data-code="0525-624" data-price="10 000 VNĐ"><h2 style="color: blue;">KHÁNH TREO</h2>
+    <img src="https://i.postimg.cc/yd5Fw1yn/EA0525-624.jpg" alt="KHÁNH TREO" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 0525-624</p>
+        <p style="color: Red;">Giá SP: 10 000 VNĐ</p>
+    </div></div><div class="product" data-info="<span style=&quot;font-size: medium; background-color: rgb(255, 255, 255);&quot;>KHÁNH TREO TẾT&amp;nbsp;</span><font size=&quot;3&quot;>0535-624</font>" data-images="[&quot;https://i.postimg.cc/jqw6yfR1/EA0535-624.jpg&quot;]" data-code="0535-624" data-price="10 000 VNĐ"><h2 style="color: blue;">KHÁNH TREO</h2>
+    <img src="https://i.postimg.cc/jqw6yfR1/EA0535-624.jpg" alt="KHÁNH TREO" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 0535-624</p>
+        <p style="color: Red;">Giá SP: 10 000 VNĐ</p>
+    </div></div><div class="product" data-info="<span style=&quot;font-size: medium; background-color: rgb(255, 255, 255);&quot;>KHÁNH TREO TẾT&amp;nbsp;</span><font size=&quot;3&quot;>0545-624</font>" data-images="[&quot;https://i.postimg.cc/pVwfCdTL/EA0545-624.jpg&quot;]" data-code="0545-624" data-price="10 000 VNĐ"><h2 style="color: blue;">KHÁNH TREO</h2>
+    <img src="https://i.postimg.cc/pVwfCdTL/EA0545-624.jpg" alt="KHÁNH TREO" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 0545-624</p>
+        <p style="color: Red;">Giá SP: 10 000 VNĐ</p>
+    </div></div><div class="product" data-info="<span style=&quot;font-size: medium; background-color: rgb(255, 255, 255);&quot;>KHÁNH TREO TẾT&amp;nbsp;</span><font size=&quot;3&quot;>05500424</font>" data-images="[&quot;https://i.postimg.cc/y8BFqr0q/EA05500424.jpg&quot;]" data-code="05500424" data-price="10 000 VNĐ"><h2 style="color: blue;">KHÁNH TREO</h2>
+    <img src="https://i.postimg.cc/y8BFqr0q/EA05500424.jpg" alt="KHÁNH TREO" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 05500424</p>
+        <p style="color: Red;">Giá SP: 10 000 VNĐ</p>
+    </div></div><div class="product" data-info="<span style=&quot;font-size: medium; background-color: rgb(255, 255, 255);&quot;>KHÁNH TREO TẾT&amp;nbsp;</span><font size=&quot;3&quot;>05600424</font>" data-images="[&quot;https://i.postimg.cc/HLY4MPL0/EA05600424.jpg&quot;]" data-code="05600424" data-price="10 000 VNĐ"><h2 style="color: blue;">KHÁNH TREO</h2>
+    <img src="https://i.postimg.cc/HLY4MPL0/EA05600424.jpg" alt="KHÁNH TREO" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 05600424</p>
+        <p style="color: Red;">Giá SP: 10 000 VNĐ</p>
+    </div></div><div class="product" data-info="<span style=&quot;font-size: medium; background-color: rgb(255, 255, 255);&quot;>KHÁNH TREO TẾT&amp;nbsp;</span><font size=&quot;3&quot;>0575-624</font>" data-images="[&quot;https://i.postimg.cc/GtykRWMR/EA0575-624.jpg&quot;]" data-code="0575-624" data-price="10 000 VNĐ"><h2 style="color: blue;">KHÁNH TREO</h2>
+    <img src="https://i.postimg.cc/GtykRWMR/EA0575-624.jpg" alt="KHÁNH TREO" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 0575-624</p>
+        <p style="color: Red;">Giá SP: 10 000 VNĐ</p>
+    </div></div><div class="product" data-info="<span style=&quot;font-size: medium; background-color: rgb(255, 255, 255);&quot;>KHÁNH TREO TẾT&amp;nbsp;</span><font size=&quot;3&quot;>05800424</font>" data-images="[&quot;https://i.postimg.cc/RCpSx3fv/EB05800424.jpg&quot;]" data-code="05800424" data-price="7 000 VNĐ"><h2 style="color: blue;">KHÁNH TREO</h2>
+    <img src="https://i.postimg.cc/RCpSx3fv/EB05800424.jpg" alt="KHÁNH TREO" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 05800424</p>
+        <p style="color: Red;">Giá SP: 7 000 VNĐ</p>
+    </div></div><div class="product" data-info="<span style=&quot;font-size: medium; background-color: rgb(255, 255, 255);&quot;>KHÁNH TREO TẾT&amp;nbsp;</span><font size=&quot;3&quot;>0592-524</font>" data-images="[&quot;https://i.postimg.cc/HsfTjfBK/EB0592-524.jpg&quot;]" data-code="0592-524" data-price="7 000 VNĐ"><h2 style="color: blue;">KHÁNH TREO </h2>
+    <img src="https://i.postimg.cc/HsfTjfBK/EB0592-524.jpg" alt="KHÁNH TREO " width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 0592-524</p>
+        <p style="color: Red;">Giá SP: 7 000 VNĐ</p>
+    </div></div><div class="product" data-info="<span style=&quot;font-size: medium; background-color: rgb(255, 255, 255);&quot;>KHÁNH TREO TẾT&amp;nbsp;</span><font size=&quot;3&quot;>06000424</font>" data-images="[&quot;https://i.postimg.cc/yNKBy0qy/EB06000424.jpg&quot;]" data-code="06000424" data-price="7 000 VNĐ"><h2 style="color: blue;">KHÁNH TREO</h2>
+    <img src="https://i.postimg.cc/yNKBy0qy/EB06000424.jpg" alt="KHÁNH TREO" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 06000424</p>
+        <p style="color: Red;">Giá SP: 7 000 VNĐ</p>
+    </div></div><div class="product" data-info="<span style=&quot;font-size: medium; background-color: rgb(255, 255, 255);&quot;>KHÁNH TREO TẾT&amp;nbsp;</span><font size=&quot;3&quot;>06100424</font>" data-images="[&quot;https://i.postimg.cc/pdBvGyRb/EB06100424.jpg&quot;]" data-code="06100424" data-price="7 000 VNĐ"><h2 style="color: blue;">KHÁNH TREO</h2>
+    <img src="https://i.postimg.cc/pdBvGyRb/EB06100424.jpg" alt="KHÁNH TREO" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 06100424</p>
+        <p style="color: Red;">Giá SP: 7 000 VNĐ</p>
+    </div></div><div class="product" data-info="<span style=&quot;font-size: medium; background-color: rgb(255, 255, 255);&quot;>KHÁNH TREO TẾT&amp;nbsp;</span><font size=&quot;3&quot;>0625-224</font>" data-images="[&quot;https://i.postimg.cc/9QZC9Jkf/EB0625-224.jpg&quot;]" data-code="0625-224" data-price="7 000 VNĐ"><h2 style="color: blue;">KHÁNH TREO </h2>
+    <img src="https://i.postimg.cc/9QZC9Jkf/EB0625-224.jpg" alt="KHÁNH TREO " width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 0625-224</p>
+        <p style="color: Red;">Giá SP: 7 000 VNĐ</p>
+    </div></div><div class="product" data-info="<span style=&quot;font-size: medium; background-color: rgb(255, 255, 255);&quot;>KHÁNH TREO TẾT&amp;nbsp;</span><font size=&quot;3&quot;>0633-624</font>" data-images="[&quot;https://i.postimg.cc/Yq4prpfY/EB0633-624.jpg&quot;]" data-code="0633-624" data-price="7 000 VNĐ"><h2 style="color: blue;">KHÁNH TREO</h2>
+    <img src="https://i.postimg.cc/Yq4prpfY/EB0633-624.jpg" alt="KHÁNH TREO" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 0633-624</p>
+        <p style="color: Red;">Giá SP: 7 000 VNĐ</p>
+    </div></div><div class="product" data-info="<span style=&quot;font-size: medium; background-color: rgb(255, 255, 255);&quot;>KHÁNH TREO TẾT&amp;nbsp;</span><font size=&quot;3&quot;>0642-524</font>" data-images="[&quot;https://i.postimg.cc/5NVvhRMB/EC0642-524.jpg&quot;]" data-code="0642-524" data-price="5 000 VNĐ"><h2 style="color: blue;">KHÁNH TREO</h2>
+    <img src="https://i.postimg.cc/5NVvhRMB/EC0642-524.jpg" alt="KHÁNH TREO" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 0642-524</p>
+        <p style="color: Red;">Giá SP: 5 000 VNĐ</p>
+    </div></div><div class="product" data-info="<span style=&quot;font-size: medium; background-color: rgb(255, 255, 255);&quot;>KHÁNH TREO TẾT&amp;nbsp;</span><font size=&quot;3&quot;>06500224</font>" data-images="[&quot;https://i.postimg.cc/VsMnHc2s/EC06500224.jpg&quot;]" data-code="06500224" data-price="5 000 VNĐ"><h2 style="color: blue;">KHÁNH TREO</h2>
+    <img src="https://i.postimg.cc/VsMnHc2s/EC06500224.jpg" alt="KHÁNH TREO" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 06500224</p>
+        <p style="color: Red;">Giá SP: 5 000 VNĐ</p>
+    </div></div><div class="product" data-info="<span style=&quot;font-size: medium; background-color: rgb(255, 255, 255);&quot;>KHÁNH TREO TẾT&amp;nbsp;</span><font size=&quot;3&quot;>0662-224</font>" data-images="[&quot;https://i.postimg.cc/zXFW8FJ9/EC0662-224.jpg&quot;]" data-code="0662-224" data-price="5 000 VNĐ"><h2 style="color: blue;">KHÁNH TREO</h2>
+    <img src="https://i.postimg.cc/zXFW8FJ9/EC0662-224.jpg" alt="KHÁNH TREO" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 0662-224</p>
+        <p style="color: Red;">Giá SP: 5 000 VNĐ</p>
+    </div></div><div class="product" data-info="<span style=&quot;font-size: medium; background-color: rgb(255, 255, 255);&quot;>KHÁNH TREO TẾT&amp;nbsp;</span><font size=&quot;3&quot;>06701323</font>" data-images="[&quot;https://i.postimg.cc/rpMWfqGP/EC06701323.jpg&quot;]" data-code="06701323" data-price="25 000"><h2 style="color: blue;">KHÁNH TREO</h2>
+    <img src="https://i.postimg.cc/rpMWfqGP/EC06701323.jpg" alt="KHÁNH TREO" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 06701323</p>
+        <p style="color: Red;">Giá SP: 25 000</p>
+    </div></div><div class="product" data-info="<span style=&quot;font-size: medium; background-color: rgb(255, 255, 255);&quot;>KHÁNH TREO TẾT&amp;nbsp;</span><font size=&quot;3&quot;>06803023</font>" data-images="[&quot;https://i.postimg.cc/pdCj73qX/EC06803023.jpg&quot;]" data-code="06803023" data-price="50 000"><h2 style="color: blue;">KHÁNH TREO</h2>
+    <img src="https://i.postimg.cc/pdCj73qX/EC06803023.jpg" alt="KHÁNH TREO" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 06803023</p>
+        <p style="color: Red;">Giá SP: 50 000</p>
+    </div></div><div class="product" data-info="<span style=&quot;font-size: medium; background-color: rgb(255, 255, 255);&quot;>KHÁNH TREO TẾT&amp;nbsp;</span><font size=&quot;3&quot;>06903223</font>" data-images="[&quot;https://i.postimg.cc/vZWf74nn/EC06903223.jpg&quot;]" data-code="06903223" data-price="50 000"><h2 style="color: blue;">KHÁNH TREO</h2>
+    <img src="https://i.postimg.cc/vZWf74nn/EC06903223.jpg" alt="KHÁNH TREO" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: 06903223</p>
+        <p style="color: Red;">Giá SP: 50 000</p>
+    </div></div></div>
+        </div>
+
+<!-- Hai nút mới -->
+    <div style="margin: 20px 0;">
+        <button id="contact-info-btn" style="
+    width: 130px;
+">Liên hệ</button>
+        
+    </div>
+
+<!-- Khung hiển thị thông tin chi tiết sản phẩm -->
+<div class="info-modal" id="info-modal" style="display: none; text-align: center;">
+    <button class="close-btn" onclick="closeModal()">Đóng</button>
+    <h3 id="modal-title"></h3>
+    <h5 id="modal-code" ;="" "text-align:="" left";="">Mã SP: 0633-624</h5>  <!-- Mã sản phẩm -->
+    <h5 id="modal-price">Giá SP: 7 000 VNĐ</h5><br>  <!-- Giá sản phẩm -->
+    <p id="modal-info"></p> <!-- Thông tin sản phẩm -->
+
+    <div id="modal-image-container" alt="Hình ảnh sản phẩm" width="200"><img src="https://i.postimg.cc/Yq4prpfY/EB0633-624.jpg" alt="KHÁNH TREO"></div>
+
+    <button class="edit-btn" onclick="editProduct()" style="display: none;">Sửa sản phẩm</button>
+</div>
+
+<!-- Modal cho thông tin liên hệ -->
+<div class="info-modal" id="contact-info-modal" style="display: none;">
+    <button class="close-btn" onclick="closeContactInfoModal()">Đóng</button>
+    <h3>Thông Tin Liên Hệ</h3>
+    <h4>Địa chỉ: Ấp 1, Bàu Cạn, Long Thành, Đồng Nai</h4>
+    <h4>Điện thoại, Zalo, Facebook: 0363 398 277</h4>
+</div>
+
+<!-- Modal cho lợi ích dịch vụ -->
+<div class="info-modal" id="service-advantages-modal" style="display: none;">
+    <button class="close-btn" onclick="closeServiceAdvantagesModal()">Đóng</button>
+    <h3>Lợi Ích Dịch Vụ</h3>
+    
+    <p>1. Đáp ứng nhu cầu nhanh chống khi cần</p><p>2. Giá rẻ hợp lý </p>
+    <p>3. Không cần phải bảo trì sửa chữa sản phẩm</p>
+</div>
+
+
+        <!-- Khung thêm sản phẩm mới -->
+<div class="add-product-container" style="display: none;">
+    <h3>Thêm sản phẩm mới</h3>
+    <div><input type="text" id="new-product-name" placeholder="Tên sản phẩm" style="color: blue; font-weight: bold; font-size: 18px;"></div>
+    <div><input type="text" id="new-product-code" placeholder="Mã sản phẩm" style="color: red; font-weight: bold; font-size: 18px;"></div>
+    <div><input type="text" id="new-product-price" placeholder="Giá sản phẩm" style="color: red; font-weight: bold; font-size: 18px;"></div>    
+    <!-- Các nút định dạng -->
+    <div>
+        <button onclick="formatText('bold')">In đậm</button>
+        <button onclick="formatText('italic')">Nghiêng</button>
+        <button onclick="formatText('underline')">Gạch chân</button>
+        <input type="color" id="color-picker" oninput="chooseColor(this.value)" style="margin-left: 10px;">
+    </div>
+    <div id="new-product-info" contenteditable="true" style="border: 2px solid #ccc; padding: 10px; height: 150px; width: 380px; margin: 0 auto; text-align: left;"></div>
+    <textarea id="new-product-images" placeholder="URL hình ảnh (ngăn cách bằng dấu phẩy)" rows="4" style="width: 100%;"></textarea>
+    <div><button id="add-product-btn">Thêm sản phẩm</button></div>
+
+<div style="display: flex; justify-content: center; margin-top: 10px;">
+    <button id="save-html-btn" style="margin-right: 10px;">Lưu Bản HTML</button>
+    <button id="save-original-html-btn">Lưu Bản HTML Gốc</button>
+</div>
+    
+
+<!-- Khung hiển thị thông tin -->
+<div id="editable-info" contenteditable="false" style="color: red; text-align: left;"></div><div class="info-display" id="info-display" style="margin-top: 20px; padding: 10px; border: 1px solid #ccc; background-color: #f9f9f9;">
+</div>
+
+<!-- Modal chỉnh sửa sản phẩm -->
+
+<div class="info-modal" id="edit-modal" style="display: none;">
+    <button class="close-btn" onclick="closeEditModal()">Đóng</button>
+    <h3>Sửa sản phẩm</h3>
+
+    <div><input type="html" id="edit-product-name" placeholder="Tên sản phẩm"></div>
+    <div><input type="html" id="edit-product-code" placeholder="Mã sản phẩm"></div>
+    <div><input type="html" id="edit-product-price" placeholder="Giá sản phẩm"></div>
+
+    <div id="edit-product-info" contenteditable="true" style="border: 2px solid #ccc; padding: 10px; height: 150px;"><span style="font-size: medium; background-color: rgb(255, 255, 255);">KHÁNH TREO TẾT&nbsp;</span><font size="3">0463-424</font></div>
+    <textarea id="edit-product-image" placeholder="URL hình ảnh (ngăn cách bằng dấu phẩy)" rows="4" style="width: 100%;"></textarea>
+    <button id="save-edit-btn">Lưu thay đổi</button>
+
+</div>
+
+</div></main>
+
+    <script>
+let currentIndex = null;
+let currentProduct; // Lưu sản phẩm hiện tại để sửa
+
+function openModal(product) {
+    const title = product.querySelector('h2').innerText;
+    const info = product.getAttribute('data-info');
+    const images = JSON.parse(product.getAttribute('data-images'));
+    const code = product.getAttribute('data-code'); // Lấy mã sản phẩm
+    const price = product.getAttribute('data-price'); // Lấy giá sản phẩm
+
+    document.getElementById('modal-title').innerHTML = title;
+    document.getElementById('modal-code').innerHTML = `Mã SP: ${code}`; // Cập nhật mã sản phẩm
+    document.getElementById('modal-price').innerHTML = `Giá SP: ${price}`; // Cập nhật giá sản phẩm
+    document.getElementById('modal-info').innerHTML = info; // Cập nhật thông tin
+    const modalImageContainer = document.getElementById('modal-image-container');
+    modalImageContainer.innerHTML = '';
+    images.forEach(image => {
+        const img = document.createElement('img');
+        img.src = image;
+        img.alt = title;
+        modalImageContainer.appendChild(img);
+    });
+
+    currentProduct = product;
+
+    // Hiển thị modal
+    document.getElementById('info-modal').style.display = 'block';
+}
+
+
+function editProduct() {
+    if (!currentProduct) return;
+
+    const title = currentProduct.querySelector('h2').innerText;
+    const info = currentProduct.getAttribute('data-info');
+    const images = JSON.parse(currentProduct.getAttribute('data-images'));
+    const code = currentProduct.getAttribute('data-code'); // Lấy mã sản phẩm
+    const price = currentProduct.getAttribute('data-price'); // Lấy giá sản phẩm
+
+    document.getElementById('edit-product-name').value = title;
+    document.getElementById('edit-product-info').innerHTML = info; // Giữ nguyên định dạng HTML
+    document.getElementById('edit-product-image').value = images.join(', ');
+    document.getElementById('edit-product-code').value = code; // Hiển thị mã sản phẩm trong ô chỉnh sửa
+    document.getElementById('edit-product-price').value = price; // Hiển thị giá sản phẩm trong ô chỉnh sửa
+
+    document.getElementById('edit-modal').style.display = 'block';
+    document.getElementById('info-modal').style.display = 'none';
+}
+
+document.getElementById('save-edit-btn').addEventListener('click', function() {
+    const updatedName = document.getElementById('edit-product-name').value;
+    const updatedInfo = document.getElementById('edit-product-info').innerHTML; // Lưu lại định dạng
+    const updatedImages = document.getElementById('edit-product-image').value.split(',').map(url => url.trim());
+    const updatedCode = document.getElementById('edit-product-code').value; // Cập nhật mã sản phẩm
+    const updatedPrice = document.getElementById('edit-product-price').value; // Cập nhật giá sản phẩm
+
+    if (currentProduct) {
+        // Cập nhật thông tin sản phẩm
+        currentProduct.querySelector('h2').innerText = updatedName;
+        currentProduct.setAttribute('data-info', updatedInfo); // Lưu giữ định dạng HTML
+        currentProduct.setAttribute('data-images', JSON.stringify(updatedImages));
+        currentProduct.setAttribute('data-code', updatedCode); // Lưu mã sản phẩm
+        currentProduct.setAttribute('data-price', updatedPrice); // Lưu giá sản phẩm
+
+        currentProduct.querySelector('img').src = updatedImages[0];
+
+        // Cập nhật hiển thị mã sản phẩm và giá sản phẩm
+        currentProduct.querySelector('p:nth-of-type(1)').innerText = `Mã SP: ${updatedCode}`;
+        currentProduct.querySelector('p:nth-of-type(2)').innerText = `Giá SP: ${updatedPrice}`;
+
+        // Đóng modal chỉnh sửa
+        document.getElementById('edit-modal').style.display = 'none';
+    }
+});
+
+
+
+
+function closeEditModal() {
+
+    document.getElementById('edit-modal').style.display = 'none';
+
+}
+
+        function moveSlide(direction) {
+            const productList = document.getElementById('product-list');
+            const products = document.querySelectorAll('.product');
+            const totalProducts = products.length;
+            const visibleCount = 3; // Số lượng sản phẩm hiển thị cùng một lúc
+
+            currentIndex += direction;
+
+            if (currentIndex < 0) {
+                currentIndex = 0;
+            } else if (currentIndex > totalProducts - visibleCount) {
+                currentIndex = totalProducts - visibleCount;
+            }
+
+            const offset = -(currentIndex * (products[0].offsetWidth + 20)); // Khung hình sản phẩm cộng với khoảng cách
+            productList.style.transform = `translateX(${offset}px)`;
+        }
+
+document.getElementById('search').addEventListener('focus', function() {
+    // Đặt lại chỉ số hiện tại về 0 khi nhấp vào ô tìm kiếm
+    currentIndex = 0;
+
+    // Di chuyển danh sách sản phẩm về vị trí đầu tiên
+    const productList = document.getElementById('product-list');
+    const products = document.querySelectorAll('.product');
+    const offset = -(currentIndex * (products[0].offsetWidth + 20)); // Khung hình sản phẩm cộng với khoảng cách
+    productList.style.transform = `translateX(${offset}px)`;
+});
+
+document.getElementById('search').addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    const products = document.querySelectorAll('.product');
+
+    products.forEach(product => {
+        const productName = product.querySelector('h2').innerText.toLowerCase();
+        const productCode = product.getAttribute('data-code').toLowerCase(); // Lấy mã sản phẩm
+
+        // Kiểm tra xem tìm kiếm có trong tên sản phẩm hoặc mã sản phẩm không
+        const isMatch = productName.includes(searchTerm) || productCode.includes(searchTerm);
+        product.style.display = isMatch ? 'block' : 'none';
+    });
+});
+// Hiện modal thông tin sản phẩm khi nhấp vào sản phẩm
+const products = document.querySelectorAll('.product');
+products.forEach(product => {
+    product.addEventListener('click', () => {
+        currentProduct = product; // Lưu sản phẩm hiện tại để sửa
+
+        openModal(product); // Hiển thị modal thông tin chi tiết
+        const title = product.querySelector('h2').innerText;
+        const info = product.getAttribute('data-info') || '';
+        const image = product.getAttribute('data-image');
+        const code = product.getAttribute('data-code'); // Lấy mã sản phẩm
+        const price = product.getAttribute('data-price'); // Lấy giá sản phẩm
+
+        document.getElementById('modal-title').innerText = title;
+        document.getElementById('modal-info').innerHTML = info; // Hiển thị mã và giá sản phẩm
+        document.getElementById('modal-image').src = image;
+
+        document.getElementById('info-modal').style.display = 'block';
+    });
+});
+
+        // Đóng modal
+function closeModal() {
+    document.getElementById('info-modal').style.display = 'none';
+
+    // Làm sạch thông tin chi tiết sản phẩm trong modal
+    document.getElementById('modal-title').innerText = '';
+    document.getElementById('modal-info').innerHTML = '';
+    document.getElementById('modal-image').src = '';
+
+}
+
+// Thêm sản phẩm mới
+document.getElementById('add-product-btn').addEventListener('click', function() {
+    const newProductName = document.getElementById('new-product-name').value;
+    const newProductInfo = document.getElementById('new-product-info').innerHTML;
+    const newProductImages = document.getElementById('new-product-images').value.split(',').map(url => url.trim());
+    const newProductCode = document.getElementById('new-product-code').value; // Thêm mã sản phẩm
+    const newProductPrice = document.getElementById('new-product-price').value; // Thêm giá sản phẩm
+
+    if (newProductName && newProductInfo && newProductImages.length > 0 && newProductCode && newProductPrice) {
+        const newProduct = document.createElement('div');
+        newProduct.classList.add('product');
+        newProduct.setAttribute('data-info', newProductInfo);
+        newProduct.setAttribute('data-images', JSON.stringify(newProductImages));
+        newProduct.setAttribute('data-code', newProductCode); // Lưu mã sản phẩm
+        newProduct.setAttribute('data-price', newProductPrice); // Lưu giá sản phẩm
+
+newProduct.innerHTML = 
+    `<h2 style="color: blue;">${newProductName}</h2>
+    <img src="${newProductImages[0]}" alt="${newProductName}" width="100">
+    <div class="product-info">
+        <p style="color: Red;">Mã SP: ${newProductCode}</p>
+        <p style="color: Red;">Giá SP: ${newProductPrice}</p>
+    </div>`;
+
+
+        document.getElementById('product-list').appendChild(newProduct);
+        newProduct.addEventListener('click', () => {
+            currentProduct = newProduct;
+            openModal(newProduct);
+        });
+
+        document.getElementById('new-product-name').value = '';
+        document.getElementById('new-product-info').innerHTML = '';
+        document.getElementById('new-product-images').value = '';
+        document.getElementById('new-product-code').value = ''; // Reset mã sản phẩm
+        document.getElementById('new-product-price').value = ''; // Reset giá sản phẩm
+    }
+        saveOriginalHTML();
+});
+
+    function chooseColor(color) {
+        document.execCommand('foreColor', false, color);
+    }
+
+
+        // Hàm thêm sự kiện click cho sản phẩm
+        function addProductClickListener(product) {
+            product.addEventListener('click', () => {
+                const title = product.querySelector('h2').innerText;
+                const info = product.getAttribute('data-info');
+                const image = product.getAttribute('data-image');
+
+                document.getElementById('modal-title').innerText = title;
+                document.getElementById('modal-info').innerHTML = info;
+                document.getElementById('modal-image').src = image;
+
+                document.getElementById('info-modal').style.display = 'block';
+            });
+        }
+
+// Thêm sự kiện click cho hai nút
+document.getElementById('contact-info-btn').addEventListener('click', function() {
+    document.getElementById('contact-info-modal').style.display = 'block'; // Hiện modal thông tin liên hệ
+});
+
+
+// Đóng modal thông tin liên hệ
+function closeContactInfoModal() {
+    document.getElementById('contact-info-modal').style.display = 'none';
+}
+
+// Đóng modal lợi ích dịch vụ
+function closeServiceAdvantagesModal() {
+    document.getElementById('service-advantages-modal').style.display = 'none';
+}
+
+
+// Lưu bản HTML
+document.getElementById('save-html-btn').addEventListener('click', function() {
+
+
+
+    // Khóa khung hiển thị thông tin trước khi lưu
+    document.getElementById('editable-info').setAttribute('contenteditable', 'false');
+
+    // Ẩn khung thêm sản phẩm mới
+    document.querySelector('.add-product-container').style.display = 'none';
+
+    // Đặt lại chỉ số hiện tại về 0
+
+    currentIndex = 0;
+
+    // Di chuyển danh sách sản phẩm về vị trí đầu tiên
+    const productList = document.getElementById('product-list');
+    const products = document.querySelectorAll('.product');
+    if (products.length > 0) {
+        const offset = -(currentIndex * (products[0].offsetWidth + 20)); // Khung hình sản phẩm cộng với khoảng cách
+        productList.style.transform = `translateX(${offset}px)`;
+    }
+
+    // Ẩn tất cả các nút với class 'edit-btn'
+    const editButtons = document.querySelectorAll('.edit-btn');
+    editButtons.forEach(function(button) {
+        button.style.display = 'none';
+    });
+
+    // Đảm bảo bảng chi tiết sản phẩm vẫn hiển thị
+    const productDetailTable = document.getElementById('product-detail-table');
+    if (productDetailTable) {
+        productDetailTable.style.display = 'block'; // Hoặc bất kỳ ID nào tương ứng với bảng chi tiết
+    }
+
+    // Lưu bản HTML
+    setTimeout(function() {
+        const htmlContent = document.documentElement.outerHTML;
+        const blob = new Blob([htmlContent], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'saved_page.html';
+        a.click();
+        URL.revokeObjectURL(url);
+    }, 100); // Đợi một chút để đảm bảo tất cả các thay đổi đã được áp dụng
+
+});
+
+// Định nghĩa hàm lưu HTML gốc
+function saveOriginalHTML() {
+    // Tạo bản HTML mới từ nội dung hiện tại
+    const originalHTML = document.documentElement.outerHTML;
+
+    // Lưu bản HTML vào file
+    const blob = new Blob([originalHTML], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'original_page.html';
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+// Gọi hàm lưu HTML gốc khi nhấn nút
+document.getElementById('save-original-html-btn').addEventListener('click', saveOriginalHTML);
+
+
+
+function formatText(command) {
+    document.execCommand(command, false, null);
+}
+
+function changeColor() {
+    const color = prompt("Nhập màu sắc (ví dụ: red, #ff0000):");
+    if (color) {
+        document.execCommand('foreColor', false, color);
+    }
+}
+   </script>
+
+</body></html>

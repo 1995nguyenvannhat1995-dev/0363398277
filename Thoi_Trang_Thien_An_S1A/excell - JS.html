@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Excel → products.js</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<style>
+
+body{
+    font-family:Arial,sans-serif;
+    padding:20px;
+    max-width:1200px;
+    margin:auto;
+}
+
+.note{
+    background:#fff8dc;
+    border:1px solid #e0c97f;
+    padding:15px;
+    margin-bottom:20px;
+}
+
+button{
+    padding:10px 15px;
+    cursor:pointer;
+    margin-right:10px;
+}
+
+textarea{
+    width:100%;
+    height:500px;
+    margin-top:20px;
+    font-family:Consolas,monospace;
+    font-size:13px;
+}
+
+.example{
+    margin-top:10px;
+    border-collapse:collapse;
+}
+
+.example td,
+.example th{
+    border:1px solid #ccc;
+    padding:5px 10px;
+}
+
+.success{
+    color:green;
+    margin-top:10px;
+}
+
+</style>
+</head>
+<body>
+
+<h2>Chuyển Excel sang file products.js</h2>
+
+<div class="note">
+
+<b>Yêu cầu file Excel:</b>
+
+<br><br>
+
+File Excel phải có đúng 3 cột:
+
+<table class="example">
+
+<tr>
+<th>Mã sản phẩm</th>
+<th>Tên sản phẩm</th>
+<th>Giá bán</th>
+</tr>
+
+<tr>
+<td>SP001</td>
+<td>Áo thun nam</td>
+<td>120000</td>
+</tr>
+
+<tr>
+<td>SP002</td>
+<td>Quần jean</td>
+<td>350000</td>
+</tr>
+
+</table>
+
+<br>
+
+Tên cột phải là:
+
+<ul>
+<li>Mã sản phẩm</li>
+<li>Tên sản phẩm</li>
+<li>Giá bán</li>
+</ul>
+
+</div>
+
+<input
+type="file"
+id="excelFile"
+accept=".xlsx,.xls">
+
+<br><br>
+
+<button onclick="convertExcel()">
+🔄 Chuyển đổi
+</button>
+
+<button onclick="downloadJS()">
+📥 Tải file JS
+</button>
+
+<div id="status" class="success"></div>
+
+<textarea id="output"></textarea>
+
+<script>
+
+let generatedJS = '';
+
+function convertExcel(){
+
+    const file =
+    document.getElementById('excelFile')
+    .files[0];
+
+    if(!file){
+
+        alert('Vui lòng chọn file Excel');
+
+        return;
+    }
+
+    const reader =
+    new FileReader();
+
+    reader.onload = function(e){
+
+        const data =
+        new Uint8Array(
+            e.target.result
+        );
+
+        const workbook =
+        XLSX.read(
+            data,
+            {
+                type:'array'
+            }
+        );
+
+        const sheetName =
+        workbook.SheetNames[0];
+
+        const worksheet =
+        workbook.Sheets[sheetName];
+
+        const rows =
+        XLSX.utils.sheet_to_json(
+            worksheet,
+            {
+                defval:''
+            }
+        );
+
+        const products = [];
+
+        rows.forEach(row=>{
+
+            products.push({
+
+                ma:
+                String(
+                    row['Mã sản phẩm'] || ''
+                ).trim(),
+
+                ten:
+                String(
+                    row['Tên sản phẩm'] || ''
+                ).trim(),
+
+                gia:
+                Number(
+                    row['Giá bán'] || 0
+                )
+
+            });
+
+        });
+
+        generatedJS =
+`const PRODUCTS = ${JSON.stringify(products,null,4)};`;
+
+        document
+        .getElementById('output')
+        .value =
+        generatedJS;
+
+        document
+        .getElementById('status')
+        .innerHTML =
+        '✔ Đã chuyển đổi '
+        + products.length
+        + ' sản phẩm';
+
+    };
+
+    reader.readAsArrayBuffer(file);
+
+}
+
+function downloadJS(){
+
+    if(!generatedJS){
+
+        alert(
+            'Hãy chuyển đổi Excel trước'
+        );
+
+        return;
+    }
+
+    const blob =
+    new Blob(
+        [generatedJS],
+        {
+            type:
+            'application/javascript'
+        }
+    );
+
+    const a =
+    document.createElement('a');
+
+    a.href =
+    URL.createObjectURL(blob);
+
+    a.download =
+    'products.js';
+
+    a.click();
+
+}
+
+</script>
+
+</body>
+</html>

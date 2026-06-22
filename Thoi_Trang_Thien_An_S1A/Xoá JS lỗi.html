@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JS Cleaner + Diff Viewer</title>
+<style>
+body{
+    font-family:Arial,sans-serif;
+    margin:20px;
+}
+.toolbar{
+    margin-bottom:15px;
+}
+button{
+    padding:8px 14px;
+    margin-right:10px;
+    cursor:pointer;
+}
+.container{
+    display:flex;
+    gap:12px;
+}
+.panel{
+    flex:1;
+}
+.panel h3{
+    margin:5px 0;
+    text-align:center;
+}
+pre{
+    border:1px solid #ccc;
+    height:700px;
+    overflow:auto;
+    margin:0;
+    padding:10px;
+    white-space:pre-wrap;
+    word-break:break-word;
+    line-height:1.4;
+    font-size:13px;
+}
+.diff{
+    background:#ffd6d6;
+    color:#c00000;
+    font-weight:bold;
+}
+.info{
+    margin:10px 0;
+    font-weight:bold;
+}
+</style>
+</head>
+<body>
+
+<h2>Làm sạch file JS và so sánh</h2>
+
+<div class="toolbar">
+    <input type="file" id="fileInput" accept=".js">
+    <button onclick="processFile()">Xử lý</button>
+    <button id="downloadBtn" disabled>Tải file mới</button>
+</div>
+
+<div class="info" id="stats"></div>
+
+<div class="container">
+    <div class="panel">
+        <h3>File gốc</h3>
+        <pre id="original"></pre>
+    </div>
+
+    <div class="panel">
+        <h3>File sau xử lý</h3>
+        <pre id="cleaned"></pre>
+    </div>
+</div>
+
+<script>
+let outputBlob = null;
+
+function escapeHtml(str){
+    return str.replace(/[&<>"]/g, m=>({
+        "&":"&amp;",
+        "<":"&lt;",
+        ">":"&gt;",
+        '"':"&quot;"
+    }[m]));
+}
+
+function processFile(){
+    const file = document.getElementById("fileInput").files[0];
+
+    if(!file){
+        alert("Vui lòng chọn file JS");
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+
+        const originalText = e.target.result;
+
+        const matches1 = originalText.match(/\\r\\r\\n[^"]*/g) || [];
+        const matches2 = originalText.match(/\r\r\n[^"]*/g) || [];
+
+        const totalFixed = matches1.length + matches2.length;
+
+        const cleanedText = originalText
+            .replace(/\\r\\r\\n[^"]*/g,"")
+            .replace(/\r\r\n[^"]*/g,"");
+
+        renderDiff(originalText, cleanedText);
+
+        document.getElementById("stats").innerText =
+            "Đã sửa " + totalFixed + " vị trí.";
+
+        outputBlob = new Blob([cleanedText], {
+            type:"application/javascript"
+        });
+
+        const btn = document.getElementById("downloadBtn");
+        btn.disabled = false;
+
+        btn.onclick = () => {
+            const url = URL.createObjectURL(outputBlob);
+
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = file.name.replace(".js","") + "_cleaned.js";
+            a.click();
+
+            URL.revokeObjectURL(url);
+        };
+
+        enableSyncScroll();
+    };
+
+    reader.readAsText(file,"utf-8");
+}
+
+function renderDiff(original, cleaned){
+
+    const leftLines = original.split("\n");
+    const rightLines = cleaned.split("\n");
+
+    const max = Math.max(leftLines.length, rightLines.length);
+
+    const left = [];
+    const right = [];
+
+    for(let i=0;i<max;i++){
+
+        const l = leftLines[i] ?? "";
+        const r = rightLines[i] ?? "";
+
+        if(l !== r){
+            left.push('<span class="diff">' + escapeHtml(l) + '</span>');
+            right.push('<span class="diff">' + escapeHtml(r) + '</span>');
+        }else{
+            left.push(escapeHtml(l));
+            right.push(escapeHtml(r));
+        }
+    }
+
+    document.getElementById("original").innerHTML = left.join("\n");
+    document.getElementById("cleaned").innerHTML = right.join("\n");
+}
+
+function enableSyncScroll(){
+
+    const left = document.getElementById("original");
+    const right = document.getElementById("cleaned");
+
+    let syncing = false;
+
+    left.onscroll = () => {
+        if(syncing) return;
+
+        syncing = true;
+
+        right.scrollTop = left.scrollTop;
+        right.scrollLeft = left.scrollLeft;
+
+        syncing = false;
+    };
+
+    right.onscroll = () => {
+        if(syncing) return;
+
+        syncing = true;
+
+        left.scrollTop = right.scrollTop;
+        left.scrollLeft = right.scrollLeft;
+
+        syncing = false;
+    };
+}
+</script>
+
+</body>
+</html>

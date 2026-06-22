@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sổ doanh thu S1a-HKD</title>
+
+<style>
+
+@page{
+    size:A4 portrait;
+    margin:10mm;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    font-family:"Times New Roman",serif;
+    margin:0;
+    padding:15px;
+    background:#f5f5f5;
+}
+
+.no-print{
+    margin-bottom:15px;
+    background:#fff;
+    padding:15px;
+    border:1px solid #ccc;
+}
+
+.no-print h2{
+    margin-top:0;
+}
+
+button{
+    padding:8px 12px;
+    cursor:pointer;
+    margin-right:5px;
+}
+
+input,textarea{
+    padding:4px;
+}
+
+table{
+    border-collapse:collapse;
+    width:100%;
+}
+
+table th,
+table td{
+    border:1px solid #000;
+    padding:4px;
+}
+
+.preview-area{
+    background:#fff;
+    padding:10px;
+}
+
+.page{
+    width:190mm;
+    min-height:277mm;
+    margin:auto;
+    background:#fff;
+    position:relative;
+    page-break-after:always;
+    padding:10mm;
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+}
+
+.header-left{
+    width:100%;
+}
+
+.header-right{
+    width:35%;
+    text-align:center;
+    font-size:13px;
+}
+
+.title{
+    text-align:center;
+    margin-top:20px;
+    margin-bottom:20px;
+}
+
+.title h2{
+    margin:0;
+    font-size:22px;
+}
+
+.info{
+    margin-bottom:10px;
+}
+
+.info-line{
+    margin-bottom:6px;
+}
+
+.book-table{
+    width:100%;
+}
+
+.book-table th,
+.book-table td{
+    height:28px;
+}
+
+.center{
+    text-align:center;
+}
+
+.right{
+    text-align:right;
+}
+
+.footer-sign{
+    margin-top:30px;
+    width:320px;
+    margin-left:auto;
+    text-align:center;
+}
+
+.total-row td{
+    font-weight:bold;
+}
+
+@media print{
+
+    body{
+        background:#fff;
+        padding:0;
+    }
+
+    .no-print{
+        display:none !important;
+    }
+
+    .preview-area{
+        padding:0;
+    }
+
+    .page{
+        margin:0;
+        width:100%;
+        min-height:auto;
+        box-shadow:none;
+    }
+
+}
+
+.footer-wrap{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    align-items:start;
+}
+
+.footer-total{
+    text-align:center;
+}
+
+.footer-total b{
+    display:block;
+    margin-bottom:10px;
+}
+
+.footer-total .total-money{
+    font-weight:bold;
+    font-size:20px;
+}
+
+.footer-sign{
+    text-align:center;
+}
+
+.center-info{
+    text-align:center;
+}
+
+.diengiai-wrap{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    width:100%;
+    gap:10px;
+}
+
+.ten-sp{
+    text-align:left;
+    flex:1;
+}
+
+.sl-sp{
+    text-align:right;
+    min-width:50px;
+}
+
+.error-field{
+    border:2px solid red !important;
+    background:#ffe5e5 !important;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="no-print">
+
+<h2>SỔ DOANH THU S1a-HKD</h2>
+
+<table>
+<tr>
+<td width="180">Hộ kinh doanh</td>
+<td><input
+    id="hokd"
+    style="width:100%"
+    value="HỘ KINH DOANH THIÊN AN"></td>
+</tr>
+
+<tr>
+<td>Địa chỉ</td>
+<td><input
+    id="diachi"
+    style="width:100%"
+    value="Số 439A, Ấp 1, Xã Long Phước, Thành Phố Đồng Nai"></td>
+</tr>
+
+<tr>
+<td>Mã số thuế</td>
+<td><input
+    id="mst"
+    style="width:100%"
+    value="075091009766"></td>
+</tr>
+
+<tr>
+<td>Địa điểm kinh doanh</td>
+<td><input id="diadiem"
+    style="width:100%"
+    value="Số 439A, Ấp 1, Xã Long Phước, Thành Phố Đồng Nai"></td>
+</tr>
+
+<tr>
+<td>Kỳ kê khai</td>
+<td><input id="kykekhai" style="width:100%"></td>
+</tr>
+
+<tr>
+<td>Đơn vị tính</td>
+<td><input id="donvitinh" style="width:100%" value="Đồng"></td>
+</tr>
+
+<tr>
+<td>Ngày ký</td>
+<td>
+<input
+    id="ngayky"
+    type="date"
+    style="width:100%">
+</td>
+</tr>
+</table>
+<br>
+
+<label style="margin-right:10px">
+    Dòng / trang:
+</label>
+
+<input
+    type="number"
+    id="rowsPerPage"
+    value="16"
+    min="5"
+    max="50"
+    style="width:80px"
+    oninput="changeRowsPerPage()"
+>
+<br><br><br>
+<table id="inputTable">
+
+<thead>
+<tr>
+<th width="130">Ngày tháng</th>
+<th width="120">Mã SP</th>
+<th>Tên sản phẩm</th>
+<th width="100">Số lượng</th>
+<th width="180">Số tiền</th>
+<th width="80">Xóa</th>
+</tr>
+</thead>
+
+<tbody id="dataBody">
+</tbody>
+</table>
+
+<datalist id="productList"></datalist>
+
+<br>
+
+
+
+<button onclick="addRow()">➕ Thêm dòng</button>
+<button onclick="showAutoGenerate()">🎲 Tạo dữ liệu </button>
+<button onclick="checkBeforePrint()">🖨 In / Lưu PDF</button>
+<label style="margin-left:10px">
+    <input
+        type="checkbox"
+        checked
+        onchange="toggleTotalKyKhai(this)">
+    Hiện TỔNG KỲ KÊ KHAI
+</label>
+
+</div>
+
+<div id="preview" class="preview-area"></div>
+
+<script src="products.js"></script>
+
+<script>
+
+let ROWS_PER_PAGE = 16;
+let showTotalKyKhai = true;
+
+function toggleTotalKyKhai(el){
+
+    showTotalKyKhai = el.checked;
+
+    generatePages();
+
+}
+
+function addRow(){
+
+const tr=document.createElement('tr');
+
+let options='';
+
+tr.innerHTML=`
+
+<td>
+<input type="date" style="width:100%">
+</td>
+
+<td>
+<input
+    list="productList"
+    style="width:100%"
+    oninput="updateProduct(this)">
+</td>
+
+<td>
+<input
+    type="text"
+    readonly
+    style="width:100%;background:#f0f0f0">
+</td>
+
+<td>
+<input
+    type="number"
+    min="1"
+    value="1"
+    style="width:100%"
+    oninput="updateAmount(this)">
+</td>
+
+<td>
+<input
+    type="text"
+    readonly
+    style="width:100%;background:#f0f0f0">
+</td>
+
+<td class="center">
+<button onclick="removeRow(this)">
+X
+</button>
+</td>
+
+`;
+
+document
+.getElementById('dataBody')
+.appendChild(tr);
+
+}
+
+function updateProduct(input){
+
+const tr =
+input.closest('tr');
+
+const ma =
+input.value.trim();
+
+const product =
+PRODUCTS.find(
+p =>
+p.ma.toLowerCase()
+===
+ma.toLowerCase()
+);
+
+if(!product)
+return;
+
+tr.dataset.price =
+product.gia;
+
+tr.cells[2]
+.querySelector('input')
+.value =
+product.ten;
+
+updateAmount(
+tr.cells[3]
+.querySelector('input')
+);
+
+}
+
+function updateAmount(input){
+
+const tr =
+input.closest('tr');
+
+const gia =
+Number(
+tr.dataset.price || 0
+);
+
+const sl =
+Number(
+input.value || 0
+);
+
+const thanhTien =
+gia * sl;
+
+tr.cells[4]
+.querySelector('input')
+.value =
+formatMoney(
+thanhTien
+);
+
+generatePages();
+
+}
+
+function removeRow(btn){
+
+btn.closest('tr').remove();
+
+generatePages();
+
+}
+
+function buildProductList(){
+
+    let html='';
+
+    PRODUCTS.forEach(p=>{
+
+        html += `
+        <option
+            value="${p.ma}">
+            ${p.ten}
+        </option>
+        `;
+
+    });
+
+    document
+    .getElementById('productList')
+    .innerHTML = html;
+
+}
+
+function showAutoGenerate(){
+
+    const fromDate =
+    prompt(
+        'Từ ngày (YYYY-MM-DD)',
+        '2026-01-01'
+    );
+
+    if(!fromDate) return;
+
+    const toDate =
+    prompt(
+        'Đến ngày (YYYY-MM-DD)',
+        '2026-03-31'
+    );
+
+    if(!toDate) return;
+
+    const rowCount =
+    Number(
+        prompt(
+            'Số dòng cần tạo',
+            '100'
+        )
+    );
+
+    if(!rowCount) return;
+
+    const targetTotal =
+    Number(
+        prompt(
+            'Tổng tiền mong muốn',
+            '100000000'
+        )
+    );
+
+    if(!targetTotal) return;
+
+    autoGenerateData(
+        fromDate,
+        toDate,
+        rowCount,
+        targetTotal
+    );
+
+}
+
+function randomDate(start,end){
+
+    const startTime =
+    new Date(start).getTime();
+
+    const endTime =
+    new Date(end).getTime();
+
+    const randomTime =
+    startTime +
+    Math.random() *
+    (endTime-startTime);
+
+    const d =
+    new Date(randomTime);
+
+    return d
+        .toISOString()
+        .split('T')[0];
+
+}
+
+function randomInt(min,max){
+
+    return Math.floor(
+        Math.random() *
+        (max-min+1)
+    ) + min;
+
+}
+
+function autoGenerateData(
+    fromDate,
+    toDate,
+    rowCount,
+    targetTotal
+){
+
+    const body =
+    document.getElementById(
+        'dataBody'
+    );
+
+    body.innerHTML='';
+
+    let currentTotal=0;
+	
+	const allDates = [];
+
+for(let i=0;i<rowCount;i++){
+
+    allDates.push(
+        randomDate(
+            fromDate,
+            toDate
+        )
+    );
+
+}
+
+allDates.sort();
+
+    for(
+        let i=0;
+        i<rowCount;
+        i++
+    ){
+
+        addRow();
+
+        const tr =
+        body.lastElementChild;
+
+        const product =
+        PRODUCTS[
+            randomInt(
+                0,
+                PRODUCTS.length-1
+            )
+        ];
+
+const remainingRows =
+rowCount - i;
+
+const remainingMoney =
+targetTotal - currentTotal;
+
+const avgNeed =
+remainingMoney / remainingRows;
+
+let qty = 1;
+
+if(product.gia > 0){
+
+    qty = Math.max(
+        1,
+        Math.round(
+            avgNeed / product.gia
+        )
+    );
+
+}
+
+tr.cells[0]
+.querySelector('input')
+.value =
+allDates[i];
+
+        tr.cells[1]
+        .querySelector('input')
+        .value =
+        product.ma;
+
+        tr.cells[2]
+        .querySelector('input')
+        .value =
+        product.ten;
+
+        tr.dataset.price =
+        product.gia;
+
+        tr.cells[3]
+        .querySelector('input')
+        .value =
+        qty;
+
+        const amount =
+        product.gia * qty;
+
+        currentTotal += amount;
+
+        tr.cells[4]
+        .querySelector('input')
+        .value =
+        formatMoney(amount);
+
+    }
+
+    generatePages();
+
+const accept = confirm(
+    'Đã tạo '
+    + rowCount
+    + ' dòng\n\n'
+    + 'Tổng tiền: '
+    + formatMoney(currentTotal)
+    + '\n\n'
+    + 'Nhấn OK để giữ lại'
+    + '\n'
+    + 'Nhấn Cancel để tạo lại'
+);
+
+if(!accept){
+
+    const body =
+    document.getElementById(
+        'dataBody'
+    );
+
+    body.innerHTML='';
+
+    addRow();
+
+    generatePages();
+
+    return;
+}
+
+}
+
+
+buildProductList();
+for(let i=0;i<1;i++){
+addRow();
+}
+function getRows(){
+
+const rows=[];
+
+document
+.querySelectorAll('#dataBody tr')
+.forEach(tr=>{
+
+    const ngay =
+    tr.cells[0]
+    .querySelector('input')
+    .value;
+
+const ma =
+tr.cells[1]
+.querySelector('input')
+.value;
+
+    const ten =
+    tr.cells[2]
+    .querySelector('input')
+    .value;
+
+    const sl =
+    Number(
+        tr.cells[3]
+        .querySelector('input')
+        .value || 0
+    );
+
+    const gia =
+    Number(
+        tr.dataset.price || 0
+    );
+
+    rows.push({
+
+        ngay,
+
+        diengiai:
+`
+<div class="diengiai-wrap">
+
+    <span class="ten-sp">
+        ${ten}
+    </span>
+
+    <span class="sl-sp">
+        x ${sl}
+    </span>
+
+</div>
+`,
+
+        sotien:
+        gia * sl
+
+    });
+
+});
+
+return rows;
+
+}
+
+function formatMoney(v){
+
+    return Number(v||0)
+    .toLocaleString('vi-VN');
+
+}
+
+function createHeader(pageNo,totalPages){
+
+return `
+
+<div class="header">
+
+    <div class="header-left">
+
+        <div>
+            <b>HỘ, CÁ NHÂN KINH DOANH:</b>
+            ${document.getElementById('hokd').value}
+        </div>
+
+        <div style="margin-top:5px">
+            <b>Địa chỉ:</b>
+            ${document.getElementById('diachi').value}
+        </div>
+
+        <div style="margin-top:5px">
+            <b>Mã số thuế:</b>
+            ${document.getElementById('mst').value}
+        </div>
+
+    </div>
+
+    <div class="header-right">
+
+        <b>Mẫu số S1a-HKD</b>
+
+        <br>
+
+        <i>
+        (Kèm theo Thông tư số
+        152/2025/TT-BTC
+        </i>
+
+        <br>
+
+        <i>
+        ngày 31 tháng 12 năm 2025
+        </i>
+
+        <br>
+
+        <i>
+        của Bộ trưởng Bộ Tài chính)
+        </i>
+
+    </div>
+
+</div>
+
+<div class="title">
+
+    <h2>
+    SỔ DOANH THU BÁN HÀNG HÓA,
+    DỊCH VỤ
+    </h2>
+
+</div>
+
+<div class="info center-info">
+
+    <div class="info-line">
+    Địa điểm kinh doanh:
+    ${document.getElementById('diadiem').value}
+    </div>
+
+    <div class="info-line">
+    Kỳ kê khai:
+    ${document.getElementById('kykekhai').value}
+    </div>
+
+</div>
+
+`;
+
+}
+
+function createTable(rows){
+
+const dvt =
+document.getElementById('donvitinh').value || 'Đồng';
+
+let html = `
+
+<table class="book-table">
+
+<thead>
+
+<tr>
+    <td colspan="2"
+        style="
+            border:none;
+            border-bottom:1px solid #000;
+        ">
+    </td>
+
+    <td
+        class="right"
+        style="
+            border:none;
+            border-bottom:1px solid #000;
+            font-style:italic;
+            font-weight:bold;
+        ">
+        Đơn vị tính: ${dvt}
+    </td>
+</tr>
+
+<tr>
+    <th width="20%">
+        Ngày tháng
+    </th>
+
+    <th>
+        Diễn giải
+    </th>
+
+    <th width="25%">
+        Số tiền
+    </th>
+</tr>
+
+<tr>
+    <th class="center">A</th>
+    <th class="center">B</th>
+    <th class="center">1</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+`;
+
+rows.forEach(r=>{
+
+html += `
+
+<tr>
+
+    <td>
+        ${r.ngay || ''}
+    </td>
+
+    <td>
+        ${r.diengiai || ''}
+    </td>
+
+    <td class="right">
+        ${r.sotien
+            ? formatMoney(r.sotien)
+            : ''}
+    </td>
+
+</tr>
+
+`;
+
+});
+
+return html;
+
+}
+
+function createEmptyRows(count){
+
+let html='';
+
+for(let i=0;i<count;i++){
+
+html+=`
+
+<tr>
+<td>&nbsp;</td>
+<td></td>
+<td></td>
+</tr>
+
+`;
+
+}
+
+return html;
+
+}
+function createFooter(total){
+
+const ngayKy =
+document.getElementById('ngayky').value;
+const dvt =
+document.getElementById('donvitinh').value || '';
+
+let ngay='';
+let thang='';
+let nam='';
+
+if(ngayKy){
+
+    const arr =
+    ngayKy.split('-');
+
+    nam = arr[0];
+    thang = arr[1];
+    ngay = arr[2];
+
+}
+
+return `
+
+</tbody>
+
+</table>
+
+<div class="footer-wrap">
+
+<div class="footer-total">
+
+${
+showTotalKyKhai
+?
+`
+<br><br><br><br>
+
+<b>TỔNG KỲ KÊ KHAI:</b>
+
+<div class="total-money">
+    ${formatMoney(total)} ${dvt}
+</div>
+`
+:
+''
+}
+
+</div>
+
+    <div class="footer-sign">
+
+Ngày ${ngay}
+tháng ${thang}
+năm ${nam}
+
+        <br><br>
+
+        <b>
+        NGƯỜI ĐẠI DIỆN HỘ KINH DOANH
+        <br>
+        CÁ NHÂN KINH DOANH
+        </b>
+
+        <br><br><br><br><br><br>
+
+        <i>
+        (Ký, ghi rõ họ tên,
+        đóng dấu nếu có)
+        </i>
+
+    </div>
+
+</div>
+
+`;
+
+}
+
+function generatePages(){
+
+const data=getRows();
+
+const preview=
+document.getElementById('preview');
+
+preview.innerHTML='';
+
+let total=0;
+
+data.forEach(r=>{
+    total+=Number(r.sotien||0);
+});
+
+const totalPages=
+Math.max(
+1,
+Math.ceil(data.length/ROWS_PER_PAGE)
+);
+
+for(
+let p=0;
+p<totalPages;
+p++
+){
+
+const start=
+p*ROWS_PER_PAGE;
+
+const end=
+start+ROWS_PER_PAGE;
+
+const pageRows=
+data.slice(start,end);
+const pageTotal =
+pageRows.reduce(
+    (sum,r)=>
+    sum + Number(r.sotien || 0),
+    0
+);
+
+let html='';
+
+html+=createHeader(
+p+1,
+totalPages
+);
+
+html+=createTable(pageRows);
+
+const emptyRows=
+ROWS_PER_PAGE
+-
+pageRows.length;
+
+html+=createEmptyRows(
+emptyRows
+);
+html += `
+
+<tr class="total-row">
+
+<td></td>
+
+<td class="center">
+Tổng trang
+</td>
+
+<td class="right">
+${formatMoney(pageTotal)}
+</td>
+
+</tr>
+
+`;
+
+if(
+p===totalPages-1
+){
+
+    html+=createFooter(total);
+
+}else{
+
+    html+=`
+
+    </tbody>
+
+    </table>
+
+    `;
+
+    const d = new Date();
+
+    html += `
+
+    <div class="footer-sign">
+
+        Ngày ${d.getDate()}
+        tháng ${d.getMonth()+1}
+        năm ${d.getFullYear()}
+
+        <br><br>
+
+        <b>
+        NGƯỜI ĐẠI DIỆN HỘ KINH DOANH/
+        <br>
+        CÁ NHÂN KINH DOANH
+        </b>
+
+        <br><br><br><br><br><br>
+
+        <i>
+        (Ký, ghi rõ họ tên,
+        đóng dấu (nếu có))
+        </i>
+
+    </div>
+
+    `;
+
+}
+
+const page=
+document.createElement('div');
+
+page.className='page';
+
+page.innerHTML=html;
+
+preview.appendChild(page);
+
+}
+
+}
+
+generatePages();
+
+document
+.getElementById('hokd')
+.addEventListener(
+'input',
+generatePages
+);
+
+document
+.getElementById('diachi')
+.addEventListener(
+'input',
+generatePages
+);
+
+document
+.getElementById('mst')
+.addEventListener(
+'input',
+generatePages
+);
+
+document
+.getElementById('diadiem')
+.addEventListener(
+'input',
+generatePages
+);
+
+document
+.getElementById('kykekhai')
+.addEventListener(
+'input',
+generatePages
+);
+
+document
+.getElementById('donvitinh')
+.addEventListener(
+'input',
+generatePages
+);
+
+document
+.getElementById('ngayky')
+.addEventListener(
+'input',
+generatePages
+);
+
+document
+.addEventListener(
+'input',
+function(e){
+
+if(
+e.target.closest('#dataBody')
+){
+    generatePages();
+}
+
+}
+);
+
+function changeRowsPerPage(){
+
+    ROWS_PER_PAGE =
+    Number(
+        document.getElementById(
+            'rowsPerPage'
+        ).value
+    ) || 16;
+
+    generatePages();
+
+}
+
+
+function checkBeforePrint(){
+
+    let errors = [];
+
+    // xóa đỏ cũ
+
+    document
+    .querySelectorAll('.error-field')
+    .forEach(el=>{
+
+        el.classList.remove(
+            'error-field'
+        );
+
+    });
+
+    // ===== KIỂM TRA THÔNG TIN CHUNG =====
+
+    const infoFields = [
+
+        {
+            id:'hokd',
+            text:'Thiếu Hộ kinh doanh'
+        },
+
+        {
+            id:'diachi',
+            text:'Thiếu Địa chỉ'
+        },
+
+        {
+            id:'mst',
+            text:'Thiếu Mã số thuế'
+        },
+
+        {
+            id:'diadiem',
+            text:'Thiếu Địa điểm kinh doanh'
+        },
+
+        {
+            id:'kykekhai',
+            text:'Thiếu Kỳ kê khai'
+        },
+
+        {
+            id:'donvitinh',
+            text:'Thiếu Đơn vị tính'
+        },
+
+        {
+            id:'ngayky',
+            text:'Thiếu Ngày ký'
+        }
+
+    ];
+
+    infoFields.forEach(item=>{
+
+        const el =
+        document.getElementById(
+            item.id
+        );
+
+        if(!el.value.trim()){
+
+            errors.push(item.text);
+
+            el.classList.add(
+                'error-field'
+            );
+
+        }
+
+    });
+
+    // ===== KIỂM TRA DÒNG DỮ LIỆU =====
+
+    const rows =
+    document.querySelectorAll(
+        '#dataBody tr'
+    );
+
+    rows.forEach((tr,index)=>{
+
+        const ngayInput =
+        tr.cells[0]
+        .querySelector('input');
+
+        const maInput =
+        tr.cells[1]
+        .querySelector('input');
+
+        const tenInput =
+        tr.cells[2]
+        .querySelector('input');
+
+        const slInput =
+        tr.cells[3]
+        .querySelector('input');
+
+        const ngay =
+        ngayInput.value.trim();
+
+        const ma =
+        maInput.value.trim();
+
+        const ten =
+        tenInput.value.trim();
+
+        const sl =
+        slInput.value.trim();
+
+        if(!ngay){
+
+            errors.push(
+                'Dòng '
+                + (index+1)
+                + ' thiếu ngày'
+            );
+
+            ngayInput.classList.add(
+                'error-field'
+            );
+
+        }
+
+        if(!ma){
+
+            errors.push(
+                'Dòng '
+                + (index+1)
+                + ' thiếu mã SP'
+            );
+
+            maInput.classList.add(
+                'error-field'
+            );
+
+        }
+
+        if(!ten){
+
+            errors.push(
+                'Dòng '
+                + (index+1)
+                + ' chưa có tên sản phẩm'
+            );
+
+            tenInput.classList.add(
+                'error-field'
+            );
+
+        }
+
+        if(!sl || Number(sl)<=0){
+
+            errors.push(
+                'Dòng '
+                + (index+1)
+                + ' thiếu số lượng'
+            );
+
+            slInput.classList.add(
+                'error-field'
+            );
+
+        }
+
+    });
+
+    // ===== THÔNG BÁO =====
+
+    if(errors.length>0){
+
+        alert(
+            '⚠ Vui lòng kiểm tra:\n\n'
+            + errors.join('\n')
+        );
+
+        return;
+
+    }
+
+    // ===== IN =====
+
+    window.print();
+
+}
+
+</script>
+
+</body>
+</html>

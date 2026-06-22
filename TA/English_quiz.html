@@ -1,10 +1,22 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
 <title>Quiz System</title>
 
 <style>
+/* Hàng tiêu đề */
+#resultTable table thead tr:first-child th{
+  background:#6366f1;   /* màu nền */
+  color:white;          /* màu chữ */
+  border:1px solid #4338ca; /* màu viền */
+}
+
+/* Hàng lọc */
+#resultTable table thead tr:nth-child(2) th{
+  background:#e0e7ff;   /* màu nền */
+  border:1px solid #a5b4fc; /* màu viền */
+}
 *{
   margin:0;
   padding:0;
@@ -60,12 +72,6 @@ select{
   transition:.2s;
 }
 
-input:focus,
-select:focus{
-  outline:none;
-  border-color:#6366f1;
-  box-shadow:0 0 0 4px rgba(99,102,241,.15);
-}
 
 /* BUTTON */
 
@@ -111,14 +117,7 @@ button:hover{
   margin-bottom:6px;
 }
 
-/* Radio gọn hơn */
-.question label{
-  align-items:center;
-  gap:6px;
-  padding:4px 8px;
-  margin-bottom:2px;
-  line-height:1.3;
-}
+
 
 /* bỏ margin thừa của radio */
 .question input[type="radio"]{
@@ -321,6 +320,35 @@ hr{
   background:#f5f7ff;
 }
 
+table{
+  border-collapse:collapse;
+}
+
+table th,
+table td{
+  border:1px solid #d1d5db;
+  padding:10px;
+}
+
+#resultTable table th,
+#resultTable table td{
+  border:1px solid #d1d5db;
+  padding:8px 10px;
+}
+
+#resultTable table th{
+  background:#f5f7ff;
+}#resultTable table th,
+#resultTable table td{
+  border:1px solid #d1d5db;
+  padding:8px 10px;
+}
+
+#resultTable table th{
+  background:#f5f7ff;
+}
+
+
 .rank-1{
   background:
   linear-gradient(
@@ -441,6 +469,34 @@ hr{
   box-shadow:0 0 0 4px rgba(239,68,68,.15) !important;
 }
 
+.answer-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:6px 10px;
+  border-radius:8px;
+  cursor:pointer;
+  transition:0.15s;
+}
+
+.answer-item:hover{
+  background:#f1f5ff;
+}
+
+.answer-item input{
+  margin:0;
+  width:auto;
+  flex:none;
+}
+
+.answer-item span{
+  line-height:1.4;
+}
+.question{
+  padding:12px 14px;
+  min-height:60px; /* giúp ổn định layout */
+}
+
 </style>
 </head>
 
@@ -520,9 +576,9 @@ hr{
 <div id="quiz"></div>
 
 <div class="submit-wrap" id="submitWrap" style="display:none;">
-  <button onclick="submitQuiz()">
-    ✅ Nộp bài
-  </button>
+<button id="submitBtn" onclick="submitQuiz()">
+  Nộp bài
+</button>
 </div>
 
 <div id="toast"></div>
@@ -739,11 +795,25 @@ Bài làm ${getArrow('Bài làm')}
 <tr>
 
 <th>
+
+<div style="display:flex;gap:6px;align-items:center;">
+
 <input
-id="fTime"
-value="${document.getElementById('fTime')?.value || ''}"
-placeholder="Lọc"
-oninput="filterTable()">
+type="date"
+id="fDateFrom"
+value="${document.getElementById('fDateFrom')?.value || ''}"
+onchange="filterTable()"
+title="Từ ngày">
+
+<input
+type="date"
+id="fDateTo"
+value="${document.getElementById('fDateTo')?.value || ''}"
+onchange="filterTable()"
+title="Đến ngày">
+
+</div>
+
 </th>
 
 <th>
@@ -804,7 +874,8 @@ html;
 
 function resetFilter(){
 
-  document.getElementById("fTime").value="";
+  document.getElementById("fDateFrom").value="";
+document.getElementById("fDateTo").value="";
   document.getElementById("fName").value="";
   document.getElementById("fScore").value="";
   document.getElementById("fLesson").value="";
@@ -852,10 +923,28 @@ function sortTable(key){
   renderTable(viewData);
 }
 
+function parseVNDate(str){
+
+  if(!str) return null;
+
+  const [datePart,timePart] = str.split(" ");
+
+  const [d,m,y] = datePart.split("/");
+
+  return new Date(
+    Number(y),
+    Number(m)-1,
+    Number(d)
+  );
+}
+
 function filterTable(){
 
-const fTime =
-document.getElementById("fTime").value.toLowerCase();
+const dateFrom =
+document.getElementById("fDateFrom")?.value || "";
+
+const dateTo =
+document.getElementById("fDateTo")?.value || "";
 
 const fName =
 document.getElementById("fName").value.toLowerCase();
@@ -868,16 +957,73 @@ document.getElementById("fLesson").value.toLowerCase();
 
 let filtered = resultData.filter(r=>{
 
+const timeText =
+String(r["Thời gian"] || "");
+
+let passDate = true;
+
+if(dateFrom || dateTo){
+
+const rowDate =
+parseVNDate(timeText);
+console.log(
+  timeText,
+  rowDate
+);
+
+if(dateFrom){
+
+const startDate = new Date(dateFrom);
+
+startDate.setDate(
+  startDate.getDate() - 1
+);
+
+passDate =
+passDate &&
+rowDate >= startDate;
+
+}
+if(dateTo){
+
+const endDate =
+new Date(dateTo);
+
+endDate.setHours(
+23,59,59,999
+);
+
+passDate =
+passDate &&
+rowDate <= endDate;
+}
+
+}
+
 return (
-String(r["Thời gian"]||"").toLowerCase().includes(fTime) &&
-String(r["Họ tên"]||"").toLowerCase().includes(fName) &&
-String(r["Điểm"]||"").toLowerCase().includes(fScore) &&
-String(r["Bài làm"]||"").toLowerCase().includes(fLesson)
+
+passDate &&
+
+String(r["Họ tên"]||"")
+.toLowerCase()
+.includes(fName)
+
+&&
+
+String(r["Điểm"]||"")
+.toLowerCase()
+.includes(fScore)
+
+&&
+
+String(r["Bài làm"]||"")
+.toLowerCase()
+.includes(fLesson)
+
 );
 
 });
 
-// 🔥 GIỮ SORT NẾU ĐÃ CLICK CỘT
 if(sortState.key){
 
 filtered.sort((a,b)=>{
@@ -885,18 +1031,28 @@ filtered.sort((a,b)=>{
 let x = a[sortState.key] || "";
 let y = b[sortState.key] || "";
 
-const isNumber = !isNaN(x) && !isNaN(y);
+const isNumber =
+!isNaN(x) &&
+!isNaN(y);
 
 if(isNumber){
+
 x = Number(x);
 y = Number(y);
+
 }else{
+
 x = x.toString().toLowerCase();
 y = y.toString().toLowerCase();
+
 }
 
-if(x < y) return sortState.asc ? -1 : 1;
-if(x > y) return sortState.asc ? 1 : -1;
+if(x < y)
+return sortState.asc ? -1 : 1;
+
+if(x > y)
+return sortState.asc ? 1 : -1;
+
 return 0;
 
 });
@@ -904,7 +1060,9 @@ return 0;
 }
 
 viewData = filtered;
+
 renderTable(viewData);
+
 }
 
 // ======================
@@ -1062,16 +1220,14 @@ function loadQuiz(){
 
   shuffle(current);
 
-  current.forEach(q=>{
+current.forEach(q=>{
+  if(q.type==="radio"){
+    shuffle(q.answers);
+  }
+});
 
-    if(
-      q.type==="radio" ||
-      q.type==="audio"
-    ){
-      shuffle(q.answers);
-    }
-
-  });
+// hiện lại nút nộp bài khi làm bài mới
+document.getElementById("submitBtn").style.display = "inline-block";
 
   render();
 
@@ -1082,79 +1238,80 @@ function loadQuiz(){
 // ======================
 function render(){
 
-  const quiz=document.getElementById("quiz");
-  quiz.innerHTML="";
+  const quiz = document.getElementById("quiz");
+  quiz.innerHTML = "";
 
-  current.forEach((q,i)=>{
+  current.forEach((q, i) => {
 
-    let div=document.createElement("div");
-    div.className="question";
-    div.id="box"+i;
+    let div = document.createElement("div");
+    div.className = "question";
+    div.id = "box" + i;
 
-    let html=`<div class="q-title">Câu ${i+1}</div><div>${q.title}</div>`;
-
-    if(q.type==="radio"){
-
-  q.answers.forEach(a=>{
-    html+=`
-      <label>
-        <input type="radio"
-               name="${q.name}"
-               value="${a.value}">
-        ${a.text}
-      </label><br>
+    let html = `
+      <div class="q-title">Câu ${i + 1}</div>
+      <div>${q.title || ""}</div>
     `;
-  });
 
-}
-
-else if(q.type==="audio"){
-
-  html+=`
+    // =========================
+    // MEDIA (audio / image)
+    // =========================
+if (q.audio) {
+  html += `
     <div class="audio-box">
       <audio controls>
         <source src="${q.audio}" type="audio/mpeg">
       </audio>
     </div>
   `;
+}
+    if (q.image) {
+      html += `
+        <div style="margin:10px 0;">
+          <img src="${q.image}" style="max-width:100%;border-radius:10px;">
+        </div>
+      `;
+    }
 
-  q.answers.forEach(a=>{
-    html+=`
-      <label>
-        <input type="radio"
-               name="${q.name}"
-               value="${a.value}">
-        ${a.text}
-      </label><br>
-    `;
+    // =========================
+    // QUESTION TYPE (ONLY 2)
+    // =========================
+
+if (q.type === "radio") {
+
+  q.answers.forEach(a => {
+html += `
+<label class="answer-item">
+  <input type="radio"
+         name="${q.name}"
+         value="${a.value}">
+  <span>${a.text}</span>
+</label>
+`;
   });
 
-}
+} 
+else if (q.type === "checkbox") {
 
-else if(q.type==="audio-input"){
+  q.answers.forEach(a => {
+html += `
+<label class="answer-item">
+    <input
+        type="checkbox"
+        name="${q.name}"
+        value="${a.value}">
+    <span>${a.text}</span>
+</label>
+`;
+  });
 
-  html+=`
-    <div class="audio-box">
-      <audio controls>
-        <source src="${q.audio}" type="audio/mpeg">
-      </audio>
-    </div>
-
-    <input id="${q.id}"
-           placeholder="Nhập từ bạn nghe được">
+} 
+else {
+  html += `
+    <input id="${q.id}" placeholder="Nhập đáp án">
   `;
-
 }
 
-else{
-
-  html+=`
-    <input id="${q.id}">
-  `;
-
-}
-
-    div.innerHTML=html;
+    div.innerHTML = html;
     quiz.appendChild(div);
   });
 }
@@ -1167,6 +1324,30 @@ function getRadio(n){
   return c?c.value:"";
 }
 
+
+function getCorrectAnswerText(q){
+
+  if(!q.answers) return q.correct;
+
+  // checkbox
+  if(Array.isArray(q.correct)){
+
+    return q.answers
+      .filter(a => q.correct.includes(a.value))
+      .map(a => a.text)
+      .join(", ");
+  }
+
+  // radio
+  const found =
+    q.answers.find(
+      a => a.value === q.correct
+    );
+
+  return found
+    ? found.text
+    : q.correct;
+}
 
 // ======================
 // SUBMIT
@@ -1187,55 +1368,71 @@ if(!isValidStudent(studentName, password)){
 
   let d=0;
 
-  current.forEach((q,i)=>{
+current.forEach((q,i)=>{
 
-    let ok=false;
+  let ok = false;
 
-if(
-  q.type==="radio" ||
-  q.type==="audio"
-){
+if (q.type === "radio") {
 
-  ok = (
-    getRadio(q.name) === q.correct
-  );
+  ok = (getRadio(q.name) === q.correct);
 
+} 
+else if (q.type === "checkbox") {
+
+  const selected = Array.from(
+    document.querySelectorAll(`input[name="${q.name}"]:checked`)
+  ).map(el => el.value);
+
+  const correct = q.correct || [];
+
+  ok =
+    selected.length === correct.length &&
+    selected.every(v => correct.includes(v));
+
+} 
+else {
+
+  const user =
+    document.getElementById(q.id).value.trim().toLowerCase();
+
+  ok = (user === (q.correct || "").toLowerCase());
 }
-else{
 
-  ok = (
-    document
-      .getElementById(q.id)
-      .value
-      .trim()
-      .toLowerCase()
-    ===
-    q.correct.toLowerCase()
-  );
+  const box = document.getElementById("box" + i);
 
+  const res = document.createElement("div");
+
+const correctText =
+  getCorrectAnswerText(q);
+
+if (ok) {
+
+  d++;
+
+  res.className = "correct";
+
+  res.innerText =
+    "✔ Đáp án đúng: " + correctText;
+
+} else {
+
+  res.className = "wrong";
+
+  res.innerText =
+    "✘ Đáp án đúng: " + correctText;
 }
 
-    const box=document.getElementById("box"+i);
+  box.appendChild(res);
+});
 
-    const res=document.createElement("div");
+const diem=Math.round((d/current.length)*10*10)/10;
 
-    if(ok){
-      d++;
-      res.className="correct";
-      res.innerText="✔ Đúng: "+q.correct;
-    }else{
-      res.className="wrong";
-      res.innerText="✘ Đáp án: "+q.correct;
-    }
+alert("Điểm: "+diem);
 
-    box.appendChild(res);
-  });
+// Ẩn nút nộp bài sau khi xem điểm
+document.getElementById("submitBtn").style.display = "none";
 
-  const diem=Math.round((d/current.length)*10*10)/10;
-
-  alert("Điểm: "+diem);
-
-  fetch("https://script.google.com/macros/s/AKfycbxwdsEAG2LVcYxHb6VuLErY9Ynqz0pxWW3U4tQwcXU9w3EJnhHe7ewW8_nSaiaLqRWoYg/exec",{
+fetch("https://script.google.com/macros/s/AKfycbxwdsEAG2LVcYxHb6VuLErY9Ynqz0pxWW3U4tQwcXU9w3EJnhHe7ewW8_nSaiaLqRWoYg/exec",{
     method:"POST",
     body:JSON.stringify({
       name:studentName,
@@ -1519,7 +1716,11 @@ async function register() {
 
     spinner.style.display = "none";
 
-    alert("✔ Đăng ký thành công!");
+alert(
+  "✔ Đăng ký thành công!\n" +
+  "⏳ Dữ liệu đang được cập nhật.\n" +
+  "Bạn có thể đăng nhập sau 5 phút."
+);
 
     closeRegister();
 
