@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Demo Lưu & Hiển thị</title>
+</head>
+<body>
+<h3>Nhập nội dung</h3>
+
+<textarea id="txt" rows="10" cols="60"></textarea><br><br>
+
+<button id="saveBtn">Lưu</button>
+<button id="showBtn">Hiển thị</button>
+
+<hr>
+<div id="result"></div>
+
+<script type="module">
+import { getContent, setContent } from './data.js';
+
+document.getElementById('saveBtn').onclick = () => {
+    setContent(document.getElementById('txt').value);
+    alert('Đã lưu (sử dụng localStorage)');
+};
+
+document.getElementById('showBtn').onclick = () => {
+    document.getElementById('result').innerText = getContent();
+};
+</script>
+</body>
+</html>
