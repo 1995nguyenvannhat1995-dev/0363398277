@@ -1,31 +1,69 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<title>Demo Lưu & Hiển thị</title>
+    <meta charset="UTF-8">
+    <title>Demo JSON</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        textarea {
+            width: 400px;
+            height: 120px;
+        }
+
+        button {
+            margin-top: 10px;
+            margin-right: 10px;
+            padding: 8px 16px;
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            min-height: 50px;
+            width: 400px;
+        }
+    </style>
 </head>
 <body>
-<h3>Nhập nội dung</h3>
 
-<textarea id="txt" rows="10" cols="60"></textarea><br><br>
+    <h2>Nhập dữ liệu</h2>
 
-<button id="saveBtn">Lưu</button>
-<button id="showBtn">Hiển thị</button>
+    <textarea id="input"></textarea>
+    <br>
 
-<hr>
-<div id="result"></div>
+    <button onclick="saveData()">Lưu</button>
+    <button onclick="viewData()">Xem</button>
 
-<script type="module">
-import { getContent, setContent } from './data.js';
+    <div id="result"></div>
 
-document.getElementById('saveBtn').onclick = () => {
-    setContent(document.getElementById('txt').value);
-    alert('Đã lưu (sử dụng localStorage)');
-};
+    <script>
+        async function viewData() {
+            try {
+                const response = await fetch("data.json");
+                const data = await response.json();
 
-document.getElementById('showBtn').onclick = () => {
-    document.getElementById('result').innerText = getContent();
-};
-</script>
+                document.getElementById("result").innerText =
+                    data.content;
+            } catch (err) {
+                alert("Không đọc được data.json");
+            }
+        }
+
+        function saveData() {
+            const value = document.getElementById("input").value;
+
+            alert(
+                "HTML thuần không thể ghi trực tiếp vào data.json.\n" +
+                "Cần backend (Node.js/PHP/Python) để lưu:\n\n" +
+                value
+            );
+        }
+    </script>
+
 </body>
 </html>
