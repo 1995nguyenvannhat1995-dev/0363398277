@@ -430,6 +430,17 @@ hr{
 .hidden{
   display:none;
 }
+
+.input-error{
+  border:2px solid #ef4444 !important;
+  background:#fef2f2;
+}
+
+.input-error:focus{
+  border-color:#ef4444 !important;
+  box-shadow:0 0 0 4px rgba(239,68,68,.15) !important;
+}
+
 </style>
 </head>
 
@@ -919,18 +930,8 @@ const quizPanel = document.getElementById("quizPanel");
 const toastBox = document.getElementById("toast");
 const submitWrap = document.getElementById("submitWrap");
 
-function isValidStudent(name, password){
-
-if(!userList || userList.length === 0){
-  alert("Chưa load danh sách user. Bấm F5 hoặc đợi 2 giây");
-  return false;
-}
-
-  return userList.some(u =>
-    (u.username || "").toLowerCase().trim() === name.toLowerCase().trim()
-    &&
-    (u.password || "").trim() === password.trim()
-  );
+function isValidStudent(name,password){
+  return true;
 }
 
 async function loginStudent(){
@@ -1020,23 +1021,44 @@ unitSel.onchange = ()=>{
 // ======================
 function loadQuiz(){
 
-const studentName = nameInput.value.trim();
+  console.log("BANK =", bank);
 
-const password =
-  document.getElementById("password").value.trim();
+  const studentName = nameInput.value.trim();
 
-if(!isValidStudent(studentName, password)){
-    alert("Tên không hợp lệ");
-    return;
+  const password =
+    document.getElementById("password").value.trim();
+
+  if(!isValidStudent(studentName, password)){
+      alert("Tên không hợp lệ");
+      return;
   }
 
   document.getElementById("quiz").innerHTML = "";
   submitWrap.style.display = "none";
 
-  const u=unitSel.value;
-  const l=lessonSel.value;
+  const u = unitSel.value;
+  const l = lessonSel.value;
 
-  current = JSON.parse(JSON.stringify(bank[u][l]));
+  console.log("Unit =", u);
+  console.log("Lesson =", l);
+  console.log("bank[u] =", bank[u]);
+  console.log("bank[u][l] =", bank[u]?.[l]);
+
+  if(!bank[u]){
+      alert("Không tìm thấy Unit");
+      return;
+  }
+
+  if(!bank[u][l]){
+      alert("Không tìm thấy Lesson");
+      return;
+  }
+
+  current = JSON.parse(
+    JSON.stringify(bank[u][l])
+  );
+
+  console.log("Current =", current);
 
   shuffle(current);
 
@@ -1055,7 +1077,6 @@ if(!isValidStudent(studentName, password)){
 
   submitWrap.style.display = "block";
 }
-
 // ======================
 // RENDER
 // ======================
@@ -1353,49 +1374,169 @@ function closeRegister(){
   document.getElementById("registerModal").style.display = "none";
 }
 
+function markError(el){
+  el.classList.add("input-error");
+}
+
+function clearError(el){
+  el.classList.remove("input-error");
+}
+
 /* REGISTER + LOADING */
-function register() {
+async function register() {
 
   const spinner = document.getElementById("spinner");
   spinner.style.display = "block";
 
-  const data = {
-    type: "register",
-    username: document.getElementById("username").value,
-    password: document.getElementById("regPassword").value,
-    phone: document.getElementById("phone").value,
-    email: document.getElementById("email").value,
-    address: document.getElementById("address").value
-  };
+  const usernameEl = document.getElementById("username");
+  const passwordEl = document.getElementById("regPassword");
+  const phoneEl = document.getElementById("phone");
+  const emailEl = document.getElementById("email");
+  const addressEl = document.getElementById("address");
 
-  fetch("https://script.google.com/macros/s/AKfycbxwdsEAG2LVcYxHb6VuLErY9Ynqz0pxWW3U4tQwcXU9w3EJnhHe7ewW8_nSaiaLqRWoYg/exec", {
-    method: "POST",
-    body: JSON.stringify(data)
-  })
-  .then(r => r.text())
-  .then(res => {
+  const username = usernameEl.value.trim();
+  const password = passwordEl.value.trim();
+  const phone = phoneEl.value.trim();
+  const email = emailEl.value.trim();
+  const address = addressEl.value.trim();
+
+  // Xóa trạng thái lỗi cũ
+  [
+    usernameEl,
+    passwordEl,
+    phoneEl,
+    emailEl,
+    addressEl
+  ].forEach(clearError);
+
+  let hasError = false;
+
+  // ======================
+  // 1. CHECK RỖNG
+  // ======================
+  if (!username) {
+    markError(usernameEl);
+    hasError = true;
+  }
+
+  if (!password) {
+    markError(passwordEl);
+    hasError = true;
+  }
+
+  if (!phone) {
+    markError(phoneEl);
+    hasError = true;
+  }
+
+  if (!email) {
+    markError(emailEl);
+    hasError = true;
+  }
+
+  if (!address) {
+    markError(addressEl);
+    hasError = true;
+  }
+
+  if (hasError) {
+    spinner.style.display = "none";
+    alert("❌ Không được để trống thông tin");
+    return;
+  }
+
+  // ======================
+  // 2. CHECK PHONE
+  // ======================
+  const phoneRegex = /^[0-9]{10,11}$/;
+
+  if (!phoneRegex.test(phone)) {
+
+    markError(phoneEl);
+
+    spinner.style.display = "none";
+    alert("❌ Số điện thoại phải 10–11 số");
+    return;
+  }
+
+  // ======================
+  // 3. CHECK EMAIL
+  // ======================
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!emailRegex.test(email)) {
+
+    markError(emailEl);
+
+    spinner.style.display = "none";
+    alert("❌ Email không hợp lệ");
+    return;
+  }
+
+  try {
+
+    // ======================
+    // 4. CHECK TRÙNG USERNAME
+    // ======================
+    const url =
+      "https://opensheet.elk.sh/1CuQMGYyWdZKb8XItQgLTbylPuRY73RPGBCPa1E6i8TY/2";
+
+    const res = await fetch(url);
+    const users = await res.json();
+
+    const exists = users.some(u =>
+      (u.username || "").trim().toLowerCase() === username.toLowerCase()
+    );
+
+    if (exists) {
+
+      markError(usernameEl);
+
+      spinner.style.display = "none";
+      alert("❌ Username đã được sử dụng, chọn tên khác");
+      return;
+    }
+
+    // ======================
+    // 5. GỬI LÊN GOOGLE SHEET
+    // ======================
+    const data = {
+      type: "register",
+      username,
+      password,
+      phone,
+      email,
+      address
+    };
+
+    await fetch(
+      "https://script.google.com/macros/s/AKfycbxwdsEAG2LVcYxHb6VuLErY9Ynqz0pxWW3U4tQwcXU9w3EJnhHe7ewW8_nSaiaLqRWoYg/exec",
+      {
+        method: "POST",
+        body: JSON.stringify(data)
+      }
+    );
 
     spinner.style.display = "none";
 
-    alert("Đăng ký thành công!");
+    alert("✔ Đăng ký thành công!");
 
     closeRegister();
 
-    // clear input
-    document.getElementById("username").value = "";
-    document.getElementById("regPassword").value = "";
-    document.getElementById("phone").value = "";
-    document.getElementById("email").value = "";
-    document.getElementById("address").value = "";
+    // Clear form
+    usernameEl.value = "";
+    passwordEl.value = "";
+    phoneEl.value = "";
+    emailEl.value = "";
+    addressEl.value = "";
 
-  })
-  .catch(err => {
+  } catch (err) {
 
     spinner.style.display = "none";
-
     console.error(err);
-    alert("Đăng ký lỗi!");
-  });
+    alert("❌ Lỗi đăng ký, thử lại sau");
+
+  }
 }
 
 </script>
