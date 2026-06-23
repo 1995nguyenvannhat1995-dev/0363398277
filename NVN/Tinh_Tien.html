@@ -43,7 +43,7 @@ h2{margin-top:0;text-align:center;}
 }
 .money{font-weight:bold;text-align:center;width:100%;}
 .qty{
-    width:100px;
+    width:120px;
     padding:10px;
     font-size:18px;
     text-align:center;
@@ -84,7 +84,7 @@ h2{margin-top:0;text-align:center;}
 @media(max-width:600px){
 .row{grid-template-columns:1fr 100px 1fr;gap:5px;}
 .money{font-size:14px;}
-.qty{width:80px;font-size:16px;padding:8px;}
+.qty{width:120px;font-size:16px;padding:8px;}
 .total{font-size:14px;}
 }
 </style>
@@ -114,7 +114,7 @@ onfocus="unformat(this);"
     type="text"
     id="extraMoney"
     class="qty"
-    value="0"
+    value="-500.000 VNĐ"
     oninput="formatMoney(this); calculate();"
     onblur="formatBlur(this);"
     onfocus="unformat(this);"
@@ -168,7 +168,7 @@ list.innerHTML += `
 <input
 type="number"
 min="0"
-value="0"
+value=""
 class="qty"
 id="qty${index}"
 oninput="calculate()"
