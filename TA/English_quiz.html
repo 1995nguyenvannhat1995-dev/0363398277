@@ -370,6 +370,14 @@ table td{
   background:#fef3c7;
 }
 
+.btn-center{
+  display:flex;
+  justify-content:center;
+  gap:15px; /* khoảng cách giữa 2 nút */
+  margin-top:15px;
+  flex-wrap:wrap; /* mobile tự xuống dòng nếu hẹp */
+}
+
 /* =========================
    POPUP BACKDROP
 ========================= */
@@ -590,13 +598,15 @@ table td{
     <label>Lesson</label>
     <select id="lesson"></select>
 
-<button onclick="loadQuiz()">
-  🚀 Bắt đầu làm bài
-</button>
+<div class="btn-center">
+  <button onclick="loadQuiz()">
+    🚀 Bắt đầu làm bài
+  </button>
 
-<button onclick="showRanking()">
-  🏆 Xem xếp hạng
-</button>
+  <button onclick="showRanking()">
+    🏆 Xem xếp hạng
+  </button>
+</div>
 
   </div>
 
