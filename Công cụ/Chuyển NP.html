@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Grammar HTML Converter</title>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial,sans-serif;
+    margin:0;
+    padding:20px;
+    background:#eef3f8;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.wrapper{
+    display:flex;
+    gap:20px;
+}
+
+.panel{
+    flex:1;
+}
+
+textarea{
+    width:100%;
+    height:450px;
+    padding:15px;
+    border:1px solid #ccc;
+    border-radius:10px;
+    resize:vertical;
+    font-family:Consolas,monospace;
+}
+
+.buttons{
+    margin:20px 0;
+    text-align:center;
+}
+
+button{
+    padding:12px 24px;
+    border:none;
+    border-radius:10px;
+    background:#1565c0;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+    margin:0 10px;
+}
+
+button:hover{
+    background:#0d47a1;
+}
+
+.preview{
+    background:white;
+    border-radius:12px;
+    overflow:hidden;
+    border:1px solid #ddd;
+}
+
+iframe{
+    width:100%;
+    height:600px;
+    border:none;
+}
+
+.num{
+    color:#1565c0;
+    font-weight:bold;
+}
+
+.sub{
+    font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<h1>📘 Grammar HTML Converter</h1>
+
+<div class="wrapper">
+
+<div class="panel">
+<h3>Data nguồn</h3>
+<textarea id="input"></textarea>
+</div>
+
+<div class="panel">
+<h3>HTML kết quả</h3>
+<textarea id="output"></textarea>
+</div>
+
+</div>
+
+<div class="buttons">
+<button onclick="convertData()">🔄 Chuyển đổi</button>
+<button onclick="copyHtml()">📋 Copy HTML</button>
+</div>
+
+<h3>Xem trước</h3>
+
+<div class="preview">
+<iframe id="preview"></iframe>
+</div>
+
+<script>
+
+function createTemplate(content){
+
+return `
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+body{
+    font-family:Arial,sans-serif;
+    background:#eef3f8;
+    margin:0;
+    padding:30px;
+}
+
+h1{
+    text-align:center;
+    font-size:36px;
+    margin-bottom:25px;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+}
+
+.section{
+    background:white;
+    padding:24px;
+    border-radius:16px;
+    margin-bottom:22px;
+    box-shadow:0 6px 18px rgba(0,0,0,.08);
+}
+
+.section h2{
+    color:#1565c0;
+    margin-top:0;
+}
+
+
+.note{
+    color:#444;
+}
+
+p{
+    font-size:18px;
+    line-height:1.7;
+}
+
+</style>
+</head>
+
+<body>
+
+<h1>📘 Ngữ Pháp</h1>
+
+<div class="container">
+
+${content}
+
+</div>
+
+</body>
+</html>
+`;
+}
+function convertData(){
+
+    let input = document.getElementById("input").value;
+
+    let parser = new DOMParser();
+    let doc = parser.parseFromString(input,"text/html");
+
+    let paragraphs = doc.querySelectorAll("p");
+
+    let result = "";
+
+    let sectionOpen = false;
+    let exampleOpen = false;
+
+    function closeExample(){
+        if(exampleOpen){
+            result += "\n</div>\n";
+            exampleOpen = false;
+        }
+    }
+
+    function closeSection(){
+        closeExample();
+
+        if(sectionOpen){
+            result += "\n</div>\n";
+            sectionOpen = false;
+        }
+    }
+
+    paragraphs.forEach(p=>{
+
+        let text = p.textContent
+            .replace(/\u00A0/g," ")
+            .replace(/\s+/g," ")
+            .trim();
+
+        if(!text) return;
+
+        // ==========================
+        // SECTION (1. 2. 3.)
+        // ==========================
+        if(/^\d+\./.test(text)){
+
+            closeSection();
+
+            // 👉 TÔ MÀU + IN ĐẬM
+            let formatted = text.replace(
+                /^(\d+\.)/,
+                `<span class="num">$1</span>`
+            );
+
+            result += `
+<div class="section">
+<h2>${formatted}</h2>
+`;
+
+            sectionOpen = true;
+            return;
+        }
+
+        // ==========================
+        // a. b. c. (IN ĐẬM)
+        // ==========================
+        if(/^[a-z]\./.test(text)){
+
+            let formatted = text.replace(
+                /^([a-z]\.)/,
+                `<span class="sub">$1</span>`
+            );
+
+            result += `<p>${formatted}</p>\n`;
+            return;
+        }
+
+        // ==========================
+        // Ví dụ (GIỮ NGUYÊN)
+        // ==========================
+        if(/^ví dụ:?$/i.test(text) || text.toLowerCase() === "ví dụ:"){
+
+            closeExample();
+
+            result += `
+<div class="example-box">
+<b>Ví dụ:</b><br><br>
+`;
+
+            exampleOpen = true;
+            return;
+        }
+
+        // ==========================
+        // Mở rộng
+        // ==========================
+        if(text.startsWith("*Mở rộng")){
+
+            closeExample();
+
+            let content = text.replace("*Mở rộng:","").trim();
+
+            result += `<p><b>Mở rộng:</b> ${content}</p>`;
+            return;
+        }
+
+        // ==========================
+        // Câu hỏi
+        // ==========================
+        if(text === "Câu hỏi:"){
+            closeExample();
+            result += `<p><b>Câu hỏi:</b></p>`;
+            return;
+        }
+
+        // ==========================
+        // Trả lời
+        // ==========================
+        if(text === "Trả lời:" || text === "Câu trả lời:"){
+            closeExample();
+            result += `<p><b>Trả lời:</b></p>`;
+            return;
+        }
+
+        // ==========================
+        // NORMAL TEXT
+        // ==========================
+        result += `<p>${text}</p>\n`;
+
+    });
+
+    closeSection();
+
+    let finalHtml = createTemplate(result);
+
+    document.getElementById("output").value = finalHtml;
+    document.getElementById("preview").srcdoc = finalHtml;
+}
+async function copyHtml(){
+
+    const text = document.getElementById("output").value;
+
+    try{
+
+        await navigator.clipboard.writeText(text);
+
+        alert("Đã copy HTML!");
+
+    }catch(err){
+
+        alert("Không thể copy.");
+    }
+}
+</script>
+
+</body>
+</html>
