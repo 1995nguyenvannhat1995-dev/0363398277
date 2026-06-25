@@ -1,0 +1,3067 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Quy Trình Bán Hàng</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f5f5f5;
+        padding: 20px;
+    }
+
+    .container {
+        max-width: 500px;
+        margin: auto;
+    }
+
+    /* Ô tìm kiếm */
+    .search-box {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+        border: 2px solid #1976d2;
+        border-radius: 8px;
+        outline: none;
+        margin-bottom: 10px;
+    }
+
+    .search-box:focus {
+        border-color: #0d47a1;
+    }
+
+    /* Khung hiển thị kết quả */
+    .result-box {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        min-height: 40px;
+        border: 1px solid #ddd;
+    }
+
+    .btn {
+        width: 100%;
+        text-align: left;
+        padding: 15px;
+        background: #1976d2;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        margin-top: 8px;
+        border-radius: 8px;
+        transition: 0.3s;
+    }
+
+    .btn:hover {
+        background: #125ea7;
+    }
+
+    .content {
+        background: white;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        border-radius: 0 0 8px 8px;
+        padding: 0 15px;
+    }
+
+    .content p {
+        margin: 10px 0;
+    }
+
+    .active {
+        border-radius: 8px 8px 0 0;
+    }
+	
+	.sub-btn {
+    width: 100%;
+    text-align: left;
+    padding: 10px;
+    background: #e3f2fd;
+    color: #0d47a1;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 5px;
+    border-radius: 6px;
+}
+
+.sub-btn:hover {
+    background: #bbdefb;
+}
+
+.sub-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    background: #ffffff;
+    padding: 0 10px;
+    border-left: 3px solid #1976d2;
+}
+
+.vx-table {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* cột trái */
+.vx-list {
+    width: 40%;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+/* nút vacxin */
+.vx-item {
+    padding: 8px;
+    margin-bottom: 5px;
+    background: #eee;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.vx-item:hover {
+    background: #d0e3ff;
+}
+
+.vx-item.active {
+    background: #1976d2;
+    color: white;
+}
+
+/* cột phải */
+.vx-detail {
+    width: 60%;
+    background: #fff;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.vx-panel{
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.hidden{
+    display: none;
+}
+
+.vx-box{
+    width: 700px;
+    height: 450px;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+.vx-body{
+    display: flex;
+    height: 100%;
+    overflow: hidden;
+}
+
+.vx-header{
+    padding: 10px;
+    background: #1976d2;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.vx-close{
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.vx-body{
+    display: flex;
+    height: 100%;
+}
+
+.vx-left{
+    width: 40%;
+    border-right: 1px solid #ddd;
+    overflow-y: auto;
+}
+
+.vx-right{
+    width: 60%;
+    padding: 10px;
+    overflow-y: auto;
+	flex: 1;
+}
+
+.vx-item{
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+}
+
+.vx-item:hover{
+    background: #f0f6ff;
+}
+
+.vx-item.active{
+    background: #1976d2;
+    color: white;
+}
+.vx-btn {
+    width: 100%;
+    text-align: left;
+    padding: 12px;
+    background: #fff3e0;
+    color: #e65100;
+    border: 2px dashed #ff9800;
+    cursor: pointer;
+    font-size: 15px;
+    margin-top: 8px;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.vx-btn:hover {
+    background: #ffe0b2;
+}
+
+.tdls-btn {
+    width: 100%;
+    text-align: left;
+    padding: 12px;
+    background: #e8f5e9;
+    color: #1b5e20;
+    border: 2px dashed #4caf50;
+    cursor: pointer;
+    font-size: 15px;
+    margin-top: 8px;
+    border-radius: 8px;
+}
+
+.tdls-btn:hover {
+    background: #c8e6c9;
+}
+.vx-group {
+    padding: 10px;
+    font-weight: bold;
+    background: #e3f2fd;
+    border-bottom: 2px solid #1976d2;
+    cursor: pointer;
+}
+
+.fab-panel {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.hidden {
+    display: none;
+}
+
+.fab-box {
+    width: 80vw;
+    height: 80vh;
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden; /* thêm dòng này */
+}
+
+.fab-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+#fabTitle {
+    font-weight: bold;
+    color: #1976d2;
+    font-size: 18px;
+}
+
+.fab-header button {
+    background: #1976d2;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.fab-grid {
+    flex: 1;
+    display: flex;              /* 🔥 đổi từ grid → flex */
+    flex-direction: column;     /* 🔥 xếp dọc */
+    gap: 10px;
+
+    overflow-y: auto;           /* 🔥 scroll khi dài */
+    padding-right: 5px;
+}
+
+.fab-btn {
+    padding: 20px 0;
+    border: none;
+    border-radius: 10px;
+    background: #1976d2;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.fab-btn:hover {
+    background: #125ea7;
+}
+
+.fab-detail {
+    flex: 1;              /* 🔥 thêm dòng này */
+    overflow-y: auto;     /* scroll */
+    font-size: 16px;
+    line-height: 1.5;
+    padding-right: 5px;
+
+    min-height: 0;        /* 🔥 cực kỳ quan trọng để scroll hoạt động */
+}
+
+.floating-btn {
+    position: fixed;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background: rgba(25,118,210,0.7);
+    color: white;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    z-index: 10000;
+}
+
+#fabContent {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+
+    min-height: 0; /* 🔥 thêm dòng này luôn */
+}
+
+/* bỏ nút tăng giảm */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.red-btn {
+    background: #d32f2f !important;
+}
+
+.red-btn:hover {
+    background: #b71c1c !important;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Ô nhập -->
+    <input type="text" class="search-box" placeholder="Nhập mã" id="search">
+
+    <!-- Kết quả -->
+    <div class="result-box" id="result">Kết quả sẽ hiển thị ở đây...</div>
+
+    <!-- 10 nút -->
+    <button class="btn">Lấy Toa</button>
+    <div class="content"><p>Anh/chị cần em hỗ trợ gì <br>Toa thuốc mua cho ai sử dụng <br>Toa này đã mua ở nhà thuốc Long Châu bao giờ chưa<br>+ Nếu rồi => Xin số điện thoại <br>+ Nếu chưa thì mượn toa thuốc để xem</p></div>
+
+    <button class="btn">Chốt số lượng</button>
+    <div class="content"><p>Em thấy toa mình bác sĩ chuẩn đoán bệnh: .... và đã kê với số lượng thuốc vừa đủ cho 1 quá trình trị liệu, em lấy cho mình đủ số lượng thuốc trong toa luôn nha </p></div>
+
+    <button class="btn">Tra hệ thống</button>
+    <div class="content"><p>Dạ toa này em có đủ <br>Nhưng thuốc số ....<br>+ Nhờ qua kho lấy<br>+ Chọn hàng Nội/Ngoại</p></div>
+
+
+    <button class="btn">Lấy thuốc + Gửi KM</button>
+    <div class="content"><p>Dạ trong quá trình lấy thuốc <br>em gửi anh chị chương trình khuyến mãi của nhà thuốc em, anh/chị vui lòng xem qua, sau khi lấy thuốc em sẽ quay lại tư vấn thêm cho mình các sản phẩm này ạ</p></div>
+
+<button class="btn">Báo giá tạm tính</button>
+<div class="content">
+
+    <p>- Hướng dẫn sử dụng</p>
+
+    <!-- NÚT CON -->
+<button class="tdls-btn" onclick="openTDLS()">🧠 Tư duy lối sống</button>
+
+    <p>- Sản phẩm kèm</p>
+
+    <!-- NÚT CON -->
+<button class="vx-btn" onclick="openVaccine()">💉 Vacxin</button>
+
+</div>
+
+    <button class="btn">Thanh toán B1</button>
+    <div class="content"><p></p></div>
+
+    <button class="btn">Xin Số Điện Thoại</button>
+    <div class="content"><p>- Lưu đơn<br>- Tích điểm<br>- Hổ trợ đổi trả 30 ngày</p></div>
+
+    <button class="btn">Tải App (long châu chuyên gia thuốc)</button>
+    <div class="content"><p>Mẹ và bé<br>Lịch tiêm vacxin<br>Quản lý đơn hàng<br>Xem được các chi nhánh Long Châu lân cận<br>Nhắc uống thuốc<br>Long Châu 247 (đo huyết áp bằng khuôn mặt)<br>Dược sĩ chuyên môn tư vấn<br>Freeship tất cả các đơn hàng đặt trên app<br>Tích điểm đổi quà <br>* Tải app cài đặt và đăng ký bằng số điện thoại đã mua hàng</p></div>
+
+    <button class="btn">Zalo</button>
+    <div class="content"><p>Dược sĩ chuyên môn tư vấn<br>Freeship tất cả các đơn hàng đặt trên Zalo<br>Tích điểm đổi quà<br>* Quan tâm zalo "nhà thuốc Long Châu" gửi số điện thoại đã mua hàng</p></div>
+
+    <button class="btn">Thanh toán B2</button>
+    <div class="content"><p>- Tiền mặt<br>- Chuyển khoản<br>- Cà thẻ<br>- Ví điện từ<br>+ Momo<br>+ ZaloPay<br>+ VNPay<br>+ ShoppePay<br>+ SmartPay</p></div>
+	
+	<button class="btn">Xuất hoá đon + Đồng kiểm</button>
+    <div class="content"><p></p></div>
+	
+	<button class="btn">Thông tin hoá đơn</button>
+    <div class="content"><p>- Hotline<br>- Mã QR<br>-Số diện thoại cá nhân<br>- Xuất VAT</p></div>
+	
+	<button class="btn">• Cảm ơn + 5 Sao</button>
+    <div class="content"><p></p></div>
+
+<div style="text-align:center; margin-top:30px;">
+  <button onclick="window.location.href='Index.html'">Tra cứu thuốc</button>
+</div>
+</div>
+<div id="vaccine-panel" class="vx-panel hidden">
+    <div class="vx-box">
+
+        <div class="vx-header">
+            <b>Danh sách Vacxin</b>
+            <button onclick="closeVaccine()" class="vx-close">✕</button>
+        </div>
+
+        <div class="vx-body">
+            <!-- danh sách -->
+            <div class="vx-left" id="vaccine-list"></div>
+
+            <!-- nội dung -->
+            <div class="vx-right" id="vaccine-content">
+                Chọn vacxin để xem nội dung
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div id="tdls-panel" class="vx-panel hidden">
+    <div class="vx-box">
+
+        <div class="vx-header">
+            <b>Tư duy lối sống</b>
+            <button onclick="closeTDLS()" class="vx-close">✕</button>
+        </div>
+
+        <div class="vx-body">
+            <div class="vx-left" id="tdls-list"></div>
+            <div class="vx-right" id="tdls-content">
+                Chọn nội dung để xem
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="fab-panel hidden" id="fabPanel">
+    <div class="fab-box">
+
+        <!-- header -->
+        <div class="fab-header">
+            <button id="backBtn" onclick="goBack()" style="display:none;">←</button>
+            <span id="fabTitle">Menu</span>
+        </div>
+
+        <!-- nội dung -->
+        <div id="fabContent"></div>
+
+    </div>
+</div>
+
+<button class="floating-btn" onclick="togglePanel()">☰</button>
+
+<div id="imgPanel" class="vx-panel hidden">
+    <div class="vx-box">
+        <div class="vx-header">
+            <b>Hình ảnh</b>
+            <button onclick="closeImage()" class="vx-close">✕</button>
+        </div>
+
+        <div style="flex:1; display:flex; flex-direction:column; padding:10px; overflow:auto;">
+            
+            <!-- Nội dung thêm vào -->
+            <div style="margin-bottom:10px; font-size:14px; line-height:1.5;">
+                - Đối tượng sử dụng <br>
+                + (Nếu là nữ) Có thai hay CCB hay không?<br>
+                + (Nếu là trẻ nhỏ) &gt; 2 tuổi, &gt; 10kg?<br>
+                - Có tiền sử bệnh hay dị ứng không?<br>
+                - Tìm nguyên nhân gây ra bệnh<br>
+            </div>
+
+            <!-- Ảnh -->
+            <div style="flex:1; display:flex; align-items:center; justify-content:center;">
+                <img id="imgViewer" src="" style="max-width:100%; max-height:100%;">
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+/* DATA */
+const data = [
+  { name: "1", 
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>1, 2, 4 ",
+    note: [
+      "1: [Midantin][00004199] DG.5.2 - Kháng sinh",
+      "2: [00022429] BG.1.2 - Kháng viêm",
+      "3: [00007185] A2k.5.1 - Giảm đau",
+      "4: [00030372][00000614] A2G.10.2 - VIêm mũi dị ứng",
+      "5: [00009735] BK.3.7 - Xịt viêm mũi",
+      "6: [00005736] BG.3.5 - Dạ dầy"
+    ]
+  },
+
+  { name: "2", 
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>1, 2, 3, 6, 7, 8 ",
+    note: [
+      "1: [Tapist][00502757] BG.9.5 - Mở máu",
+      "2: [00502758][00028687] DG.6.5 - Gan",
+      "3: [00050809][00004544] A2G.9.1 - Dị ứng",
+      "4: [00004648] A2K.3.1 - Vitamin",
+      "5: [00004825] DG.6.5 - Gan",
+      "6: [00042490][00006250] BG.4.4 - Dạ dầy",
+      "7: [Zandyrine][00003159] BK.5.5 - Tiểu đường",
+      "8: [Winprid][00004311] BG.3.2 - Dạ dầy"
+    ]
+  },
+  { name: "3", 
+     ND: "<br><br><b>Chờ vận chuyển từ kho</b><br> 2, 5 ",
+	 note: [
+      "1: [00001229] DK.3.3 - Rối loạn tiền đình",
+      "2: [00047237] Kho - Thiếu máu",
+      "3: [00029635] DK.3.3 - Dự phòng đau nửa đầu",
+      "4: [00007185] A2K.5.1 - Giảm đau",
+      "5: [00051071] Kho - Đau nhứt do thần kinh",
+      "6: [00000712] BG.11.3 - Trầm cảm"
+    ]
+  },
+  { name: "4", 
+     ND: "<br><br> <b>Hàng nội, hàng ngoại</b>. <br><b>Chờ vận chuyển từ kho</b>",
+	 note: [
+      "1: [00502551] DG.2.1 - Kháng sinh",
+      "2: [00008073] BG.2.3 - Kháng viêm, giảm đau",
+      "3: [00042410] A2G.10.2 - Viêm mũi dị ứng",
+      "4: [00005532] BG.4.3 - Viêm loét dạ dày, tá tràng",
+      "5: [00007399] DK.4.5 (Tủ lạnh)<br> Mỡ tra mắt - Viêm, nhiễm khuẩn",
+      "6: [00005251] DK.4.7 <br>  viêm, đau sau phẫu thuật đục thủy tinh thể"
+    ]
+  },
+  { name: "5", 
+     ND: "<br><br> <b>Hàng nội, hàng ngoại</b>. <br><b>Chờ vận chuyển từ kho</b> ",
+  	 note: [
+      "1: [00044639] BG.7.1 - Tăng huyết áp",
+      "2: [00002063] BG.6.1 - Điều trị bệnh suy tim, THA",
+      "3: [00007617] DK.3.1 <br> Rối loạn cảm giác do bệnh thần kinh đái tháo đường ",
+      "4: [00028620] BG.10.3 - Mỡ máu",
+      "5: [00005917] DK.3.2 - Suy tuần hoàn tĩnh mạch ",
+      "6: [00007723] BG.6.5 <br>  Điều trị sỏi mật, cải thiện chức năng gan"
+    ]
+  },
+  { name: "6", 
+    ND: "<br><br> <b>Hàng nội, hàng ngoại</b>. <br><b>Chờ vận chuyển từ kho</b> ",
+    note: [
+      "1: [00006087] BG.12.1 - Đau do nguyên nhân thần kinh",
+      "2: [00501127] DK.3.1 - Hỗ trợ chức năng của não, tăng cường trí nhớ, Phục hồi não sau đột quỵ.",
+      "3: [00021341] BG.12.2 - Các bệnh lý thần kinh ngoại biên ",
+      "4: [00020215] DK.3.2 - Suy tĩnh mạch",
+      "5: [00006322] Tủ lạnh - Suy tuần hoàn não, di chứng tai biến mạch máu não"
+    ]
+  },
+  { name: "7",
+    ND: "<br><br><b>Hàng nội, hàng ngoại</b><br> 2 ",
+    note: [
+      "1: [00002063] BG.6.1 - Điều trị bệnh suy tim, THA",
+      "2: [00018782] BG.9.2 - Phòng ngừa nhồi máu cơ tim, đột quỵ",
+      "3: [00002124] BG.10.3 - Mỡ máu ",
+      "4: [00004026] BK.5.1 - Đái tháo đường tuyp 2",
+      "5: [00007798] BG.8.3 - điều trị đau thắt ngực",
+      "6: [00002175] A2K.1.2 - Suy giảm tĩnh mạch"
+    ]
+  },
+  { name: "8", 
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>3, 5  <br><b>Chờ vận chuyển từ kho</b><br>4 <br><br> 3 thay dạng sủi sang nén ",
+     note: [
+      "1: [00047110] Kháng sinh",
+      "2: [00003546] Khó tiêu, tức bụng, đầy hơi",
+      "3: [00003630] Hạ sốt, giảm đau ",
+      "4: [Eucatol forte] Kho - ho, sổ mũi, sát trùng đường hô hấp",
+      "5: [00027842] AG.7.1 - điều trị đau thắt ngực"
+    ] 
+  },
+  { name: "9",
+     ND: "<br><br> <b>Hàng nội, hàng ngoại</b>. <br><b>Chờ vận chuyển từ kho</b>",
+     note: [
+      "1: [00049255] DG.3.1 - Kháng sinh",
+      "2: [00004776] BG.1.2 - Kháng viêm",
+      "3: [00000187] A2G.10.2 - Hạ sốt, giảm đau ",
+      "4: [00030246] A1K.2.3 - Chống viêm, giảm đau họng",
+      "5: [00005207] DG.1.2 - điều trị ho khan"
+    ]
+  },
+  { name: "10",
+     ND: "<br><br><b>Hàng nội, hàng ngoại</b><br> 1, 2, 3, 6  ",
+     note: [
+      "1: [00012417] DG.3.3 - Kháng sinh",
+      "2: [00047512] BG.1.2 - Kháng viêm",
+      "3: [00004848] BG.4.2 - Viêm loet dạ dày ",
+      "4: [00501506] DK.4.2 - Bệnh phế quản và phổi có kèm ho khan",
+      "5: [00000613] DK.3.3 - điều trị viêm mũi",
+      "6: [0,9%] 0,9% dùng ngoài"
+    ]
+  },
+  { name: "11",
+    ND: "<br><br> <b>Hàng nội, hàng ngoại</b>. <br><b>Chờ vận chuyển từ kho</b>",
+     note: [
+      "1: [00502525] DK.5.4 - Kháng sinh",
+      "2: [00002022] DK.5.5 - Đầy bụng, chướng bụng",
+      "3: [00033287] A2G.4.1 - Rối loạn tiêu hoá ",
+      "4: [00501285] DK.5.3 - Ho, viêm phế quản, viêm đường hô hấp",
+      "5: [00021575] A1K.1.1- Bổ sung vitamin, khoáng chất"
+    ]
+  },
+  { name: "12",
+	 ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>B1, B3 <br><br><b>Chờ vận chuyển từ kho</b><br>A3<br><br>A3 đổi gói sang viên",
+     note: [
+      "A1: [00030588] Kháng sinh",
+      "A2: [00046085] A1K.1.2 - Loạn khuẩn đường ruột",
+      "A3: [00047257][00005006] Phòng và trị hen phế quản ",
+      "B1: [00039215] KSĐB - Hen, có thắt phế quản",
+      "B2: [00006167] DK.4.4 - Điều trị hen phế quản",
+      "B3: [00014029][00038353] Nước muối sinh lý nhỏ mắt"
+    ]
+  },
+  { name: "13",
+     ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>1, 2, 5 ,6 <br><br>1 (đổi sang gói hoặc Viên biocemet)<br>7 Sanbutamol 2mg",
+     note: [
+      "1: [00500120] Kháng sinh",
+      "2: [00027856] Phòng và trị hen phế quản",
+      "3: [00022506] Tan đờm",
+      "4: [00046085] Loạn khuẩn dường ruột",
+      "5: [00003627] Hạ sốt giảm dau",
+      "6: [00022429] Kháng viêm",
+      "7: [Salbutamol] Giãn phế quản"
+    ]
+  },
+  { name: "14",
+     ND: "<br><br> <b>Hàng nội, hàng ngoại</b><br>1, 2, 3, 4, 5, 7 <br><br> 4 (đổi sang gói hoặc Viên biocemet)",
+     note: [
+      "1: [00047207] Tăng huyết áp, suy tim",
+      "2: [00047160] Mở máu ",
+      "3: [00043530] Làm giảm hay dự phòng các biến cố huyết khối ",
+      "4: [00500120] Kháng sinh",
+      "5: [00027856] Phòng và trị hen phế quản",
+      "6: [00032865] Hạ sốt, giảm đau",
+      "7: [00022429] Kháng viêm",
+      "8: [00001035] Loét dạ dày"
+    ]
+  },
+  { name: "15",
+     ND: "<br><br> <b>Hàng nội, hàng ngoại</b>. <br><b>Chờ vận chuyển từ kho</b>",
+       note: [
+      "1: [00000964] Kháng sinh",
+      "2: [00020695] Viêm loet dạ dầy ",
+      "3: [00010272] Viêm gan, xơ gan ",
+      "4: [00006657] DK.5.5 - Hen, COPD",
+      "5: [00028103] Loãng đờm (long đờm)"
+    ]
+  },
+  { name: "16",
+     ND: "<br><br><b>Hàng nội, hàng ngoại</b>.<br><b>Chờ vận chuyển từ kho</b>",
+       note: [
+      "1: [00005272] Viêm loét dạ dầy, tá tràng",
+      "2: [00018687] Viêm loét dạ dầy, tá tràng ",
+      "3: [00007273] Kháng sinh ",
+      "4: [00028066] Kháng sinh, kháng ký sinh trùng",
+      "5: [00002175] Suy giảm tĩnh mạch, Trĩ"
+    ]
+  },
+  { name: "17",
+	ND: "<br><br><b>Chờ vận chuyển từ kho</b><br>3<br><br>4 enterogermina (2 tỷ hay 4 tỷ lợi khuẩn) ",
+       note: [
+      "1: [00004530] Viêm loét dạ dầy, tá tràng",
+      "2: [00005022] Nôn, buồn nôn ",
+      "3: [00002874] Đầy hơi, chướng bụng ",
+      "4: [enterogermina] Lợi khuẩn đường ruột",
+      "5: [00003280] Trào ngược dạ dày, thực quản"
+    ]
+  },
+  { name: "18",
+    ND: "<br><br><b>Chờ vận chuyển từ kho</b><br>1, 4 <br><br> 1 (nếu có trong tủ lạnh) ",
+       note: [
+      "1: [00005776] Viêm loét dạ dầy, tá tràng",
+      "2: [00002760] Viêm dạ dày mạn tính ",
+      "3: [00016534] Trào ngược dạ dày, thực quản ",
+      "4: [00002874] Đầy hơi, chướng bụng ",
+      "5: [00043970] Loét dạ dày"
+    ]
+  },
+  { name: "19",
+    ND: "<br><br><b>Hàng nội, hàng ngoại</b>.<br><b>Chờ vận chuyển từ kho</b>",
+       note: [
+      "1: [00005272] Viêm loét dạ dầy, tá tràng",
+      "2: [00030565] Khó tiêu, ợ nóng, đầy hơi ",
+      "3: [00002760] Viêm dạ dày mạn tính ",
+      "4: [00043970] Loét dạ dày ",
+      "5: [00014519] BG.11.1 - Rối loạn tiêu hóa, chướng bụng"
+    ]
+  },
+  { name: "20", ND: "<br><br> XXXXXX" },
+  { name: "21",
+     ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>6  <br><b>Chờ vận chuyển từ kho</b><br><br>5 (kế Aquima)" ,
+     note: [
+      "1: [00005272] Viêm loét dạ dầy, tá tràng",
+      "2: [00002760] Viêm dạ dày mạn tính ",
+      "3: [00030565] Khó tiêu, ợ nóng, đầy hơi ",
+      "4: [00043970] Loét dạ dày ",
+      "5: [00010396] loét tá tràng, dạ dày",
+      "6: [00500632][00051091] Lợi khuẩn đường ruột"
+    ]
+  },
+  { name: "22",
+    ND: "<br><br><b>Hàng nội, hàng ngoại</b><br> 3, 5 .<br><b>Chờ vận chuyển từ kho</b><br>1, 4 <br><br>4(hoặc dùng 2 viên 50mg - BG.11.1) ",
+     note: [
+      "1: [00049196] Viêm loét dạ dầy, tá tràng",
+      "2: [00003280] Trào ngược dạ dày, thực quản ",
+      "3: [00049494] Đau, rối loạn nhu động ruột ",
+      "4: [Mylosulprid]BG.11.1 - Điều trị triệu chứng lo âu ",
+      "5: [00021255] Viêm loét dạ dầy"
+    ]
+  },
+  { name: "23",
+    ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>1, 3  <br><b>Chờ vận chuyển từ kho</b><br>2, 6 ",
+     note: [
+      "1: [00027708] Viêm loét dạ dầy, tá tràng",
+      "2: [00000563] Đầy hơi và chướng bụng  ",
+      "3: [00032025] Hạ sốt, giảm đau ",
+      "4: [00032388] Bổ sung canxi ",
+      "5: [00007165] Điều trị cơn chóng mặt ",
+      "6: [Vận chuyển] Bổ sung lợi khuẩn dường ruột "
+    ]
+  },
+  { name: "24",
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>2  " ,
+     note: [
+      "1: [00032865] Hạ sốt, giảm đau",
+      "2: [00030372] Viêm mũi, dị ứng ",
+      "3: [00002374] Ho khan",
+      "4: [00041200] Viêm loét dạ dày ",
+      "5: [00028779][00027843]  Đau, đầy hơi ở đường tiêu hóa ",
+      "6: [00040386] Điều trị tiêu chảy,"
+    ]
+  },
+  { name: "25",
+     ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>1  <br><b>Chờ vận chuyển từ kho</b><br>3 (dạng viên không có) ",
+     note: [
+      "1: [00028274] Kháng sinh",
+      "2: [00028779][00027843] Đau, đầy hơi ở đường tiêu hóa ",
+      "3: [Biosubtyl-II] Bổ sung lợi khuẩn đường ruột",
+      "4: [00008350] Hạ sốt, giảm đau ",
+      "5: [00006780] Điều trị tiêu chảy "
+    ]
+  },
+  { name: "26",
+     ND: "<br><br>2 (Tem hồng)" ,
+       note: [
+      "1: [00029902] Kháng sinh",
+      "2: [00045817] Giảm co thắt cơ trơn ",
+      "3: [00040386] Điều trị tiêu chảy",
+      "4: [00030670] Bổ sung lợi khuẩn đường ruột ",
+      "5: [00005713] Giảm đau hạ sốt ",
+      "6: [00006904] Lo âu, căng thẳng, mất ngủ "
+    ]
+  },
+  { name: "27",
+    ND: "<br><br> <b>Hàng nội, hàng ngoại</b>. <br><b>Chờ vận chuyển từ kho</b>",
+       note: [
+      "1: [00043970] Điều trị loét dạ dày",
+      "2: [00002299] Giảm đau, rối loạn nhu động ruột  ",
+      "3: [00001288] Men vi sinh, cân bằng hệ vi sinh",
+      "4: [00006780] Điều trị tiêu chảy ",
+      "5: [00047190] Điều trị nhiễm giun "
+    ]
+  },
+  { name: "28",
+    ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>8 <br> <b>Chờ vận chuyển từ kho</b><br>1, 2, 3)",
+       note: [
+      "1: [00501379] Viêm khớp dạng thấp, đau cơ",
+      "2: [00048428] Chống viêm, giảm phù nề   ",
+      "3: [00044659] Triệu chứng của bệnh lý viêm khớp",
+      "4: [00042082] Suy giãn tĩnh mạch ",
+      "5: [00004775] Kháng viêm ",
+      "6: [00049056] Viêm loét dạ dày, tá tràng ",
+      "7: [00021344] (Xịt không Rx) Giảm đau, chống viêm",
+      "8: [00044568] (BG.9.4) Thuốc hạ lipid huyết"
+    ]
+  },
+  { name: "29",
+    ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>1, 2, 4  " ,
+        note: [
+      "1: [00017641] Vitamin A",
+      "2: [00013729] Dị ứng",
+      "3: [00002771] (tủ lạnh) bổ sung kẽm",
+      "4: [00003715] Tăng cường sức đề kháng ",
+      "5: [00008123] (DK.3.6) Điều trị vẩy nến ",
+      "6: [00002195] (DK.3.6) Điều trị vẩy nến "
+    ] 
+  },
+  { name: "30",
+     ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>1, 2 <br><br>1 (Nội: Meyersiliptin, Sitagibes - BK.5.6)<br>1 (Ngoại:Januvia - BK.5.4)<br>2 (Janumet)" ,
+      note: [
+      "1: [00049417] Đái tháo đường type 2",
+      "2: [00042263] Đái tháo đường type 2",
+      "3: [00004454] Mở máu",
+      "4: [00004775] Kháng viêm ",
+      "5: [00005274] Bổ sung canxi ",
+      "6: [00005189] Tăng huyết áp ",
+      "7: [00013511] Viêm dạ dày, chướng bụng, đau bụng ",
+      "8: [00007561] Tăng huyết áp, đau thắt ngực "
+    ] 
+  },
+  { name: "31", 
+     ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>1, 6, 7  <br><b>Chờ vận chuyển từ kho</b><br>3 ",
+      note: [
+      "1: [00046676] Lợi tiểu",
+      "2: [00000497] Trị mụn trứng cá",
+      "3: [00010105] Điều trị ung thư",
+      "4: [00031427] Bệnh gút cấp",
+      "5: [00045804] Điều trị viêm khớp ",
+      "6: [00051049][00031434] Kháng viêm ",
+      "7: [00010431] Viêm loét dạ dày, tá tràng "
+    ] 
+  },
+  { name: "32",
+    ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>1, 2, 3  <br><b>Chờ vận chuyển từ kho</b><br>7 " ,
+     note: [
+      "1: [00500798] Thoái hóa khớp hông, gối",
+      "2: [00007546] Chống động kinh ",
+      "3: [Gramadol] Giảm đau trung bình đến nặng (Bậc 2)",
+      "4: [00028716] Loét dạ dày tá tràng",
+      "5: [00020215] Suy tĩnh mạch ",
+      "6: [00021575] Bổ sung Vitamin khoáng chất ",
+      "7: [00503476] Xịt - đau và viêm do thấp khớp "
+    ] 
+  },
+  { name: "33",
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>1, 4  <br><b>Chờ vận chuyển từ kho</b><br>2, 3 " ,
+      note: [
+      "1: [00040827] Ðiều trị viêm khớp dạng thấp ",
+      "2: [Vasomin] (kho) Tăng dịch khớp giúp giảm đau, cứng khớp ",
+      "3: [Calcium] (kho) Bổ sung canxi",
+      "4: [00010133] Rối loạn chức năng tiền đình",
+      "5: [00004454] Mỡ máu ",
+      "6: [00004544] Dị ứng ",
+      "7: [00038770] Bổ sung vitamin 3B - Thần kinh "
+    ]  
+  },
+  { name: "34",
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>1, 4, 5, 7 ",
+      note: [
+      "1: [00027556] Ðiều trị viêm khớp",
+      "2: [00005072] Điều trị liệt cứng cơ",
+      "3: [00004885](BG.12.2) Bệnh lý thần kinh ngoại biên",
+      "4: [00050219](BG.12.1) Đau dây thần kinh ngoại biên",
+      "5: [Pannefia][00005736] Loét dạ dày - tá tràng ",
+      "6: [00022268] Hạ sốt, giảm đau",
+      "7: [00050597] Kháng viêm"
+    ]  
+  },
+  { name: "35",
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>1, 2  <br><b>Chờ vận chuyển từ kho</b><br>4 ",
+      note: [
+      "1: [00040827] Đau và viêm trong thoái hóa khớp",
+      "2: [00030182] Loét dạ dày - tá tràng ",
+      "3: [00002823] Điều trị liệt cứng cơ",
+      "4: [Vitamin 3B extra] (Kho) Bổ sung vitamin 3B",
+      "5: [00011052] Giảm đau và kháng viêm cơ xương khớp"
+    ] 
+  },
+  { name: "36",
+  ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>2, 5, 7  <br><b>Chờ vận chuyển từ kho</b><br>4, 6 <br><br>5 (Muncal - A1K.1.1)",
+      note: [
+      "1: [00020216][00020381] Đau và viêm trong thoái hóa khớp",
+      "2: [00032488] Loét dạ dày - tá tràng ",
+      "3: [00004775] Kháng viêm",
+      "4: [00501764] (Kho) Bổ sung vitamin nhóm B",
+      "5: [00028678] Bổ sung calxi",
+      "6: [00020803] (Kho) Triệu chứng co cứng cơ ",
+      "7: [00049673] Đau từ trung bình đến nặng"
+    ]
+  },
+  { name: "37",
+	ND: "<br><br> <b>Hàng nội, hàng ngoại</b>. <br><b>Chờ vận chuyển từ kho</b>",
+      note: [
+      "1: [00004199] Kháng sinh",
+      "2: [00004775] Kháng viêm",
+      "3: [00029917] Long đờm và tiêu nhầy",
+      "4: [00003630] Hạ sốt giảm đau",
+      "5: [00005532] Viêm loét dạ dày, tá tràng"
+    ]
+  },
+  { name: "38",
+	ND: "<br><br> <b>Hàng nội, hàng ngoại</b>. <br><b>Chờ vận chuyển từ kho</b>",
+      note: [
+      "1: [00000964] Kháng sinh",
+      "2: [00004775] Kháng viêm",
+      "3: [00017414] Điều trị phù nề ",
+      "4: [00032865] Hạ sốt giảm đau",
+      "5: [00031664] Bổ sung vitamin C"
+    ]
+  },
+  { name: "39",
+	ND: "<br><br><br><b>Hàng nội, hàng ngoại</b><br>3 <br><br>1 (CEFPROZIL 500)<br>4 (Piracetam ống)<br>5 (quản lý đặc biệt)",
+      note: [
+      "1: [00018362] Kháng sinh",
+      "2: [00004776] Kháng viêm",
+      "3: [00022454] Viêm loét dạ dày, tá tràng",
+      "4: [00021949][00009997] Suy giảm trí nhớ, chóng mặt, kém tập trung",
+      "5: [00007950] Điều trị viêm kết mạc"
+    ]
+  },
+  { name: "40",
+	ND: "<br><br>4, 6 <b>Hàng nội, hàng ngoại</b>",
+      note: [
+      "1: [00027737](BK.5.2) Tiểu đường típ 2",
+      "2: [00004454] Mỡ máu",
+      "3: [00029427](DK.3.2) Trĩ, suy giãn tĩnh mạch ",
+      "4: [00029486] (BK.2.6) Tăng sản tuyến tiền liệt",
+      "5: [00020693] Tăng huyết áp ",
+      "6: [00047069] Phòng ngừa biến cố huyết khối ",
+      "7: [00008127] Phì đại tuyến tiền liệt ",
+      "8: [00028999] Kháng sinh"
+    ]
+  },
+  { name: "41",
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>5  <br> <b>Chờ vận chuyển từ kho</b><br>3",
+      note: [
+      "1: [00004775] Kháng viêm",
+      "2: [00002956] Long đờm, tiêu chất nhầy",
+      "3: [00030967] Giãn phế quản, bệnh phổi tắc nghẽn mạn tính (COPD)",
+      "4: [00001211] (KSĐB) Hen và bệnh phổi tắc nghẽn mạn tính (COPD)",
+      "5: [00029902] Kháng sinh"
+    ]
+  },
+  { name: "42",
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>3  <br><b>Chờ vận chuyển từ kho</b><br>4, 6, 7  ",
+      note: [
+      "1: [00018851] Kháng sinh",
+      "2: [00501089] Giãn tĩnh mạch chân, trĩ",
+      "3: [00501625] Trào ngược dạ dày thực quản",
+      "4: [00502747] Trào ngược dạ dày thực quản",
+      "5: [00002357](DK.5.5) Viêm mũi dị ứng, mày đay",
+      "6: [Apihexin] Long đàm",
+      "7: [00029216] Phòng chống viêm họng cấp, mạn tính do hội chứng trào ngược dạ dày-thực quản"
+    ]
+  },
+  { name: "43",
+	ND: "<br><br> <b>Hàng nội, hàng ngoại</b>. <br><b>Chờ vận chuyển từ kho</b><br>3, 5 ",
+      note: [
+      "1: [00029902] Kháng sinh",
+      "2: [00049161] Kháng viêm",
+      "3: [00004528] Bệnh lý về mắt, cận thị, quáng gà",
+      "4: [00005532] Viêm loét dạ dày, tá tràng",
+      "5: [00004712] Điều trị viêm mắt",
+      "6: [00008524] Giảm khô mắt, mắt đỏ "
+    ]
+  },
+  { name: "44",
+	ND: "<br><br> <b>Hàng nội, hàng ngoại</b>. <br><b>Chờ vận chuyển từ kho</b>",
+      note: [
+      "1: [00002954] Điều trị tăng huyết áp",
+      "2: [00007829] Lợi tiểu",
+      "3: [00004454] Mỡ máu",
+      "4: [00031440] Trĩ, suy giãn tĩnh mạch",
+      "5: [00004775] Kháng viêm",
+      "6: [00005756] Viêm loét dạ dày, tá tràng "
+    ]
+  },
+  { name: "45",
+	ND: "<br><br> <b>Hàng nội, hàng ngoại</b>. <br><b>Chờ vận chuyển từ kho</b><br>7, 10 " ,
+      note: [
+      "1: [00047241] (BG.9.3) Phòng ngừa huyết khối",
+      "2: [00004454] Mỡ máu",
+      "3: [00002063] (BG.6.1) Điều trị bệnh suy tim, THA",
+      "4: [00016161] (BG.8.4) Điều trị bệnh suy tim",
+      "5: [00002954] Tăng huyết áp vô căn ",
+      "6: [00003434] (BK.5.3) Tiểu đường típ 2 ",
+      "7: [00000450] Thiểu năng tuần hoàn, thiếu máu cơ tim, THA ",
+      "8: [00017791] (BG.11.2) An thần, điều trị mất ngủ",
+      "9: [00500652] (BG.11.1) Tâm thần phân liệt",
+      "10: [00038282] Điều trị đau thắt ngực  "
+    ]
+  },
+  { name: "46",
+	ND: "<br><br> <b>Hàng nội, hàng ngoại</b>. <br><b>Chờ vận chuyển từ kho</b>",
+      note: [
+      "1: [00020343] Chống kết tập tiểu cầu ",
+      "2: [00002124] Mỡ máu",
+      "3: [00002105] Tăng huyết áp",
+      "4: [00001228] Tăng huyết áp",
+      "5: [00003159] Đái tháo đường típ 2 ",
+      "6: [00501127] Hỗ trợ chức năng của não, tăng cường trí nhớ "
+    ]
+  },
+  { name: "47",
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>7  <br><b>Chờ vận chuyển từ kho</b><br>6 " ,
+      note: [
+      "1: [00002652] Chống kết tập tiểu cầu ",
+      "2: [00004455] (BG.10.2) Mỡ máu",
+      "3: [00002063] (BG.6.1) Điều trị bệnh suy tim, THA",
+      "4: [00002108] Tăng huyết áp ",
+      "5: [00017346] Đái tháo đường típ 2 ",
+      "6: [00038282] Đau thắt ngực ",
+      "7: [00501625] Viêm loét dạ dày, tá tràng"
+    ]
+  },
+  { name: "48", ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>5  <br><b>Chờ vận chuyển từ kho</b><br>2, 4 ",
+      note: [
+      "1: [00018389] (BG.9.1) Ngăn ngừa huyết khối ",
+      "2: [Femadex 10] Mỡ máu",
+      "3: [00002336] (KSĐB) Điều trị động kinh, rối loạn cảm xúc ",
+      "4: [00502285] Điều trị đau thần kinh",
+      "5: [00049228] (A2K.1.1) Cải thiện tuần hoàn não ",
+      "6: [00001230] Chóng mặt tiền đình",
+      "7: [00003429] Đái tháo đường típ 2 "
+    ]
+  },
+  { name: "49", ND: "<br><br> XXXXXX" },
+  { name: "50",
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>5 <br><b>Chờ vận chuyển từ kho</b><br>4 <br><br>5 (Glucophage XR 500",
+      note: [
+      "1: [00030994] (BG.7.5) Tăng huyết áp ",
+      "2: [00021232] Tăng huyết áp và đau thắt ngực ",
+      "3: [00020692] Tăng huyết áp và đau thắt ngực ",
+      "4: [00003391] Đái tháo đường tuýp 2",
+      "5: [00039373] Đái tháo đường tuýp 2",
+      "6: [00028966] (DK.3.1) Đa thần kinh đái tháo đường",
+      "7: [00001324] Điều trị táo bón "
+    ]
+  },
+  { name: "51",
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>8 <br><b>Chờ vận chuyển từ kho</b><br>2 ",
+      note: [
+      "1: [00030578] Chống kết tập tiểu cầu",
+      "2: [00048982] Mỡ máu  ",
+      "3: [00002469] Tăng huyết áp và suy tim ",
+      "4: [00002063] (BG.6.1) Điều trị bệnh suy tim, THA",
+      "5: [00018595] Viêm loét dạ dày, tá tràng",
+      "6: [00022797] Tiểu đường típ 2",
+      "7: [00002175] Giản tĩnh mạch, trĩ ",
+      "8: [00045755][00017414] Phù nề"
+    ]
+  },
+  { name: "52",
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>3 <br><b>Chờ vận chuyển từ kho</b><br>5  <br><br>6 hàng amlodipin nhìn xuống",
+      note: [
+      "1: [00020343] Chống kết tập tiểu cầu",
+      "2: [00002125] Mỡ máu  ",
+      "3: [Uloviz 40mg][00010137] Lợi tiểu",
+      "4: [00001227] Tăng huyết áp",
+      "5: [00045115] Bổ sung magnesi và kali, hỗ trợ điều trị suy tim",
+      "6: [00006111] Đau thắt ngực ",
+      "7: [00018718] Loét dạ dày, tá tràng",
+      "8: [00018839] Điều trị suy tim ",
+      "9: [00030859] Điều trị tăng acid uric, gout  ",
+      "10: [00004076](BK.2.8) Rối loạn hoặc suy giảm chuyển hóa protein người suy thận",
+      "11: [00003159] Đái tháo đường típ 2",
+      "12: [00001431](A2G.1.2) Bổ sung canxi và vitamin D3"
+    ]
+  },
+  { name: "53", 
+  ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>5, 6 ",
+      note: [
+      "1: [00016161] (BG.8.4) Điều trị bệnh suy tim",
+      "2: [00001227] Tăng huyết áp ",
+      "3: [00002469] Tăng huyết áp và suy tim ",
+      "4: [00022030] Đái tháo đường típ 2 ",
+      "5: [00020532] Lợi tiểu",
+      "6: [00020660] Điều trị tăng acid uric, gout  ",
+      "7: [00007829] Lợi tiểu",
+      "8: [00002124] Mỡ máu"
+    ]
+  },
+  { name: "54",
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>2, 4  <br><b>Chờ vận chuyển từ kho</b><br>1, 3 <br><br> 12 (có 120 liều và 60 lều)",
+      note: [
+      "1: [00013830] Kháng sinh",
+      "2: [00039717] Kháng sinh",
+      "3: [00032925] Tan đờm",
+      "4: [Rapeed 20][00006250] Viêm loét dạ dày, tá tràng",
+      "5: [00005999] Chống máu đông, huyết khối",
+      "6: [00004453] Mỡ máu ",
+      "7: [00007830] Lợi tiểu",
+      "8: [00004931] (BG.7.3) Tăng huyết áp",
+      "9: [00006111] (BG.5.5) Điều trị đau thắt ngực",
+      "10: [00006462] Giãn cơ ",
+      "11: [00042410] Viêm mũi dị ứng, mày đay ",
+      "12: [00007102][00007101] Điều trị hen suyễn"
+    ]
+  },
+  { name: "55", 
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>6, 7, 8  <br><b>Chờ vận chuyển từ kho</b><br><br>",
+      note: [
+      "1: [00003159] Đái tháo đường típ 2",
+      "2: [00004454] Mỡ máu",
+      "3: [00007829] Lợi tiểu",
+      "4: [00004325] Điều trị đái tháo đường ",
+      "5: [00001228] Tăng huyết áp",
+      "6: [00020532] Lợi tiểu ",
+      "7: [00015882] Bổ sung kali",
+      "8: [00041949] Chống đông máu (Hộc 3)"
+    ]
+  },
+  { name: "56",
+	ND: "<br><br> <b>Hàng nội, hàng ngoại</b><br>1, 3, 4, 5, 6<br><br>6 Bệnh nhân còn 56 viên",
+      note: [
+      "1: [00049316] Tăng huyết áp",
+      "2: [00002063] (BG.6.1) Điều trị bệnh suy tim, THA",
+      "3: [00006568] Chống kết tập tiểu cầu",
+      "4: [00047420] Mỡ máu ",
+      "5: [Rabeprazol 20 KH][00006245] Viêm loét dạ dày, tá tràng",
+      "6: [00050564] Chống viêm "
+    ]
+  },
+  { name: "57",
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>9  <br><b>Chờ vận chuyển từ kho</b><br>4, 6" ,
+      note: [
+      "1: [00020343] Chống kết tập tiểu cầu ",
+      "2: [00006003] (DK.3.2) Chứng thiếu máu cục bộ, Phòng ngừa nhồi máu não ",
+      "3: [00002125] Mỡ máu  ",
+      "4: [00010725] Tăng huyết áp ",
+      "5: [00006111] Đau thắt ngực ",
+      "6: [00043304] Viêm loét dạ dày, tá tràng",
+      "7: [00004025] Đái tháo đường típ 2",
+      "8: [00017346] Đái tháo đường típ 2 ",
+      "9: [00049640] (A2K.3.1) Giảm các triệu chứng suy tim "
+    ]  
+  },
+  { name: "58",
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>6 <br><br>6 (Chú ý Hàm lượng)<br>",
+      note: [
+      "1: [00000964] Kháng sinh ",
+      "2: [00502551] Kháng sinh",
+      "3: [00029917] Long đờm và tiêu nhầy",
+      "4: [00003159] Đái tháo đường típ 2  ",
+      "5: [00007829] (BG.8.5) Lợi tiểu ",
+      "6: [Gygaril][00047738] (BG.6.4) Tăng huyết áp",
+      "7: [00004453] Mỡ máu "
+    ]  
+  },
+  { name: "59", 
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>1, 2, 3, 4, 7, 8  <br><b>Chờ vận chuyển từ kho</b><br>5, 9 <br><br>8 (Forxiga)" ,
+       note: [
+      "1: [00005371] Tăng huyết áp ",
+      "2: [00007539] (BG.8.3) Điều trị đau thắt ngực",
+      "3: [Assovas 20][00004454] Mở máu",
+      "4: [00038197] (BK.5.5) Đái tháo đường típ 2  ",
+      "5: [Ketozar] (Kho) ",
+      "6: [00005692] (A1G.1.2) Viêm khớp",
+      "7: [00007228] (BG.7.3) Tăng huyết áp ",
+      "8: [00040042] Đái tháo đường típ 2",
+      "9: [00006902] (Kho) Bổ sung Vitamin D  "
+    ]  
+  },
+  { name: "60",
+  ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>2, 5 " ,
+        note: [
+      "1: [00032331] (BG.6.3) Tăng huyết áp, suy tim",
+      "2: [00003862] (BG.7.3) Tăng huyết áp",
+      "3: [00004025] Đái tháo đường típ 2",
+      "4: [00003159] Đái tháo đường típ 2  ",
+      "5: [AronatBoston][00000599] (BG.1.4) Loãng xương",
+      "6: [00030578] Chống kết tập tiểu cầu"
+    ]   
+  },
+  { name: "61",
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>3, 6  <br><b>Chờ vận chuyển từ kho</b><br>2 ",
+       note: [
+      "1: [00004775] Kháng viêm ",
+      "2: [00021417] Bổ sung canxi, D3",
+      "3: [00043374](DK.4.3) Điều trị viêm khớp",
+      "4: [00006250] Viêm loét dạ dày, tá tràng",
+      "5: [00027475](BK.1.4) Phòng và điều trị loãng xương ",
+      "6: [00047572] Hạ sốt, giảm đau"
+    ]   
+  },
+  { name: "62",
+	ND: "<br><br> <b>Chờ vận chuyển từ kho</b><br>1, 2" ,
+       note: [
+      "1: [00001403] Giảm các triệu chứng của thoái hóa khớp gối",
+      "2: [00002338] Chống viêm",
+      "3: [00004983] Điều trị viêm xương khớp",
+      "4: [00005072] Điều trị liệt cứng cơ",
+      "5: [00005756] Viêm loét dạ dày, tá tràng "
+    ]   
+  },
+  { name: "63",
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>5  <br><b>Chờ vận chuyển từ kho</b><br>2 ",
+       note: [
+      "1: [00004983] Điều trị viêm xương khớp",
+      "2: [Glucosamin 1500] Tăng tiết dịch khớp, giảm thoái hóa Khớp",
+      "3: [00005065] Điều trị triệu chứng co cứng cơ",
+      "4: [00006610] (DK.3.4) Đau dây thần kinh, viêm dây thần kinh",
+      "5: [00002622] Viêm loét dạ dày, tá tràng ",
+      "6: [00005247](BG.12.1) Điều trị hỗ trợ trong động kinh ",
+      "7: [00008077](BK.3.5) Giảm đau do chấn thương hoặc thấp khớp"
+    ] 
+  },
+  { name: "64",
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>1, 2, 4, 6  <br><b>Chờ vận chuyển từ kho</b><br>5 <br><br>1 (Không lấy tem hồng, tìm không ra)",
+       note: [
+      "1: [Cefactum 300][00016551] Kháng sinh",
+      "2: [Ledorozine 60][00501506](DK.4.2) Bệnh phế quản và phổi có kèm ho khan",
+      "3: [00008350] Hạ sốt giảm đau",
+      "4: [00029503] Giãn cơ",
+      "5: [Glupain 2] Tăng tiết dịch khớp, giảm thoái hóa Khớp",
+      "6: [00029747] Mỡ máu "
+    ] 
+  },
+  { name: "65",
+	ND: "<br><br> <b>Hàng nội, hàng ngoại</b><br>4, 7 <br><b>Chờ vận chuyển từ kho</b><br>3 ",
+       note: [
+      "1: [00008077] (BK.3.5) Giảm đau do chấn thương hoặc thấp khớp",
+      "2: [00042070](A2G.1.1) Bổ sung canxi, D3",
+      "3: [00502371] Tăng tiết dịch khớp, giảm thoái hóa khớp",
+      "4: [Myomethol][00029001](BK.1.3) Đau, co thắt cơ, bong gân",
+      "5: [00005072] Điều trị liệt cứng cơ",
+      "6: [00021658](BG.9.5) Mỡ máu ",
+      "7: [00038631](KSĐB) Kháng sinh "
+    ] 
+  },
+  { name: "66",
+	ND: "" ,
+        note: [
+      "1: [00049255] Kháng sinh",
+      "2: [00003434](BK.5.3) Tiểu đường típ 2 ",
+      "3: [00007491](BK.5.4) Đái tháo đường tuýp 2",
+      "4: [00042054] Suy thượng thận",
+      "5: [00009887](KSĐB) Điều trị bệnh gút",
+      "6: [00021256] Điều trị tăng acid uric, gout ",
+      "7: [00004453] Mỡ máu",
+      "8: [00005714] Hạ sốt giảm đau"
+	  ]
+  },
+  { name: "67",
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>4, 5, 6  <br><b>Chờ vận chuyển từ kho</b><br><br>4 (Valgesic)" ,
+          note: [
+      "1: [00018504] Bút tiêm đái tháo đường",
+      "2: [00004027] Đái tháo đường típ 2 ",
+      "3: [00028593] Tăng huyết áp",
+      "4: [Forsancort 10][00042054] Suy thượng thận",
+      "5: [00002126] Mỡ máu",
+      "6: [00020660] Điều trị tăng acid uric, gout "
+	  ]
+  },
+  { name: "68",
+      ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>2, 4, 7  <br><b>Chờ vận chuyển từ kho</b><br>3" ,
+      note: [
+      "1: [00009887](KSĐB) Điều trị bệnh gút",
+      "2: [00502123] Điều trị tăng acid uric, gout ",
+      "3: [00001403] Giảm các triệu chứng của thoái hóa khớp gối",
+      "4: [00002126] Mỡ máu",
+      "5: [00005029] (A2G.4.2) Trào ngược dạ dày - thực quản",
+      "6: [00004776] Kháng viêm",
+      "7: [00002853] Viêm loét dạ dầy, tá tràng ",
+      "8: [00002108] Tăng huyết áp "
+	  ]
+  },
+  { name: "69",
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>2 ",
+      note: [
+      "1: [00004775] Kháng viêm ",
+      "2: [00004981] Điều trị viêm xương khớp",
+      "3: [00007635] Đau từ trung bình đến nặng",
+      "4: [00005272] Viêm loét dạ dầy, tá tràng",
+      "5: [00000618] Điều trị tăng acid uric, gout "
+	  ]
+  },
+  { name: "70",
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>2, 3, 6 ",
+      note: [
+      "1: [00031227] (BK.2.8) Phòng và điều trị suy thận ",
+      "2: [00010054] (DK.4.3) Điều trị tăng acid uric, gout ",
+      "3: [Sintrom 4][00021253] (BG.9.3) Chống máu đông",
+      "4: [00006002] (BG.5.4) Tăng huyết áp",
+      "5: [00006433] Tăng huyết áp",
+      "6: [00500718] (BG.10.3) Mỡ máu",
+      "7: [00003159] Đái tháo đường típ 2"
+	  ]
+  },
+  { name: "71",
+	ND: "<br><br><b>Chờ vận chuyển từ kho</b><br> 4, 5 " ,
+      note: [
+      "1: [00014172] (BK.1.4) Điều trị giun chỉ, giun lươn",
+      "2: [00031514] Điều trị ký sinh trùng đường ruột",
+      "3: [00040654] Điều trị triệu chứng dị ứng và mề đay",
+      "4: [00004361] (Kho) Rối loạn chức năng gan",
+      "5: [Hemomax] (Kho) Khoáng chất và vitamin"
+	  ]  
+  },
+  { name: "72",
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>5  <br><b>Chờ vận chuyển từ kho</b><br>2, 4 ",
+      note: [
+      "1: [00031514] Điều trị ký sinh trùng đường ruột",
+      "2: [00010470] (Kho) Điều trị duy trì tăng amoniac máu",
+      "3: [00022800] (A1K.1.1) Vitamin và Acid Amin ",
+      "4: [00021552] (Kho) Bổ sung kẽm, tăng cường sức đề kháng ",
+      "5: [00041275] (A1K.1.3) Giảm triệu chứng dị ứng và mày đay"
+	  ] 
+  },
+  { name: "73",
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>1, 3, 4, 5, 6  <br> <b>Chờ vận chuyển từ kho</b><br>2, 7",
+      note: [
+      "1: [00031514] Điều trị ký sinh trùng đường ruột",
+      "2: [00021630] (Kho) Loét dạ dày, tá tràng",
+      "3: [Stroseca] [00014172] (BK.1.4) Điều trị giun chỉ, giun lươn ",
+      "4: [00049222] (DK.3.3) Dị ứng, mề đay ",
+      "5: [00004839] Kháng viêm",
+      "6: [HEPAQUEEN][00004514] (A2K.1.3) Điều trị viêm gan",
+      "7: [00002479] (Kho) Ðiều trị  các loại sán",
+      "8: [ROCIMUS 0,1%][00006400] (TL) Điều trị viêm da cơ địa "
+	  ] 
+  },
+  { name: "74",
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>1, 2, 4, 5  <br><b>Chờ vận chuyển từ kho</b><br>3, 6 <br><br>5 (DK.3.8 AT Zinc siro)",
+      note: [
+      "1: [Alzed][00031514] Điều trị ký sinh trùng đường ruột",
+      "2: [Raxnazole][00006871] (BK.1.4) Nấm phụ khoa, da, toàn thân",
+      "3: [Lobetasol] (Kho) Bệnh da liễu, chống viêm, kháng nấm ",
+      "4: [00013729] Dị ứng, mề đay ",
+      "5: [00031184] (DK.3.8) Bổ sung Kẽm gluconat"
+	  ] 
+  },
+  { name: "75",
+	ND: "<br><br><b>Chờ vận chuyển từ kho</b><br> 4",
+      note: [
+      "1: [00005377] Điều trị co thắt cơ trơn",
+      "2: [00002659] (BK.1.6) Dọa sảy thai do thiếu hụt progesterone",
+      "3: [00007735] (BK.1.6) Dọa sảy thai, sinh non",
+      "4: [00039914] Điều trị thiếu máu do thiếu sắt"
+	  ] 
+  },
+  { name: "76",
+	ND: "<br><br><b>Chờ vận chuyển từ kho</b><br> 3 ",
+      note: [
+      "1: [00002659] (BK.1.6) Dọa sảy thai do thiếu hụt progesterone",
+      "2: [00007735] (BK.1.6) Dọa sảy thai, sinh non",
+      "3: [folic 4] (Kho) Điều trị thiếu máu do thiếu sắt"
+	  ] 
+  },
+  { name: "77",
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>1A, 2B, 3B  <br><br>2B (Sterolow 20mg còn 7 viên)",
+      note: [
+      "1A: [00502293] Kháng sinh",
+      "2A: [00018147][00010291] Viêm mũi dị ứng, mày đay",
+      "3A: [00009735] điều trị viêm mũi dị ứng",
+      "1B: [00004514] Bảo vệ và tái tạo tế bào gan",
+      "2B: [00030181] Mở máu",
+      "3B: [00049694] Điều trị tăng acid uric, gout  ",
+      "4B: [00004511] (DG.5.5) Bổ gan, hỗ trợ điều trị các bệnh lý gan"
+	  ] 
+  },
+  { name: "78",
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>1, 2, 3, 4, 5, 6, 7, 8 <br><b>Chờ vận chuyển từ kho</b>",
+      note: [
+      "1: [00028548] Điều trị ký sinh trùng đường ruột",
+      "2: [00029547] (DK.3.3) Viêm mũi dị ứng, mày đay",
+      "3: [Silum][00029635] Điều trị dự phòng cơn đau nửa đầu",
+      "4: [00501480] Hỗ trợ bảo vệ tế bào gan",
+      "5: [00020577] Kháng sinh",
+      "6: [Clarisol][00001911] Kháng sinh",
+      "7: [00010016] Viêm loét dạ dày, tá tràng",
+      "8: [00041285] (BK.3.6) Bệnh nhiễm nấm da"
+	  ] 
+  },
+  { name: "79",
+	ND: "",
+      note: [
+      "1: [00007273] Kháng sinh",
+      "2: [00007381] (DG.2.2) Kháng sinh và chống ký sinh trùng ",
+      "3: [00007567] (A2G.4.2) điều trị dạ dày, bao vết loét, diệt HP",
+      "4: [00005369] (A2G.4.1) Cân bằng hệ vi sinh đường ruột",
+      "5: [00005901] (A2K.1.3) Bệnh gan mạn tính, gan nhiễm mỡ"
+	  ] 
+  },
+  { name: "80",
+	ND: "<br><br><b>Chờ vận chuyển từ kho</b><br>3  ",
+      note: [
+      "1: [00020100] (DG.5.5) Xơ gan mật, tan sỏi mật",
+      "2: [00028214] (A2G.4.1) Rối loạn tiêu hóa, đầy hơi, chán ăn ",
+      "3: [00049196] Viêm loét dạ dày, tá tràng",
+      "4: [00000726] Tăng huyết áp",
+      "5: [00002063] (BG.6.1) Điều trị bệnh suy tim, THA"
+	  ] 
+  },
+  { name: "81",
+	ND: "" ,
+       note: [
+      "1: [00002469] Tăng huyết áp và suy tim ",
+      "2: [00000900] (BG.9.2) Phòng ngừa nhồi máu cơ tim, đột quỵ",
+      "3: [00002126] Mỡ máu",
+      "4: [00003159] Đái tháo đường típ 2",
+      "5: [00007160] Rối loạn nhận thức và trí nhớ",
+      "6: [00001230] Chóng mặt tiền đình",
+      "7: [00007165] Điều trị cơn chóng mặt "
+	  ]  
+  },
+  { name: "82",
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>3 ",
+       note: [
+      "1: [00001230] Chóng mặt tiền đình",
+      "2: [00007165] Điều trị cơn chóng mặt",
+      "3: [00503048] (DK.3.3) Đau nửa đầu, rối loạn tiền đình",
+      "4: [00049055] (DK.3.2) Suy nhược thần kinh, giúp tăng tuần hoàn não, tăng cường trí nhớ",
+      "5: [00500968] (DK.3.8) Điều trị bệnh do tổn thương não",
+      "6: [00005917] (DK.3.2) Suy tuần hoàn tĩnh mạch, trĩ",
+      "7: [00046871] (A2K.1.1) Điều trị bệnh trĩ,"
+	  ]  
+  },
+  { name: "83",
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>2, 4 <br><br>3 (trên học 625)<br>4 (DK.3.1 SEMIRAD)",
+       note: [
+      "1: [00032892] Đau nửa đầu, rối loạn tiền đình",
+      "2: [00031432] Điều trị chóng mặt, suy giảm thính giác",
+      "3: [00029873] Bổ sung magnesi, Vitamin B6",
+      "4: [Lefeilin][00006639] (DK.3.1) Điều trị rối loạn tuần hoàn não",
+      "5: [00007165] Điều trị cơn chóng mặt "
+	  ]  
+  },
+  { name: "84",
+	ND: "<br><br> <b>Hàng nội, hàng ngoại</b>. <br><b>Chờ vận chuyển từ kho</b>",
+       note: [
+      "1: [00001230] Chóng mặt tiền đình",
+      "2: [00006938] Điều trị rối loạn tuần hoàn não",
+      "3: [00007165] Điều trị cơn chóng mặt ",
+      "4: [00029114] Triệu chứng chóng mặt, đột quỵ ",
+      "5: [00002723] (KSĐB) Hạ sốt giảm đau "
+	  ] 
+  },
+  { name: "85",
+	ND: "<br><br><b>Chờ vận chuyển từ kho</b><br>4 <br><br>4 (AIIG.3.2 oresol thường)",
+       note: [
+      "1: [00502616] (BG.12.5) Bệnh cúm do virus ",
+      "2: [00000964] Kháng sinh",
+      "3: [00008350] Hạ sốt giảm đau ",
+      "4: [oresol cam][00027541] Bù nước, điện giải",
+      "5: [00015942] (CG.1.1) Điều trị và ngăn ngừa viêm họng, viêm amidan"
+	  ] 
+  },
+  { name: "86",
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>4  <br><b>Chờ vận chuyển từ kho</b><br> 2 ",
+       note: [
+      "1: [00502616] (BG.12.5) Bệnh cúm do virus ",
+      "2: [AZKA] (kho) long đờm, giảm ho, đau rát cổ họng, viêm phế quản",
+      "3: [00043642] (A1K.2.1) Viêm mũi dị ứng, hắt hơi, sổ mũi",
+      "4: [oresol cam][00027541] Bù nước, điện giải",
+      "5: [00018834] (DK.4.5) viêm kết mạc, mi mắt, viêm mũi, viêm tai"
+	  ] 
+  },
+  { name: "87",
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>2, 3, 4  <br><b>Chờ vận chuyển từ kho</b>",
+       note: [
+      "1: [00000965] Kháng sinh",
+      "2: [00050229] (BG.12.5) Bệnh cúm do virus ",
+      "3: [00029548][00016186] (A1K.2.1) Điều trị hen phế quản và viêm phế quản",
+      "4: [00502748] Dự phòng và điều trị hen phế quản mãn tính",
+      "5: [00029332] (DK.4.8) Tăng cường hệ miễn dịch, phòng tái phát nhiễm khuẩn",
+      "6: [00002710] Hạ sốt giảm đau"
+	  ] 
+  },
+  { name: "88",
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>2, 3, 4, 5  <br><b>Chờ vận chuyển từ kho</b><br><br>2 (ZYX)<br>4(FUCIDIN)<br> 5 (3B trường thọ)",
+       note: [
+      "1: [00047878] (BG.12.4) Điều trị nhiễm virus",
+      "2: [Zibreno 5][00030408] Điều trị dị ứng",
+      "3: [Pharbacol 650][00003630] Hạ sốt giảm đau",
+      "4: [00039671] (DK.3.6)  Trị nhiễm khuẩn tại chỗ, bệnh về da ",
+      "5: [Neurobion][00030906] Bổ sung vitamin nhóm B"
+	  ] 
+  },
+  { name: "89",
+  ND: "<br><br><b>Chờ vận chuyển từ kho</b><br>4, 6 ",
+       note: [
+      "1: [00002954] Điều trị tăng huyết áp",
+      "2: [00004454] Mỡ máu",
+      "3: [00003034] (A2K.3.1) Điều trị thiếu máu do thiếu sắt",
+      "4: [00016053] Bổ sung Canxi và Vitamin D ",
+      "5: [00006931] (BG.11.3) Điều trị các biểu hiện dạng lo âu",
+      "6: [00004061] (Kho) Điều trị giảm kali huyết",
+      "7: [00005011] (A2K.3.1) (Tem hồng) Bổ sung vitamin và acid amin"
+	  ] 
+  },
+  { name: "90",
+	ND: "" ,
+        note: [
+      "1: [00001884] (DG.2.1) Kháng sinh",
+      "2: [00020692] Tăng huyết áp",
+      "3: [00000646] (BK.2.5) Phì đại lành tính tuyến tiền liệt ",
+      "4: [00001013] (BK.2.6) Phì đại lành tính tuyến tiền liệt ",
+      "5: [00015902] Điều trị Các chứng giảm kali huyết ",
+      "6: [00002050] (DG.1.5) Kiểm soát co thắt phế quản",
+      "7: [00006167] Điều trị hen phế quản ",
+      "8: [00047402] Bổ sung lợi khuẩn đường ruột "
+	  ]  
+  },
+  { name: "91",
+  ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>2, 4  <br><b>Chờ vận chuyển từ kho</b><br>3, 5 ",
+        note: [
+      "1: [00049682] (BG.12.3) Parkinson, hội chứng ngoại tháp",
+      "2: [00010249] (BG.11.1) Ðiều trị bệnh tâm thần phân liệt ",
+      "3: [Tusalene 5] (kho) An thần",
+      "4: [Olanzap 5][00008198] (BG.11.2) Ðiều trị tâm thần phân liệt.",
+      "5: [00051071] (Kho) Bổ sung vitamin nhóm B "
+	  ]
+  },
+  { name: "92",
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>2B ",
+        note: [
+      "1A: [00009999] (BG.6.4) Tăng huyết áp",
+      "2A: [00047557] Tăng huyết áp",
+      "1B: [00008350] Hạ sốt, giảm đau",
+      "2B: [00030182] Viêm loet dạ dày",
+      "3B: [00004983] Điều trị viêm xương khớp",
+      "4B: [00002823] Điều trị liệt cứng cơ",
+      "5B: [00021341] (BG.12.2) Các bệnh lý thần kinh ngoại biên",
+      "6B: [00004775] Kháng viêm"
+	  ]
+  },
+  { name: "93",
+	ND: "<br><br><b>Chờ vận chuyển từ kho</b><br>4 " ,
+         note: [
+      "1: [00011026] Tăng huyết áp",
+      "2: [00007228] (BG.7.3) Tăng huyết áp",
+      "3: [00018198] Viêm loet dạ dày",
+      "4: [00050575] (Kho) Điều trị bệnh Parkinson",
+      "5: [00013499] (BG.11.2) Điều trị ngắn hạn chứng mất ngủ",
+      "6: [00049682] (BG.12.3) Parkinson, hội chứng ngoại tháp",
+      "7: [00004967] (BG.12.1) Điều trị đau thần kinh, động kinh ",
+      "8: [00017466] Viêm mũi dị ứng, mày đay "
+	  ] 
+  },
+  { name: "94",
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>1, 2, 3, 4, 5 ",
+         note: [
+      "1: [00503150] (BK.1.4) Điều trị loãng xương",
+      "2: [00045081] Kháng viêm",
+      "3: [Traflon] Suy giảm tĩnh mạch và trĩ ",
+      "4: [Pharbacol 650][00003630] Hạ sốt giảm đau",
+      "5: [00501461] (BG.3.4) Viêm loét đại tràng,",
+      "6: [00045804] Điều trị viêm khớp dạng thấp",
+      "7: [00013776] (A2G.1.1) Bổ sung calxi, D3 ",
+      "8: [00047407] (Kho) Điều trị viêm khớp dạng thấp nặng "
+	  ] 
+  },
+  { name: "95",
+	ND: "<br><br><b>Chờ vận chuyển từ kho</b><br>1 ",
+         note: [
+      "1: [00033081] (BG.8.3) Tăng huyết áp",
+      "2: [00011351] Tăng huyết áp",
+      "3: [00004118] (BK.2.8) Phòng ngừa và điều trị suy thận",
+      "4: [00031434] Kháng viêm",
+      "5: [00010137] (BG.8.5) Lợi tiểu"
+	  ] 
+  },
+  { name: "96",
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>1, 3, 5, 9  <br>4 <b>Chờ vận chuyển từ kho</b><br><br>2 (Giãn cơ)<br>5 (BG.1.5 nấm)<br>7 (BK.3.5 Nizoral)<br>8 (Dầu gọi - Hàng cuối gốc phải)<br>9 (BK.3.6 tuyp không Rx)" ,
+          note: [
+      "1: [00050183] Tăng huyết áp, đau thắt ngực ",
+      "2: [00028544] Giảm đau co thắt cơ xương",
+      "3: [00027708] Viêm loét dạ dày, tá tràng",
+      "4: [00027586] Bổ sung calci, D3",
+      "5: [00043702] (BG.1.5) Kháng nấm phổ rộng",
+      "6: [00028530] Giảm dị ứng",
+      "7: [00041035] (BK.3.5) Điều trị nhiễm nấm ngoài da",
+      "8: [00048319] (C.z.z) Hỗ trợ điều trị mẩn ngứa trên da đầu",
+      "9: [00007255] (BK.3.6) Nhiễm nấm ở da, lang ben"
+	  ]  
+  },
+  { name: "97",
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>4 <br><b>Chờ vận chuyển từ kho</b><br>1, 2 <br><br> Thuốc số 5 uống vào tuần thứ 2 sau mỗ, sau khi hết thuốc số 4",
+          note: [
+      "1: [00004711] Thuốc mỡ tra mắt trị viêm mắt",
+      "2: [00004712] Thuốc nhỏ mắt trị viêm mắt ",
+      "3: [00007124] (BK.3.8) Rát và kích ứng do khô mắt",
+      "4: [Vinsolon][00004775] Kháng viêm",
+      "5: [00004776] Kháng viêm",
+      "6: [00005532] Viêm loét dạ dày, tá tràng"
+	  ]  
+  },
+  { name: "98",
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>5  <br><b>Chờ vận chuyển từ kho</b><br>3",
+          note: [
+      "1: [00005484] (DG.1.3) Viêm bờ mi, viêm túi lệ, lẹo",
+      "2: [00007400] (DK.4.5) Viêm ở mắt ",
+      "3: [HYAVIS][00502263][00006530] Nước mắt nhân tạo",
+      "4: [00038353] Nước muối sinh lý nhỏ mắt",
+      "5: [00020295] Dị ứng"
+	  ] 
+  },
+  { name: "99",
+	ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>4, 5  <br><b>Chờ vận chuyển từ kho</b><br>1" ,
+          note: [
+      "1: [00503393] (Kho) Kháng viêm",
+      "2: [00018718] (BG.2.5) Viêm loét dạ dày, tá tràng",
+      "3: [00003188] (DK.3.6) viêm da nhiễm khuẩn",
+      "4: [00048734][00008427] (DK.3.6) Điều trị chàm cơ địa",
+      "5: [00047964][00020448] (DK.3.6) Điều trị viêm da "
+	  ]   
+  },
+  { name: "100",
+  ND: "<br><br><b>Hàng nội, hàng ngoại</b><br>1A, 4A, 6A, 2B ",
+          note: [
+      "1A: [00043895] Chống viêm không steroid",
+      "2A: [00008077] (BK.3.5) Giảm đau do chấn thương hoặc thấp khớp",
+      "3A: [00006462] (BG.1.4) Giãn cơ ",
+      "4A: [00027708] Viêm loét dạ dày, tá tràng",
+      "5A: [00020486] Hạ sốt giảm đau ",
+      "6A: [00002287] (BG.12.1) Điều trị rối loạn lo âu",
+      "1B: [00047557] Tăng huyết áp",
+      "2B: [00018298] Tăng huyết áp"
+	  ] 
+  },
+];
+
+const vaccineData = [
+ 
+  {
+    group: "Não mô cầu",
+    items: [
+	
+      {
+        name: "Nimenrix (Bỉ) ACYW",
+        price: "1.750.000",
+        age: "Từ 6 tuần tuổi trở lên",
+        nd: `
+          <b>Phòng ngừa:</b> Vắc xin Nimenrix giúp phòng bệnh não mô cầu xâm lấn do nhóm A, C, W-135, Y, có thể gây tử vong nhanh nếu không điều trị kịp thời.<br><br>
+          <b>Độ tuổi:</b> Từ 6 tuần tuổi trở lên.<br>
+          <b>Phụ nữ mang thai:</b> Không chỉ định.<br><br>
+          <b>Phác đồ:</b><br>
+          • Trẻ 6 tuần – < 6 tháng:<br>
+          - Mũi 1: lần đầu<br>
+          - Mũi 2: sau 2 tháng<br>
+          - Mũi 3: từ 12 tháng, cách 2 tháng sau mũi 2<br><br>
+          • Trẻ 6 tháng – < 12 tháng:<br>
+          - Mũi 1: lần đầu<br>
+          - Mũi 2: từ 12 tháng, cách 2 tháng sau mũi 1<br><br>
+          • ≥ 12 tháng & người lớn: 1 mũi<br>
+        `
+      },
+	  {
+        name: "MenQuadfi (Hoa Kỳ) ACYW",
+        price: "1.840.000đ",
+        age: "Từ 6 tuần tuổi trở lên",
+        nd: `
+          <b>Phòng ngừa:</b> Vắc xin Vắc xin MenQuadfi giúp phòng bệnh não mô cầu xâm lấn do nhóm A, C, W-135, Y, có thể gây tử vong nhanh nếu không điều trị kịp thời.<br><br>
+          <b>Độ tuổi:</b> Từ 6 tuần tuổi trở lên.<br>
+          <b>Phụ nữ mang thai:</b> Không chỉ định.<br><br>
+          <b>Phác đồ:</b><br>
+          • Trẻ tròn 06 tuần tuổi đến < 06 tháng tuổi:<br>
+Mũi 1: Lần tiêm đầu tiên.<br>
+Mũi 2: 02 tháng sau mũi 1.<br>
+Mũi 3: 02 tháng sau mũi 2.<br>
+Mũi 4: Từ tròn 12 tháng tuổi trở lên, cách 02 tháng sau mũi 3.<br><br>
+
+• Trẻ tròn 06 tháng tuổi đến <12 tháng tuổi:<br>
+Mũi 1: Lần đầu tiên.<br>
+Mũi 2: Từ tròn 12 tháng tuổi trở lên, cách 02 tháng sau mũi 1.<br><br>
+
+• Từ tròn 12 tháng và người lớn:<br>
+Tiêm 01 mũi.<br><br>
+
+<b>Tiêm chủng nhắc lại:</b><br>Có thể được sử dụng để tăng cường bảo vệ cho trẻ trên 12 tháng tuổi trước đó đã được chủng ngừa vắc xin não mô cầu có cùng các nhóm huyết thanh.<br>
+        `
+      },
+	  {
+        name: "Menactra (Hoa Kỳ) ACYW",
+        price: "1.360.000đ",
+        age: "Từ 9 tháng tuổi đến 55 tuổi",
+        nd: `
+          <b>Phòng ngừa:</b> Vắc xin Menactra phòng ngừa bệnh các bệnh viêm màng não, nhiễm khuẩn huyết và viêm phổi do vi khuẩn não mô cầu tuýp A, C, Y, W-135 gây ra.<br><br>
+          <b>Độ tuổi:</b> Từ 9 tháng tuổi đến 55 tuổi.<br>
+          <b>Phụ nữ mang thai:</b> Không chỉ định.<br><br>
+          <b>Phác đồ:</b><br>
+          • Trẻ tròn 09 tháng đến < 24 tháng tuổi:<br>
+Mũi 1: Lần đầu tiên.<br>
+Mũi 2: 3 tháng sau mũi 1.<br><br>
+• Người từ 2 tuổi đến 55 tuổi: Tiêm 1 liều.<br><br>
+<b>Tiêm nhắc lại:</b><br>
+• Có thể tiêm nhắc lại ít nhất 4 năm sau mũi tiêm gần nhất cho người từ 15 đến 55 tuổi nếu tiếp tục có nguy cơ mắc não mô cầu hoặc cần để đi du học, nhập cư.
+        `
+      },
+	  {
+        name: "Va-mengoc BC (Cuba) BC",
+        price: "360.000đ",
+        age: "Từ 6 tháng tuổi đến 45 tuổi",
+        nd: `
+          <b>Phòng ngừa:</b>  Vắc xin VA-Mengoc BC giúp tạo miễn dịch chủ động trong việc phòng ngừa bệnh viêm màng não do não mô cầu nhóm huyết thanh B và C, hai tác nhân chính gây viêm màng não mô cầu và nhiễm trùng huyết, đặc biệt nguy hiểm ở trẻ nhỏ và thanh thiếu niên.<br><br>
+          <b>Độ tuổi:</b> Từ 6 tháng đến dưới 46 tuổi.<br>
+          <b>Phụ nữ mang thai:</b> Không chỉ định.<br><br>
+          <b>Phác đồ:</b><br>
+          • Lịch tiêm:<br>
+Mũi 1: Lần đầu tiên.<br>
+Mũi 2: 02 tháng sau mũi 1.<br>
+        `
+      },
+	  {
+        name: "Bexsero (Ý) B",
+        price: "1.750.000đ",
+        age: "Từ  2 tháng tuổi đến 50 tuổi",
+        nd: `
+          <b>Phòng ngừa:</b>  Vắc xin Bexsero giúp bảo vệ chống lại Neisseria meningitidis nhóm B, nguyên nhân chính gây viêm màng não mô cầu và nhiễm trùng huyết, đặc biệt nguy hiểm ở trẻ nhỏ và thanh thiếu niên.<br><br>
+          <b>Độ tuổi:</b> Từ  2 tháng tuổi đến 50 tuổi.<br>
+          <b>Phụ nữ mang thai:</b> Không chỉ định.<br><br>
+          <b>Phác đồ:</b><br>
+          • Từ 02 tháng tuổi đến < 06 tháng tuổi:<br>
+Mũi 1: Lần đầu trong độ tuổi.<br>
+Mũi 2: 02 tháng sau mũi 1.<br>
+Mũi 3: 08 tháng sau mũi 2.<br><br>
+
+• Từ 02 tháng tuổi đến < 06 tháng tuổi khi có dịch:<br>
+Mũi 1: Lần đầu trong độ tuổi.<br>
+Mũi 2: 01 tháng sau mũi 1.<br>
+Mũi 3: 01 tháng sau mũi 2.<br>
+Mũi 4: 08 tháng sau mũi 3.<br><br>
+
+• Từ 06 tháng tuổi đến < 12 tháng tuổi:<br>
+Mũi 1: Lần đầu trong độ tuổi.<br>
+Mũi 2: 02 tháng sau mũi 1.<br>
+Mũi 3: 04 tháng sau mũi 2.<br><br>
+
+• Từ 12 tháng đến < 24 tháng tuổi:<br>
+Mũi 1: Lần đầu trong độ tuổi.<br>
+Mũi 2: 02 tháng sau mũi 1.<br>
+Mũi 3: 12 tháng sau mũi 2.<br><br>
+
+• Từ 24 tháng đến 50 tuổi:<br>
+Mũi 1: Lần đầu trong độ tuổi.<br>
+Mũi 2: 01 tháng sau mũi 1.<br>
+        `
+      }
+    ]
+ },
+ {
+    group:"Sốt xuất huyết",
+    items:[
+     {
+       name:"Qdenga (Đức)",
+       price:"1.390.000",
+       age:"Từ 4 tuổi trở lên",
+       nd:`<b>Biểu hiện:</b> nhần lẫn cảm sốt thông thường: Sột, mệt mõi<br><br>
+	   <b>Biến chứng nặng:</b> Xuất huyết dưới da, Xuất huyết nội tạng, Cô đặc máu, Sóc mất máu, Tràng dịch màng phổi, Suy đa tạng, dẫn đến tử vong<br>
+	   <b>Phụ nữ mang thai:</b> sinh non, xảy thay, thay chết lưu.<br><br>
+	   <b>Nhiễm sốt xuất huyết rồi vẫn có thể bị lại:</b> vì có 4 loại virus gây sốt xuất huyết<br><br>
+	   Nhiễm sốt xuất huyết những lần sau thường sẽ nặng hơn lần đầu. <br><br>
+	   Hiện nay bệnh vẫn chưa có thuốc điều trị đặc hiệu nên phòng bệnh là quan trọng nhất.<br><br><b>
+	   Vắc xin Qdenga (Đức)<br><br>
+	   Giá:</b> 1.390.000đ/mũi<br><br><b>
+	   Độ tuổi tiêm: </b>từ 4 tuổi trở lên<br><br><b>
+	   Phác đồ:</b> 2 mũi, cách nhau là 3 tháng.<br><br>
+	   <b>Tiêm nhắc lại sau 4-5 năm.</b><br><br>
+	   Không tiêm khi mang thai<br>Tiêm trước mang thai ít nhất 1 tháng <br>
+	   Sau khi sốt xuất huyết 6 tháng có thể tiêm<br>`
+     }
+   ]
+},
+{
+   group:"HPV",
+   items:[
+       {
+        name: "Gardasil 9 (Hoa Kỳ)",
+        price: "2.965.000đ",
+        age: "Cả nam và nữ từ 9 đến dưới 46 tuổi",
+        nd: `
+          <b>Phòng ngừa:</b>  Vắc xin Gardasil 9 giúp phòng ngừa 9 chủng virus HPV (6, 11, 16, 18, 31, 33, 45, 52 và 58), giảm nguy cơ mắc các bệnh như ung thư cổ tử cung, âm hộ, âm đạo, hậu môn và mụn cóc sinh dục.<br><br>
+          <b>Độ tuổi:</b> Cả nam và nữ từ 9 tuổi đến dưới 46 tuổi.<br>
+          <b>Phụ nữ mang thai:</b> Không chỉ định.<br><br>
+          <b>Phác đồ:</b><br>
+          • Từ 09 đến < 15 tuổi:<br>
+Mũi 1: Lần đầu tiên.<br>
+Mũi 2: 06 tháng sau mũi 1.<br><br>
+
+• Từ 15 đến 45 tuổi:<br>
+Mũi 1: Lần đầu tiên.<br>
+Mũi 2: 02 tháng sau mũi 1.<br>
+Mũi 3: 04 tháng sau mũi 2.<br><br>
+
+• Lịch tiêm nhanh áp dụng cho người từ 15 tuổi trở lên:<br>
+Mũi 1: Lần đầu tiên.<br>
+Mũi 2: 01 tháng sau mũi 1.<br>
+Mũi 3: 03 tháng sau mũi 2.<br><br>
+
+• Tất cả 03 liều phải tiêm trong 01 năm.<br>
+        `
+      },
+      {
+        name: "Gardasil 4 (Hoa Kỳ)",
+        price: "1.780.000đ",
+        age: "Dành cho nữ từ 9 đến 26 tuổi",
+        nd: `
+          <b>Phòng ngừa:</b>  Vắc xin Gardasil giúp phòng ngừa ung thư cổ tử cung, âm hộ, âm đạo, các tổn thương tiền ung thư và loạn sản, mụn cóc sinh dục, các bệnh lý do nhiễm virus HPV tuýp 6, 11, 16 và 18.<br><br>
+          <b>Độ tuổi:</b> Dành cho nữ từ 9 tuổi đến 26 tuổi.<br>
+          <b>Phụ nữ mang thai:</b> Không chỉ định.<br><br>
+          <b>Phác đồ:</b><br>
+          • Từ 09 đến < 14 tuổi:<br>
+Mũi 1: Lần đầu tiên.<br>
+Mũi 2: 06 tháng sau mũi 1.<br><br>
+
+• Từ 14 đến 26 tuổi:<br>
+Mũi 1: Lần đầu tiên.<br>
+Mũi 2: 02 tháng sau mũi 1.<br>
+Mũi 3: 04 tháng sau mũi 2.<br><br>
+
+• Lịch tiêm nhanh cho nữ ≥ 14 tuổi:<br>
+Mũi 1: Lần đầu tiên.<br>
+Mũi 2: 01 tháng sau mũi 1.<br>
+Mũi 3: 03 tháng sau mũi 2.<br><br>
+
+• Tất cả 3 liều phải tiêm trong 01 năm.<br>
+        `
+    },
+    
+   ]
+ },
+ {
+   group:"Phế cầu",
+   items:[
+       {
+        name: "Prevenar 20 (Bỉ) 20",
+        price: "1.740.000đ",
+        age: "Từ 6 tuần tuổi trở lên",
+        nd: `
+          <b>Phòng ngừa:</b>Vắc xin Prevenar 20 giúp phòng ngừa 20 týp huyết thanh phổ biến và độc lực cao của phế cầu khuẩn Streptococcus pneumoniae (gồm: 1, 3, 4, 5, 6A, 6B, 7F, 8, 9V, 10A, 11A, 12F, 14, 15B, 18C, 19A, 19F, 22F, 23F, 33F), chúng gây ra các bệnh nguy hiểm như viêm phổi, viêm màng não, nhiễm khuẩn huyết và viêm tai giữa cấp.<br><br>
+          <b>Độ tuổi:</b>Từ 6 tuần tuổi trở lên.<br>
+          <b>Phụ nữ mang thai:</b> Không chỉ định.<br><br>
+          <b>Phác đồ:</b><br>
+          • Trẻ em từ 06 tuần tuổi đến dưới 07 tháng tuổi:<br>
+Mũi 1: Lần tiêm đầu tiên trong độ tuổi<br>
+Mũi 2: 01 tháng sau mũi 1<br>
+Mũi 3: 01 tháng sau mũi 2<br>
+Mũi 4: 08 tháng sau mũi 3<br><br>
+
+• Trẻ từ tròn 07 tháng đến dưới 12 tháng tuổi:<br>
+Mũi 1: Lần tiêm đầu tiên trong độ tuổi<br>
+Mũi 2: 01 tháng sau mũi 1<br>
+Mũi 3: 04 tháng sau mũi 2<br><br>
+
+• Trẻ từ tròn 12 tháng đến dưới 24 tháng tuổi:<br>
+Mũi 1: Lần tiêm đầu tiên trong độ tuổi<br>
+Mũi 2: 02 tháng sau mũi 1<br><br>
+
+• Trẻ từ tròn 24 tháng trở lên và người lớn:<br>
+Lịch tiêm 1 mũi duy nhất..<br>
+        `
+      },
+      {
+        name: "Vaxneuvance (Ai-len) 15",
+        price: "1.630.000đ",
+        age: "Từ 6 tuần tuổi trở lên",
+        nd: `
+          <b>Phòng ngừa:</b> Vắc xin Vaxneuvance giúp phòng 15 týp huyết thanh phế cầu khuẩn thường gặp (gồm: 1, 3, 4, 5, 6A, 6B, 7F, 9V, 14, 18C, 19A, 19F, 23F, với 2 tuýp huyết thanh bổ sung 22F và 33F), ngăn ngừa các bệnh nguy hiểm như viêm phổi, viêm màng não, viêm tai giữa cấp và nhiễm khuẩn huyết.<br><br>
+          <b>Độ tuổi:</b>Từ 6 tuần tuổi trở lên.<br>
+          <b>Phụ nữ mang thai:</b> Không chỉ định.<br><br>
+          <b>Phác đồ:</b><br>
+          • Tròn 06 tuần tuổi đến < 07 tháng tuổi:<br>
+Mũi 1: Lần tiêm đầu tiên.<br>
+Mũi 2: 01 tháng sau mũi 1.<br>
+Mũi 3: 01 tháng sau mũi 2.<br>
+Mũi 4: 08 tháng sau mũi 3.<br><br>
+
+• Tròn 07 tháng tuổi đến < 01 tuổi:<br>
+Mũi 1: Lần tiêm đầu tiên.<br>
+Mũi 2: 01 tháng sau mũi 1.<br>
+Mũi 3: 06 tháng sau mũi 2.<br><br>
+
+• Tròn 01 tuổi đến < 02 tuổi:<br>
+Mũi 1: Lần tiêm đầu tiên.<br>
+Mũi 2: 02 tháng sau mũi 1.<br><br>
+
+• Lịch tiêm Vaxneuvance cho trẻ tròn 02 tuổi và người lớn:<br>
+01 liều đơn.<br>
+        `
+      },
+	  {
+        name: "Prevenar 13 (Bỉ) 13",
+        price: "1.180.000đ",
+        age: "Từ 6 tuần tuổi trở lên",
+        nd: `
+          <b>Phòng ngừa:</b> Vắc xin Prevenar 13 giúp phòng ngừa 13 tuýp huyết thanh phổ biến và nguy hiểm của phế cầu khuẩn, bao gồm: 1, 3, 4, 5, 6A, 6B, 7F, 9V, 14, 18C, 19A, 19F và 23F, gây ra các bệnh viêm phổi, viêm màng não, nhiễm khuẩn huyết, viêm tai giữa cấp tính.<br><br>
+          <b>Độ tuổi:</b>Từ 6 tuần tuổi trở lên.<br>
+          <b>Phụ nữ mang thai:</b> Không chỉ định.<br><br>
+          <b>Phác đồ:</b><br>
+          • Tròn 06 tuần tuổi đến < 07 tháng tuổi:<br>
+Mũi 1: Lần tiêm đầu tiên.<br>
+Mũi 2: 01 tháng sau mũi 1.<br>
+Mũi 3: 01 tháng sau mũi 2.<br>
+Mũi 4: 08 tháng sau mũi 3.<br><br>
+
+• Tròn 07 tháng tuổi đến < 01 tuổi:<br>
+Mũi 1: Lần tiêm đầu tiên.<br>
+Mũi 2: 01 tháng sau mũi 1.<br>
+Mũi 3: 06 tháng sau mũi 2.<br><br>
+
+• Tròn 01 tuổi đến < 02 tuổi:<br>
+Mũi 1: Lần tiêm đầu tiêm.<br>
+Mũi 2: 02 tháng sau mũi 1.<br><br>
+
+• Tròn 02 tuổi và người lớn:<br>
+1 liều đơn.<br><br>
+
+<b>Lịch tiêm đuổi khi khách hàng trễ lịch:</b><br>
+Trẻ từ 06 tuần tuổi đến < 07 tháng tuổi: Nếu mũi 3 bị trễ lịch và khi đó trẻ đã ≥ 1 tuổi. Mũi 4 cách mũi 3 ≥ 2 tháng.<br>
+Trẻ từ 07 tháng tuổi đến < 12 tháng tuổi: Nếu mũi 2 bị trễ lịch và khi đó trẻ đã ≥ 1 tuổi. Mũi 3 cách mũi 2 ≥ 2 tháng.<br>
+        `
+      },
+	  {
+        name: "Pneumovax 23 (Hoa Kỳ) 23",
+        price: "1.440.000đ",
+        age: "Từ 2 tuổi trở lên",
+        nd: `
+          <b>Phòng ngừa:</b> Vắc xin Pneumovax 23 phòng ngừa hiệu quả 23 chủng vi khuẩn phế cầu, bao gồm 1, 2, 3, 4, 5, 6B, 7F, 8, 9N, 9V, 10A, 11A, 12F, 14, 15B, 17F, 18C, 19F, 19A, 20, 22F, 23F, 33F, gây ra bệnh viêm phổi, viêm màng não và các bệnh nhiễm trùng nghiêm trọng khác.<br><br>
+          <b>Độ tuổi:</b>Từ 2 tuổi trở lên.<br>
+          <b>Phụ nữ mang thai:</b> Không chỉ định.<br><br>
+          <b>Phác đồ:</b><br>
+          • Trẻ em từ 2 tuổi trở lên: <br>
+		  Tiêm 01 liều cơ bản.<br><br>
+		  
+<b>Lịch tiêm nhắc lại:</b><br>
+• Có thể xem xét tiêm chủng lại cho những người có nguy cơ nhiễm phế cầu khuẩn nghiêm trọng, với khoảng cách 5 năm sau mũi tiêm Pneumovax 23 trước đó.<br>
+• Với người khỏe mạnh không nên tiêm chủng lại thường quy.
+        `
+      },
+	  {
+        name: "Vắc xin Synflorix (Bỉ) 10",
+        price: "1.024.000đ",
+        age: "Trẻ từ 6 tuần đến dưới 6 tuổi",
+        nd: `
+          <b>Phòng ngừa:</b> Vắc xin Synflorix giúp phòng ngừa 10 tuýp huyết thanh phổ biến và nguy hiểm của phế cầu khuẩn, bao gồm: 1, 4, 5, 6B, 7F, 9V, 14, 18C, 19F và 23F (như hội chứng nhiễm trùng, viêm màng não, viêm phổi, nhiễm khuẩn huyết và viêm tai giữa cấp) và ngừa viêm tai giữa cấp gây bởi Haemophilus influenzae không định tuýp.<br><br>
+          <b>Độ tuổi:</b>Trẻ từ 6 tuần đến dưới 6 tuổi.<br>
+          <b>Phác đồ:</b><br>
+          • Tròn 6 tuần tuổi đến dưới 7 tháng tuổi:<br>
+Mũi 1: Lần tiêm đầu tiên.<br>
+Mũi 2: 1 tháng sau mũi 1.<br>
+Mũi 3: 1 tháng sau mũi 2.<br>
+Mũi 4: 6 tháng sau mũi 3<br><br>
+
+• Tròn 7 tháng tuổi đến < 1 tuổi:<br>
+Mũi 1: Lần tiêm đầu tiên.<br>
+Mũi 2: 1 tháng sau mũi 1.<br>
+Mũi 3: 6 tháng sau mũi 2.<br><br>
+
+• Tròn 1 tuổi đến < 6 tuổi:<br>
+Mũi 1: Lần tiêm đầu tiêm.<br>
+Mũi 2: 2 tháng sau mũi 1.<br><br>
+
+<b>Lịch tiêm đuổi:</b><br>
+• Trẻ từ 6 tuần tuổi đến < 7 tháng tuổi: Nếu mũi 3 bị trễ lịch và khi đó trẻ đã ≥ 1 tuổi. Mũi 4 cách Mũi 3 ≥ 2 tháng.<br>
+• Trẻ từ 7 tháng tuổi đến < 12 tháng tuổi: Nếu mũi 2 bị trễ lịch và khi đó trẻ đã ≥ 1 tuổi. Mũi 3 cách mũi 2 ≥ 2 tháng.<br>
+        `
+      },
+    
+   ]
+ },
+ {
+    group:"Thuỷ đậu",
+    items:[
+     {
+       name:"Varivax (Hoa Kỳ)",
+       price:"1.070.000đ",
+       age:"Từ 12 tháng tuổi trở lên",
+        nd: `
+          <b>Phòng ngừa:</b> Vắc xin Varivax giúp phòng ngừa bệnh thủy đậu do virus Varicella Zoster gây ra, đồng thời giảm nguy cơ biến chứng nguy hiểm như viêm não, viêm phổi và nhiễm trùng da.<br><br>
+          <b>Độ tuổi:</b>Trẻ em từ 12 tháng tuổi trở lên.<br>
+		  <bPhụ nữ mang thai:</b> Không chỉ định<br>
+          <b>Phác đồ:</b><br>
+          • Trẻ ≥ 12 tháng tuổi đến 12 tuổi:<br>
+Mũi 1: Lần tiêm đầu tiên.<br>
+Mũi 2: 03 tháng sau mũi 1.<br><br>
+
+• Từ ≥ 13 tuổi:<br>
+Mũi 1: Lần tiêm đầu tiên.<br>
+Mũi 2: 1 tháng sau mũi 1.<br>`
+     },
+	 {
+       name:"Varilrix (Bỉ)",
+       price:"1.070.000đ",
+       age:"Từ 9 tháng tuổi trở lên",
+        nd: `
+          <b>Phòng ngừa:</b> Vắc xin Varilrix giúp phòng ngừa bệnh thủy đậu do virus Varicella Zoster gây ra, đồng thời giúp giảm nguy cơ mắc các biến chứng như nhiễm trùng da, viêm phổi, viêm não.<br><br>
+          <b>Độ tuổi:</b>Trẻ em từ 9 tháng tuổi trở lên.<br>
+		  <bPhụ nữ mang thai:</b> Không chỉ định<br>
+          <b>Phác đồ:</b><br>
+          • Lịch tiêm cho trẻ ≥ 9 tháng đến 12 tuổi:<br>
+Mũi 1: Lần tiêm đầu tiên.<br>
+Mũi 2: 3 tháng sau mũi 1.<br><br>
+
+Lịch tiêm cho người từ ≥ 13 tuổi:<br>
+Mũi 1: Lần tiêm đầu tiên.<br>
+Mũi 2: 1 tháng sau mũi 1.<br>`
+     },
+	 {
+       name:"Barycela (Hàn Quốc)",
+       price:"900.000đ",
+       age:"Từ 2 tuổi đến 12 tuổi",
+        nd: `
+          <b>Phòng ngừa:</b> Vắc xin Barycela inj giúp phòng ngừa bệnh thủy đậu do virus Varicella Zoster gây ra, đồng thời giúp giảm nguy cơ mắc các biến chứng như nhiễm trùng da, viêm phổi, viêm não.<br><br>
+          <b>Độ tuổi:</b>Từ 2 tuổi đến 12 tuổi.<br>
+		  <bPhụ nữ mang thai:</b> Không chỉ định<br>
+          <b>Phác đồ:</b><br>
+          • Mũi 1: Lần tiêm đầu tiên.<br>
+• Mũi 2: 03 tháng sau mũi 1 <br>
+hoặc khi 4 - 6 tuổi theo khuyến cáo của WHO/ CDC Hoa Kỳ.<br>`
+     }
+   ]
+},
+{
+    group:" Zona thần kinh - Giời leo",
+    items:[
+     {
+       name:"Shingrix (Bỉ)",
+       price:"3.880.000đ",
+       age:"Trên 50 tuổi <br> ≥ 18 tuổi có nguy cơ.",
+        nd: `
+          <b>Phòng ngừa:</b> Vắc xin Shingrix giúp phòng ngừa bệnh zona thần kinh (giời leo) và các biến chứng như đau dây thần kinh sau zona. ​<br><br>
+          <b>Độ tuổi:</b>Trên 50 tuổi hoặc ≥ 18 tuổi có nguy cơ.<br>
+		  <bPhụ nữ mang thai:</b> Không chỉ định<br>
+          <b>Phác đồ:</b><br>
+          • Mũi 1: Lần đầu tiên tiêm.<br>
+• Mũi 2: Từ 02 - 06 tháng sau mũi 1.<br><br>
+
+<b>Lưu ý:</b> Người suy giảm miễn dịch, ức chế miễn dịch hoặc dùng thuốc ức chế miễn dịch thì có thể tiêm mũi 2 sau 01 - 02 tháng..<br>`
+     }
+   ]
+},
+ {
+    group:"6 trong 1",
+    items:[
+     {
+       name:"Infanrix Hexa (Bỉ)",
+       price:"995.000đ",
+       age:"Từ 06 tuần tuổi đến 2 tuổi",
+        nd: `
+          <b>Phòng ngừa:</b>Vắc xin Infanrix Hexa giúp phòng ngừa 6 bệnh nguy hiểm: Bạch hầu, ho gà, uốn ván, bại liệt, viêm gan B và các bệnh do vi khuẩn Haemophilus influenzae type b (Hib) gây ra.<br><br>
+          <b>Độ tuổi:</b>Từ 06 tuần tuổi đến 2 tuổi.<br>
+          <b>Phác đồ:</b><br>
+          • Mũi 1: Lần tiêm đầu tiên.<br>
+• Mũi 2: 01 tháng sau mũi 1.<br>
+• Mũi 3: 01 tháng sau mũi 2.<br>
+• Mũi 4: 12 tháng sau mũi 3.<br><br>
+
+• Nếu mũi 3 tiêm trễ lúc đó trẻ đã trên 12 tháng tuổi thì mũi 4 cách ≥ 6 tháng sau mũi 3 và hoàn thành trước 24 tháng.<br><br>
+
+• Mũi tiêm nhắc bằng Tetraxim, Adacel hoặc Boostrix: Cách 03 năm sau mũi 4 hoặc lúc 4 - 6 tuổi.<br>`
+     },
+	 {
+       name:"Hexaxim (Pháp)",
+       price:"995.000đ",
+       age:" Trẻ từ 2 tháng đến 2 tuổi",
+        nd: `
+          <b>Phòng ngừa:</b> Vắc xin Hexaxim giúp phòng ngừa 6 bệnh nguy hiểm: Bạch hầu, ho gà, uốn ván, bại liệt, viêm gan B và các bệnh do vi khuẩn Haemophilus influenzae type b (Hib) gây ra, bảo vệ trẻ trước những bệnh truyền nhiễm có thể gây biến chứng nặng.<br><br>
+          <b>Độ tuổi:</b> Trẻ từ 2 tháng đến 2 tuổi<br>
+          <b>Phác đồ:</b><br>
+          • Lịch tiêm 4 mũi:<br>
+Mũi 1: Lần tiêm đầu tiên.<br>
+Mũi 2: 01 tháng sau mũi 1.<br>
+Mũi 3: 01 tháng sau mũi 2.<br>
+Mũi 4: 12 tháng sau mũi 3. <br><br>
+
+Mũi 3 tiêm trễ lúc đó trẻ đã trên 12 tháng tuổi thì mũi 4 cách ≥ 6 tháng sau mũi 3 và nên hoàn thành trước 24 tháng.<br><br>
+Mũi tiêm nhắc bằng Tetraxim, Adacel hoặc Boostrix: Cách 03 năm sau mũi 4 hoặc lúc 4 - 6 tuổi.<br>`
+     }
+	]
+  } 
+];
+		  
+
+const tdlsData = [
+  {
+    TDLS35: "MỠ MÁU",
+    ND: "Ăn uống<br>Giảm muối: < 5g/ngày<br>Ăn nhiều rau xanh, trái cây<br>Tăng chất xơ: yến mạch, rau, đậu<br>Ưu tiên chất béo tốt: cá biển, dầu olive, hạt<br><br>Hạn chế<br>Đồ chiên dầu mỡ<br>Nội tạng động vật, da, mỡ<br>Đồ đóng hộp, mắm, dưa muối<br>Đồ ngọt, nước ngọt<br>Rượu bia<br><br>Sinh hoạt<br>Uống đủ nước<br>Giữ cân nặng hợp lý<br>Không hút thuốc<br><br>Vận động<br>Tập 30 phút/ngày, 5 ngày/tuần<br><br>Gợi ý<br>Đi bộ 🚶<br>Đạp xe 🚴<br>Yoga 🧘<br>Tránh vận động quá sức (đặc biệt người lớn tuổi)<br><br>Tuân thủ điều trị<br>Uống thuốc đúng giờ, không tự ý bỏ thuốc<br>Tái khám định kỳ theo bác sĩ<br>"
+  },
+  {
+    TDLS36: "HUYẾT ÁP",
+    ND: "Ăn uống<br>Giảm muối (rất quan trọng): < 5g/ngày<br>Ăn nhiều rau xanh, trái cây<br>Tăng thực phẩm giàu kali (chuối, rau xanh, cam…)<br><br>Hạn chế<br>Đồ chiên dầu mỡ<br>Nội tạng động vật<br>Đồ đóng hộp, mắm, dưa muối<br>Rượu bia, cà phê nhiều<br><br>Sinh hoạt<br>Uống đủ nước<br>Giữ cân nặng hợp lý<br>Không hút thuốc<br>Giữ tinh thần ổn định, tránh stress<br><br>Vận động<br>Tập 30 phút/ngày, 5 ngày/tuần<br><br>Gợi ý<br>Đi bộ 🚶<br>Đạp xe 🚴<br>Yoga 🧘<br>Tránh vận động quá sức (đặc biệt người lớn tuổi)<br><br>Tuân thủ điều trị<br>Uống thuốc đúng giờ, không tự ý bỏ thuốc<br>Đo huyết áp tại nhà thường xuyên<br>Tái khám định kỳ theo bác sĩ<br>"
+  },
+  {
+    TDLS34: "TIỂU ĐƯỜNG",
+    ND: "Ăn uống<br>Hạn chế đường, tinh bột nhanh (bánh ngọt, nước ngọt)<br>Ăn nhiều rau xanh, trái cây ít ngọt (ổi, táo, bưởi…)<br>Chọn tinh bột hấp thu chậm (gạo lứt, yến mạch)<br>Ăn đúng giờ, chia nhỏ bữa<br><br>Hạn chế<br>Đồ ngọt, nước ngọt, trà sữa<br>Đồ chiên dầu mỡ<br>Rượu bia<br>Ăn quá no, bỏ bữa<br><br>Sinh hoạt<br>Uống đủ nước<br>Giữ cân nặng hợp lý<br>Không hút thuốc<br>Ngủ đủ giấc, tránh stress<br><br>Vận động<br>Tập 30 phút/ngày, 5 ngày/tuần<br><br>Gợi ý<br>Đi bộ 🚶<br>Đạp xe 🚴<br>Yoga 🧘<br>Tránh vận động quá sức hoặc khi đường huyết quá thấp<br><br>Tuân thủ điều trị<br>Uống thuốc/tiêm insulin đúng chỉ định<br>Theo dõi đường huyết tại nhà<br>Tái khám định kỳ theo bác sĩ<br>"
+  },
+     {
+    TDLS24: "SUY THẬN - THẬN HƯ",
+    ND: "Ăn uống<br>Kiểm soát đạm theo chỉ định bác sĩ<br>Ăn nhạt (giảm muối)<br>Ưu tiên thực phẩm tươi, ít chế biến<br><br>Ưu tiên<br>Rau xanh phù hợp chức năng thận<br>Trái cây lượng vừa phải<br>Tinh bột hấp thu chậm (gạo, khoai, ngũ cốc)<br><br>Hạn chế<br>Thực phẩm nhiều muối (đồ hộp, đồ muối chua)<br>Thực phẩm giàu đạm quá mức (thịt đỏ nhiều, nội tạng)<br>Đồ ăn chế biến sẵn<br>Nước ngọt có gas<br><br>Sinh hoạt<br>Theo dõi huyết áp thường xuyên<br>Kiểm soát lượng nước theo chỉ định (không tự ý uống quá nhiều)<br>Tránh tự dùng thuốc không rõ nguồn gốc<br>Giữ cân nặng ổn định<br><br>Vận động<br>Vận động nhẹ nhàng, đều đặn<br><br>Gợi ý<br>Đi bộ 🚶<br>Yoga 🧘<br>Đạp xe nhẹ 🚴<br><br>Tránh<br>Vận động quá sức<br>Mất nước hoặc gắng sức khi mệt<br><br>Chăm sóc<br>Theo dõi triệu chứng:<br><br>Sưng phù (mặt, chân, mắt cá)<br>Mệt mỏi kéo dài<br>Tiểu ít hoặc thay đổi màu nước tiểu<br><br>Tuân thủ điều trị<br>Dùng thuốc theo chỉ định bác sĩ thận<br>Không tự ý ngưng thuốc<br>Tái khám và xét nghiệm chức năng thận định kỳ"
+  },
+  {
+    TDLS2: "ĐAU NHỨC XƯƠNG KHỚP",
+    ND: "Ăn uống<br>Ăn đủ chất, ưu tiên thực phẩm tốt cho xương khớp:<br>Canxi (sữa, tôm, cá nhỏ ăn cả xương)<br>Vitamin D (ánh nắng sáng, trứng, cá)<br>Omega-3 (cá hồi, cá thu)<br>Rau xanh, trái cây<br>Uống đủ nước (1.5–2 lít/ngày)<br>Giữ cân nặng hợp lý (tránh tăng áp lực lên khớp)<br><br>Hạn chế<br>Đồ chiên rán nhiều dầu mỡ<br>Thực phẩm nhiều đường<br>Rượu bia<br>Thuốc lá<br>Hạn chế ăn mặn (ảnh hưởng xương khớp lâu dài)<br><br>Sinh hoạt<br>Giữ tư thế đúng khi ngồi, đứng, làm việc<br>Không ngồi hoặc đứng quá lâu một chỗ<br>Tránh mang vác nặng sai tư thế<br>Ngủ đủ giấc, nằm nệm phù hợp (không quá cứng hoặc quá mềm)<br>Giữ ấm cơ thể, đặc biệt khi trời lạnh<br><br>Vận động<br>Tập luyện nhẹ nhàng, đều đặn mỗi ngày<br><br>Gợi ý:<br>Đi bộ 🚶<br>Yoga 🧘<br>Đạp xe 🚴<br>Bơi lội 🏊<br><br>Tập các bài giãn cơ, tăng độ linh hoạt khớp<br><br>Tránh:<br>Tập quá sức<br>Vận động mạnh, đột ngột<br><br>Tránh<br>Ngồi lâu một tư thế (đặc biệt dân văn phòng)<br>Leo cầu thang nhiều khi đau nặng<br>Mang giày cao gót thường xuyên<br><br>Chăm sóc<br>Theo dõi triệu chứng:<br>Đau khớp<br>Cứng khớp buổi sáng<br>Sưng, nóng khớp<br>Hạn chế vận động<br>Chườm ấm khi đau (giảm cứng khớp)<br>Chườm lạnh khi sưng<br>Massage nhẹ nhàng vùng đau<br><br>Tuân thủ điều trị<br>Dùng thuốc theo chỉ định<br><br>Tái khám khi có dấu hiệu nặng:<br>Đau kéo dài không giảm<br>Sưng nhiều, biến dạng khớp<br>Khó vận động"
+  },
+  {
+    TDLS23: "THOÁI HÓA XƯƠNG KHỚP",
+    ND: "Ăn uống<br>Ăn đủ chất, tăng canxi (sữa, tôm, cá)<br>Ăn nhiều rau xanh, trái cây<br>Bổ sung vitamin D (ánh nắng, thực phẩm)<br>Uống đủ nước<br><br>Hạn chế<br>Đồ chiên dầu mỡ<br>Rượu bia<br>Thừa cân, béo phì<br>Mang vác nặng<br><br>Sinh hoạt<br>Giữ cân nặng hợp lý<br>Tránh ngồi hoặc đứng quá lâu<br>Giữ tư thế đúng khi làm việc<br>Giữ ấm cơ thể (đặc biệt khi trời lạnh)<br><br>Vận động<br>Tập nhẹ nhàng, đều đặn<br><br>Gợi ý<br>Đi bộ 🚶<br>Đạp xe 🚴<br>Yoga 🧘<br>Tập phục hồi chức năng khớp<br><br>Tránh vận động mạnh, sai tư thế<br><br>Chăm sóc<br>Theo dõi dấu hiệu:<br><br>Đau khớp<br>Cứng khớp buổi sáng<br>Hạn chế vận động<br><br>Xoa bóp nhẹ khi đau<br><br>Tuân thủ điều trị<br>Dùng thuốc theo chỉ định<br>Không tự ý ngưng thuốc<br>Tái khám định kỳ<br>"
+  },
+  {
+    TDLS27: "GOUT",
+    ND: "Ăn uống<br>Uống nhiều nước (2–3 lít/ngày)<br>Ăn nhiều rau xanh, trái cây<br>Ưu tiên thực phẩm ít purin<br><br>Hạn chế<br>Nội tạng động vật (gan, thận…)<br>Hải sản (tôm, cua, cá biển…)<br>Thịt đỏ (bò, dê…)<br>Rượu bia (đặc biệt bia)<br>Nước ngọt có gas<br><br>Sinh hoạt<br>Giữ cân nặng hợp lý<br>Tránh stress<br>Tránh lạnh đột ngột (có thể gây cơn gout)<br><br>Vận động<br>Tập nhẹ nhàng, đều đặn<br><br>Gợi ý<br>Đi bộ 🚶<br>Yoga 🧘<br>Uống nước đều trong ngày<br><br>Tránh vận động mạnh khi đang đau khớp<br><br>Chăm sóc<br>Theo dõi dấu hiệu:<br><br>Đau khớp (thường ngón chân cái)<br>Sưng, nóng, đỏ khớp<br><br>Nghỉ ngơi khi có cơn đau<br><br>Tuân thủ điều trị<br>Dùng thuốc theo chỉ định<br>Không tự ý ngưng thuốc<br>Tái khám định kỳ kiểm tra acid uric<br>"
+  },
+  
+  {
+    TDLS12: "ĐAU DẠ DÀY",
+    ND: "Ăn uống<br>Ăn đúng giờ, không bỏ bữa<br>Ăn thức ăn mềm, dễ tiêu (cháo, súp)<br>Ăn ít nhưng chia nhiều bữa<br>Uống đủ nước<br><br>Hạn chế<br>Đồ cay nóng, chua (ớt, chanh, giấm…)<br>Đồ chiên dầu mỡ<br>Rượu bia, cà phê<br>Ăn quá no hoặc để quá đói<br><br>Sinh hoạt<br>Giữ tinh thần thoải mái, tránh stress<br>Không nằm ngay sau khi ăn<br>Ngủ đủ giấc<br><br>Vận động<br>Vận động nhẹ nhàng<br><br>Gợi ý<br>Ăn đúng giờ mỗi ngày<br>Ngồi thẳng sau khi ăn<br>Tránh thức khuya<br><br>Không ăn sát giờ ngủ<br><br>Chăm sóc<br>Theo dõi triệu chứng:<br><br>Đau vùng thượng vị<br>Ợ hơi, ợ chua<br>Đầy bụng, khó tiêu<br><br>Tuân thủ điều trị<br>Dùng thuốc theo chỉ định<br>Không tự ý dùng thuốc giảm đau (dễ hại dạ dày)<br>Tái khám nếu:<br><br>Đau kéo dài<br>Nôn, có máu<br>Sụt cân<br>"
+  },
+  {
+    TDLS13: "RỐI LOẠN TIÊU HÓA",
+    ND: "Ăn uống<br>Ăn chín, uống sôi<br>Ăn thức ăn dễ tiêu (cháo, súp)<br>Ăn đúng giờ, chia nhỏ bữa<br>Uống đủ nước<br><br>Hạn chế<br>Đồ sống, tái, không vệ sinh<br>Đồ dầu mỡ, cay nóng<br>Rượu bia, nước ngọt<br>Ăn quá no hoặc bỏ bữa<br><br>Sinh hoạt<br>Nghỉ ngơi hợp lý<br>Giữ vệ sinh ăn uống<br>Rửa tay trước khi ăn<br><br>Vận động<br>Vận động nhẹ nhàng<br><br>Gợi ý<br>Bổ sung men vi sinh (nếu cần)<br>Ăn uống điều độ<br>Theo dõi phản ứng với từng loại thức ăn<br><br>Chăm sóc<br>Theo dõi triệu chứng:<br><br>Đầy bụng, khó tiêu<br>Đau bụng<br>Tiêu chảy hoặc táo bón<br><br>Tuân thủ điều trị<br>Dùng thuốc theo chỉ định<br>Không tự ý dùng thuốc kéo dài<br>Tái khám nếu triệu chứng kéo dài hoặc nặng hơn<br>"
+  },
+  {
+    TDLS14: "TIÊU CHẢY",
+    ND: "Ăn uống<br>Uống nhiều nước, oresol (bù nước – điện giải)<br>Ăn thức ăn mềm, dễ tiêu (cháo, súp)<br>Ăn chín, uống sôi<br><br>Hạn chế<br>Đồ sống, tái, không vệ sinh<br>Đồ dầu mỡ, cay nóng<br>Sữa (khi đang tiêu chảy nhiều)<br>Rượu bia, nước ngọt<br><br>Sinh hoạt<br>Nghỉ ngơi nhiều<br>Giữ ấm bụng<br>Rửa tay sạch trước khi ăn và sau khi đi vệ sinh<br><br>Vận động<br>Nghỉ ngơi, hạn chế vận động mạnh<br><br>Gợi ý<br>Uống oresol đúng cách<br>Ăn từng ít một, chia nhỏ bữa<br>Bổ sung men vi sinh (nếu cần)<br><br>Chăm sóc<br>Theo dõi dấu hiệu:<br><br>Đi ngoài nhiều lần<br>Phân lỏng<br>Dấu hiệu mất nước (khát, mệt, khô môi)<br><br>Tuân thủ điều trị<br>Dùng thuốc theo chỉ định<br>Không tự ý dùng kháng sinh<br>Đi khám nếu:<br><br>Tiêu chảy nhiều, kéo dài<br>Sốt cao<br>Có máu trong phân<br>"
+  },
+  
+    {
+    TDLS28: "TRÀO NGƯỢC DẠ DÀY THỰC QUẢN",
+    ND: "Ăn uống<br>Ăn đúng giờ, không bỏ bữa<br>Chia nhỏ bữa ăn, không ăn quá no<br>Ăn thức ăn dễ tiêu<br><br>Hạn chế<br>Đồ cay nóng, chua (ớt, chanh, giấm…)<br>Đồ chiên dầu mỡ<br>Cà phê, trà đặc<br>Rượu bia, nước ngọt có gas<br>Ăn sát giờ ngủ<br><br>Sinh hoạt<br>Không nằm ngay sau ăn (chờ 2–3 giờ)<br>Kê cao đầu khi ngủ<br>Mặc đồ rộng, tránh chèn ép bụng<br>Giữ cân nặng hợp lý<br>Tránh stress<br><br>Vận động<br>Tập nhẹ nhàng mỗi ngày<br><br>Gợi ý<br>Đi bộ 🚶<br>Yoga 🧘<br>Ngồi thẳng sau khi ăn<br>Tránh cúi gập người sau ăn<br><br>Chăm sóc<br>Theo dõi triệu chứng:<br><br>Ợ chua, ợ nóng<br>Đau rát ngực<br>Ho kéo dài, khàn tiếng<br><br>Tuân thủ điều trị<br>Dùng thuốc theo chỉ định<br>Không tự ý ngưng thuốc<br>Tái khám nếu triệu chứng kéo dài hoặc nặng hơn<br>"
+  },
+  {
+    TDLS30: "VIÊM RUỘT CẤP",
+    ND: "Ăn uống<br>Ăn thức ăn mềm, dễ tiêu (cháo, súp)<br>Uống đủ nước, oresol (bù nước – điện giải)<br>Chia nhỏ bữa, ăn nhẹ<br><br>Hạn chế<br>Đồ sống, tái, không vệ sinh<br>Đồ dầu mỡ, cay nóng<br>Sữa (khi đang tiêu chảy nhiều)<br>Rượu bia, nước ngọt<br><br>Sinh hoạt<br>Nghỉ ngơi nhiều<br>Giữ ấm bụng<br>Giữ vệ sinh ăn uống, rửa tay sạch<br><br>Vận động<br>Nghỉ ngơi, hạn chế vận động mạnh<br><br>Gợi ý<br>Uống oresol đúng cách<br>Theo dõi số lần đi ngoài<br>Ăn lại từ từ khi đỡ bệnh<br><br>Chăm sóc<br>Theo dõi dấu hiệu mất nước (khát, khô môi, mệt)<br>Theo dõi sốt, đau bụng, tiêu chảy<br>Giữ vệ sinh hậu môn<br><br>Tuân thủ điều trị<br>Dùng thuốc theo chỉ định<br>Không tự ý dùng kháng sinh<br>Đi khám nếu:<br><br>Tiêu chảy nhiều, kéo dài<br>Sốt cao<br>Có máu trong phân<br>"
+  },
+  
+  {
+    TDLS11: "NHIỄM TRÙNG TIỂU",
+    ND: "Ăn uống<br>Uống nhiều nước (2–3 lít/ngày)<br>Ăn nhiều rau xanh, trái cây<br>Có thể uống nước ép nam việt quất (nếu phù hợp)<br><br>Hạn chế<br>Nhịn tiểu<br>Đồ cay nóng<br>Rượu bia<br>Nước ngọt có gas<br><br>Sinh hoạt<br>Đi tiểu ngay khi có nhu cầu<br>Giữ vệ sinh vùng kín sạch sẽ<br>Mặc đồ thoáng, không quá chật<br>Vệ sinh đúng cách (đặc biệt nữ: từ trước ra sau)<br><br>Vận động<br>Vận động nhẹ nhàng<br><br>Gợi ý<br>Uống nước đều trong ngày<br>Đi tiểu sau khi quan hệ<br>Giữ vùng kín khô thoáng<br><br>Chăm sóc<br>Theo dõi triệu chứng:<br><br>Tiểu buốt, tiểu rắt<br>Nước tiểu đục, có mùi<br>Đau bụng dưới<br><br>Tuân thủ điều trị<br>Dùng thuốc theo chỉ định<br>Không tự ý ngưng kháng sinh<br>Tái khám nếu:<br><br>Sốt<br>Đau lưng<br>Tiểu ra máu<br>"
+  },
+  {
+    TDLS3: "BỆNH TRĨ",
+    ND: "Ăn uống<br>Ăn nhiều chất xơ (rau xanh, trái cây, ngũ cốc)<br>Uống đủ nước (1.5–2 lít/ngày)<br>Ăn đúng giờ, tránh táo bón<br><br>Hạn chế<br>Đồ cay nóng<br>Rượu bia<br>Đồ chiên dầu mỡ<br>Nhịn đi đại tiện<br><br>Sinh hoạt<br>Đi đại tiện đúng giờ, không rặn lâu<br>Không ngồi lâu (đặc biệt ngồi toilet lâu)<br>Giữ vệ sinh hậu môn sạch sẽ<br>Giữ cân nặng hợp lý<br><br>Vận động<br>Tập nhẹ nhàng mỗi ngày<br><br>Gợi ý<br>Đi bộ 🚶<br>Yoga 🧘<br>Bài tập Kegel (tốt cho vùng hậu môn)<br><br>Tránh ngồi hoặc đứng quá lâu một chỗ<br><br>Chăm sóc<br>Theo dõi triệu chứng:<br><br>Đau, rát hậu môn<br>Chảy máu khi đi đại tiện<br>Sa búi trĩ<br><br>Tuân thủ điều trị<br>Dùng thuốc theo chỉ định<br>Ngâm nước ấm khi đau<br>Tái khám khi có dấu hiệu nặng (chảy máu nhiều, đau nhiều)"
+  },
+  {
+    TDLS4: "VẾT THƯƠNG NGOÀI DA",
+    ND: "Ăn uống<br>Ăn đủ chất, tăng đạm (thịt, cá, trứng, sữa)<br>Ăn nhiều rau xanh, trái cây (giúp mau lành vết thương)<br>Uống đủ nước<br><br>Hạn chế<br>Đồ cay nóng<br>Rượu bia<br>Thực phẩm dễ gây dị ứng (nếu có cơ địa)<br><br>Sinh hoạt<br>Giữ vết thương sạch sẽ<br>Tránh để vết thương tiếp xúc bụi bẩn<br>Mặc đồ thoáng, tránh cọ xát<br><br>Vận động<br>Hạn chế vận động mạnh ở vùng bị thương<br><br>Gợi ý<br>Rửa vết thương bằng nước sạch hoặc nước muối<br>Che phủ bằng gạc sạch<br>Thay băng mỗi ngày<br><br>Tránh chạm tay bẩn vào vết thương<br><br>Chăm sóc<br>Theo dõi dấu hiệu:<br><br>Sưng, đỏ, đau<br>Chảy mủ<br>Sốt (nếu nhiễm trùng)<br><br>Tuân thủ điều trị<br>Dùng thuốc theo chỉ định<br>Không tự ý bôi thuốc không rõ nguồn gốc<br>Đi khám nếu:<br><br>Vết thương sâu, rộng<br>Nhiễm trùng<br>Lâu lành"
+  },
+  {
+    TDLS8: "MỤN NHỌT",
+    ND: "Ăn uống<br>Uống nhiều nước<br>Ăn nhiều rau xanh, trái cây<br>Ăn thanh đạm, mát<br><br>Hạn chế<br>Đồ cay nóng<br>Đồ chiên dầu mỡ<br>Đồ ngọt<br>Rượu bia<br><br>Sinh hoạt<br>Giữ da sạch sẽ<br>Tắm rửa thường xuyên<br>Tránh chà xát mạnh lên vùng da bị nhọt<br>Mặc đồ thoáng mát<br><br>Vận động<br>Sinh hoạt bình thường<br><br>Gợi ý<br>Chườm ấm (giúp mụn nhanh chín)<br>Giữ vùng da khô, sạch<br>Rửa tay trước khi chạm vào vùng nhọt<br><br>Không tự ý nặn nhọt<br><br>Chăm sóc<br>Theo dõi triệu chứng:<br><br>Sưng, đỏ, đau<br>Có mủ<br>Có thể sốt (nếu nặng)<br><br>Tuân thủ điều trị<br>Dùng thuốc theo chỉ định<br>Không tự ý nặn hoặc rạch nhọt<br>Đi khám nếu:<br><br>Nhọt to, đau nhiều<br>Sốt<br>Lan rộng"
+  },
+  {
+    TDLS32: "BỎNG",
+    ND: "Ăn uống<br>Ăn đủ chất, tăng đạm (thịt, cá, trứng, sữa)<br>Ăn nhiều rau xanh, trái cây (giúp mau lành vết thương)<br>Uống đủ nước<br><br>Hạn chế<br>Không bôi kem, thuốc không rõ nguồn gốc<br>Không chọc vỡ bóng nước<br>Tránh đồ cay nóng<br>Rượu bia<br><br>Sinh hoạt<br>Giữ vết bỏng sạch sẽ<br>Tránh cọ xát vào vết thương<br>Mặc đồ rộng, thoáng<br>Nghỉ ngơi hợp lý<br><br>Vận động<br>Vận động nhẹ nhàng (nếu không đau)<br><br>Gợi ý<br>Cử động nhẹ vùng không bị bỏng<br>Tập giãn nhẹ để tránh co rút da<br>Tránh vận động làm căng vùng da bị bỏng<br><br>Chăm sóc<br>Làm mát bằng nước sạch (10–20 phút ngay sau bỏng)<br>Che phủ bằng gạc sạch<br>Thay băng đúng cách<br>Theo dõi dấu hiệu nhiễm trùng (sưng, mủ, sốt)<br><br>Tuân thủ điều trị<br>Dùng thuốc theo chỉ định<br>Tái khám định kỳ<br>Đi viện nếu bỏng rộng, sâu hoặc ở vùng nguy hiểm<br>"
+  },
+  {
+    TDLS5: "VIÊM DA DỊ ỨNG",
+    ND: "Ăn uống<br>Uống nhiều nước<br>Ăn nhiều rau xanh, trái cây<br>Ăn thanh đạm, dễ tiêu<br><br>Hạn chế<br>Thực phẩm dễ gây dị ứng (hải sản, đậu phộng… tùy cơ địa)<br>Đồ cay nóng, chiên dầu mỡ<br>Rượu bia<br><br>Sinh hoạt<br>Giữ da sạch sẽ, khô thoáng<br>Tránh tiếp xúc với tác nhân gây dị ứng (bụi, hóa chất, mỹ phẩm…)<br>Mặc quần áo rộng, thoáng<br><br>Vận động<br>Sinh hoạt bình thường<br><br>Gợi ý<br>Dùng kem dưỡng ẩm phù hợp<br>Tránh gãi (làm nặng hơn)<br>Tắm nước ấm (không quá nóng)<br><br>Dùng sản phẩm dịu nhẹ cho da<br><br>Chăm sóc<br>Theo dõi triệu chứng:<br><br>Ngứa, đỏ da<br>Nổi mẩn<br>Có thể sưng hoặc rát<br><br>Tuân thủ điều trị<br>Dùng thuốc theo chỉ định<br>Không tự ý dùng thuốc bôi chứa corticoid kéo dài<br>Tái khám nếu:<br><br>Lan rộng<br>Ngứa nhiều<br>Không cải thiện"
+  },
+
+  
+  {
+    TDLS25: "VẢY NẾN",
+    ND: "Ăn uống<br>Duy trì chế độ ăn chống viêm<br><br>Ưu tiên<br>Rau xanh, trái cây tươi<br>Cá giàu omega-3 (cá hồi, cá mòi)<br>Ngũ cốc nguyên hạt<br>Uống đủ nước<br><br>Hạn chế<br>Rượu bia<br>Đồ ăn nhiều đường, tinh bột tinh chế<br>Thực phẩm chế biến sẵn<br>Thịt đỏ ăn nhiều<br><br>Sinh hoạt<br>Giữ da sạch và ẩm<br>Tránh stress (yếu tố làm bùng phát bệnh)<br>Ngủ đủ giấc<br>Tránh gãi hoặc chà xát mạnh vùng da tổn thương<br><br>Vận động<br>Tập luyện nhẹ đến vừa<br><br>Gợi ý<br>Đi bộ 🚶<br>Yoga 🧘<br>Bơi lội 🏊<br><br>Chăm sóc da<br>Dưỡng ẩm da thường xuyên<br>Tắm nước ấm, tránh nước quá nóng<br>Tránh xà phòng mạnh gây kích ứng<br><br>Theo dõi triệu chứng:<br><br>Mảng da đỏ, bong vảy trắng<br>Ngứa, khô da<br>Tổn thương lan rộng hoặc tái phát<br><br>Tuân thủ điều trị<br>Dùng thuốc bôi theo chỉ định<br>Không tự ý ngưng thuốc<br>Tái khám da liễu định kỳ"
+  },
+  {
+    TDLS9: "NHIỆT MIỆNG",
+    ND: "Ăn uống<br>Uống nhiều nước<br>Ăn nhiều rau xanh, trái cây (vitamin C, B)<br>Ăn thức ăn mềm, dễ nuốt<br><br>Hạn chế<br>Đồ cay nóng<br>Đồ chiên dầu mỡ<br>Rượu bia<br>Thức ăn quá chua, mặn<br><br>Sinh hoạt<br>Giữ vệ sinh răng miệng sạch sẽ<br>Ngủ đủ giấc<br>Tránh stress<br><br>Vận động<br>Sinh hoạt bình thường<br><br>Gợi ý<br>Súc miệng nước muối<br>Dùng mật ong (nếu phù hợp)<br>Bổ sung vitamin B, C<br><br>Tránh chạm vào vết loét<br><br>Chăm sóc<br>Theo dõi triệu chứng:<br><br>Loét miệng<br>Đau rát khi ăn uống<br>Vết loét nhỏ, trắng<br><br>Tuân thủ điều trị<br>Dùng thuốc theo chỉ định<br>Giữ vệ sinh miệng tốt<br>Tái khám nếu:<br><br>Loét kéo dài > 10–14 ngày<br>Đau nhiều<br>Tái phát nhiều lần"
+  },
+  {
+    TDLS10: "ĐAU RĂNG",
+    ND: "Ăn uống<br>Ăn thức ăn mềm, dễ nhai<br>Uống đủ nước<br>Ăn nhiều rau xanh, trái cây<br><br>Hạn chế<br>Đồ quá nóng hoặc quá lạnh<br>Đồ ngọt (kẹo, bánh)<br>Đồ cứng (dễ gây đau thêm)<br>Rượu bia<br><br>Sinh hoạt<br>Đánh răng đúng cách 2 lần/ngày<br>Súc miệng sau khi ăn<br>Giữ vệ sinh răng miệng sạch sẽ<br><br>Vận động<br>Sinh hoạt bình thường<br><br>Gợi ý<br>Súc miệng nước muối<br>Chườm lạnh bên ngoài má (giảm đau)<br>Dùng chỉ nha khoa làm sạch kẽ răng<br><br>Tránh nhai bên răng đau<br><br>Chăm sóc<br>Theo dõi triệu chứng:<br><br>Đau răng<br>Sưng nướu<br>Ê buốt khi ăn uống<br><br>Tuân thủ điều trị<br>Dùng thuốc theo chỉ định<br>Không tự ý lạm dụng thuốc giảm đau<br>Đi khám nha khoa nếu:<br><br>Đau kéo dài<br>Sưng nhiều<br>Có mủ"
+  },
+
+  {
+    TDLS26: "HEN",
+    ND: "Ăn uống<br>Không có chế độ ăn đặc hiệu cho hen nhưng nên duy trì dinh dưỡng lành mạnh<br><br>Ưu tiên<br>Rau xanh, trái cây<br>Thực phẩm giàu omega-3 (cá hồi, hạt lanh…)<br>Uống đủ nước<br><br>Hạn chế<br>Thực phẩm dễ gây dị ứng cá nhân (hải sản, trứng, sữa nếu dị ứng)<br>Đồ ăn nhanh, nhiều chất bảo quản<br>Nước ngọt có gas<br><br>Sinh hoạt<br>Giữ môi trường sống sạch, tránh khói bụi<br>Tránh khói thuốc lá<br>Giữ ấm khi thời tiết lạnh<br><br>Vận động<br>Tập luyện nhẹ đến vừa, đều đặn<br><br>Gợi ý<br>Đi bộ 🚶<br>Bơi lội 🏊<br>Yoga 🧘<br><br>Tránh<br>Gắng sức đột ngột<br>Tập luyện khi đang lên cơn khó thở<br><br>Chăm sóc<br>Theo dõi triệu chứng:<br><br>Khò khè<br>Khó thở<br>Ho về đêm hoặc sáng sớm<br><br>Tuân thủ điều trị<br>Sử dụng thuốc xịt hen theo chỉ định<br>Không tự ý ngưng thuốc dự phòng<br>Tái khám định kỳ kiểm soát chức năng hô hấp"
+  },
+
+  {
+    TDLS15: "VIÊM HỌNG THÔNG THƯỜNG",
+    ND: "Ăn uống<br>Uống nhiều nước ấm<br>Ăn thức ăn mềm, dễ nuốt (cháo, súp)<br>Ăn nhiều rau xanh, trái cây<br><br>Hạn chế<br>Đồ lạnh (nước đá, kem)<br>Đồ cay nóng<br>Đồ chiên dầu mỡ<br>Rượu bia<br>Khói thuốc, bụi bẩn<br><br>Sinh hoạt<br>Giữ ấm cổ họng<br>Nghỉ ngơi đầy đủ<br>Tránh nói to, nói nhiều<br>Tránh gió lạnh<br><br>Vận động<br>Vận động nhẹ nhàng khi đỡ mệt<br><br>Gợi ý<br>Súc họng nước muối<br>Uống nước ấm thường xuyên<br>Ngậm mật ong (nếu không chống chỉ định)<br><br>Tránh uống nước lạnh<br><br>Chăm sóc<br>Theo dõi triệu chứng:<br><br>Đau họng nhẹ<br>Ho nhẹ<br>Không sốt hoặc sốt nhẹ<br><br>Tuân thủ điều trị<br>Dùng thuốc theo chỉ định<br>Không tự ý dùng kháng sinh<br>Tái khám nếu:<br><br>Sốt cao<br>Đau họng kéo dài > 5–7 ngày<br>Triệu chứng nặng hơn"
+  },
+  {
+    TDLS16: "ĐAU RÁT HỌNG (CÓ NHIỄM KHUẨN)",
+    ND: "Ăn uống<br>Uống nhiều nước ấm<br>Ăn thức ăn mềm, dễ nuốt (cháo, súp)<br>Ăn nhiều rau xanh, trái cây (tăng đề kháng)<br><br>Hạn chế<br>Đồ lạnh (nước đá, kem)<br>Đồ cay nóng, chiên dầu mỡ<br>Rượu bia<br>Khói thuốc, bụi bẩn<br><br>Sinh hoạt<br>Giữ ấm cổ, họng<br>Nghỉ ngơi nhiều<br>Tránh nói to, nói nhiều<br>Tránh gió lạnh<br><br>Vận động<br>Nghỉ ngơi, hạn chế vận động mạnh<br><br>Gợi ý<br>Súc họng nước muối<br>Uống nước ấm thường xuyên<br>Xông hơi nhẹ (gừng, sả…)<br><br>Tránh dùng đồ uống lạnh<br><br>Chăm sóc<br>Theo dõi triệu chứng:<br><br>Đau rát họng<br>Sốt<br>Nuốt đau<br>Có thể có mủ ở họng<br><br>Tuân thủ điều trị<br>Dùng thuốc theo chỉ định<br>Không tự ý dùng hoặc ngưng kháng sinh<br>Tái khám nếu:<br><br>Sốt cao<br>Đau tăng<br>Khó nuốt, khó thở"
+  },
+    {
+    TDLS20: "CẢM HO KHAN (KHÔNG NHIỄM KHUẨN)",
+    ND: "Ăn uống<br>Uống nhiều nước ấm<br>Ăn thức ăn mềm, dễ tiêu<br>Ăn nhiều rau xanh, trái cây<br><br>Hạn chế<br>Đồ lạnh (nước đá, kem)<br>Đồ cay nóng<br>Đồ chiên dầu mỡ<br>Rượu bia<br>Khói thuốc, bụi bẩn<br><br>Sinh hoạt<br>Giữ ấm cổ, ngực<br>Nghỉ ngơi đầy đủ<br>Tránh gió lạnh, thay đổi nhiệt độ đột ngột<br><br>Vận động<br>Vận động nhẹ nhàng<br><br>Gợi ý<br>Uống nước ấm thường xuyên<br>Ngậm mật ong (nếu không chống chỉ định)<br>Súc họng nước muối<br><br>Tránh nói nhiều khi đang ho<br><br>Chăm sóc<br>Theo dõi triệu chứng:<br><br>Ho khan, ngứa họng<br>Không có sốt hoặc sốt nhẹ<br><br>Tránh các yếu tố kích thích (bụi, khói)<br><br>Tuân thủ điều trị<br>Dùng thuốc theo chỉ định<br>Không tự ý dùng kháng sinh<br>Đi khám nếu:<br><br>Ho kéo dài > 7 ngày<br>Ho nhiều về đêm<br>Có dấu hiệu nặng hơn<br>"
+  },
+  {
+    TDLS21: "CẢM HO KHAN (CÓ NHIỄM KHUẨN)",
+    ND: "Ăn uống<br>Uống nhiều nước ấm<br>Ăn thức ăn mềm, dễ tiêu<br>Ăn nhiều rau xanh, trái cây (tăng đề kháng)<br><br>Hạn chế<br>Đồ lạnh (nước đá, kem)<br>Đồ cay nóng, chiên dầu mỡ<br>Rượu bia<br>Khói thuốc, bụi bẩn<br><br>Sinh hoạt<br>Giữ ấm cơ thể (đặc biệt cổ, ngực)<br>Nghỉ ngơi đầy đủ<br>Tránh gió lạnh, thay đổi nhiệt độ đột ngột<br><br>Vận động<br>Vận động nhẹ nhàng khi đỡ mệt<br><br>Gợi ý<br>Uống nước ấm thường xuyên<br>Súc họng nước muối<br>Xông hơi nhẹ (gừng, sả…)<br><br>Tránh nói nhiều khi đang ho<br><br>Chăm sóc<br>Theo dõi triệu chứng:<br><br>Ho khan kéo dài<br>Sốt<br>Đau họng<br><br>Theo dõi dấu hiệu nhiễm khuẩn:<br><br>Sốt cao<br>Mệt nhiều<br>Đờm vàng/xanh (có thể xuất hiện sau)<br><br>Tuân thủ điều trị<br>Dùng thuốc theo chỉ định<br>Không tự ý dùng kháng sinh<br>Tái khám nếu:<br><br>Ho kéo dài > 5–7 ngày<br>Sốt cao<br>Khó thở<br>"
+  },
+  
+  {
+    TDLS22: "CẢM HO ĐỜM",
+    ND: "Ăn uống<br>Uống nhiều nước ấm (giúp loãng đờm)<br>Ăn thức ăn ấm, dễ tiêu<br>Ăn nhiều rau xanh, trái cây (tăng đề kháng)<br><br>Hạn chế<br>Đồ lạnh (nước đá, kem)<br>Đồ chiên dầu mỡ<br>Rượu bia<br>Khói thuốc, bụi bẩn<br><br>Sinh hoạt<br>Giữ ấm cơ thể (đặc biệt cổ, ngực)<br>Nghỉ ngơi đầy đủ<br>Tránh gió lạnh, thay đổi nhiệt độ đột ngột<br><br>Vận động<br>Vận động nhẹ nhàng khi đỡ mệt<br><br>Gợi ý<br>Uống nước ấm thường xuyên<br>Xông hơi nhẹ (lá sả, gừng…)<br>Súc họng nước muối<br><br>Tránh nói nhiều khi đang ho<br><br>Chăm sóc<br>Theo dõi triệu chứng:<br><br>Ho có đờm<br>Đờm đặc, đổi màu<br>Sốt, đau họng<br><br>Giữ vệ sinh mũi họng sạch<br><br>Tuân thủ điều trị<br>Dùng thuốc theo chỉ định<br>Không tự ý dùng kháng sinh<br>Đi khám nếu:<br><br>Ho kéo dài > 5–7 ngày<br>Sốt cao<br>Đờm xanh, vàng nhiều<br>"
+  },
+  {
+    TDLS17: "VIÊM MŨI DỊ ỨNG",
+    ND: "Ăn uống<br>Uống đủ nước<br>Ăn nhiều rau xanh, trái cây (tăng đề kháng)<br>Ăn thức ăn ấm<br><br>Hạn chế<br>Đồ lạnh (nước đá, kem)<br>Đồ cay nóng<br>Rượu bia<br>Khói thuốc, bụi bẩn, phấn hoa<br><br>Sinh hoạt<br>Giữ ấm cơ thể (đặc biệt mũi, họng)<br>Tránh môi trường ô nhiễm, nhiều bụi<br>Đeo khẩu trang khi ra ngoài<br>Nghỉ ngơi đầy đủ<br><br>Vận động<br>Vận động nhẹ nhàng<br><br>Gợi ý<br>Rửa mũi bằng nước muối sinh lý<br>Xông hơi nhẹ (gừng, sả…)<br>Uống nước ấm thường xuyên<br><br>Giữ nhà cửa sạch sẽ, hạn chế dị nguyên<br><br>Chăm sóc<br>Theo dõi triệu chứng:<br><br>Hắt hơi, sổ mũi<br>Nghẹt mũi<br>Ngứa mũi, mắt<br><br>Giữ vệ sinh mũi họng sạch<br><br>Tuân thủ điều trị<br>Dùng thuốc theo chỉ định<br>Không tự ý lạm dụng thuốc xịt mũi<br>Tái khám nếu triệu chứng kéo dài hoặc nặng hơn<br>"
+  },
+    {
+    TDLS19: "VIÊM XOANG",
+    ND: "Ăn uống<br>Uống nhiều nước ấm<br>Ăn thức ăn ấm, dễ tiêu<br>Ăn nhiều rau xanh, trái cây (tăng đề kháng)<br><br>Hạn chế<br>Đồ lạnh (nước đá, kem)<br>Đồ cay nóng, chiên dầu mỡ<br>Rượu bia<br>Khói thuốc, bụi bẩn<br><br>Sinh hoạt<br>Giữ ấm cơ thể (đặc biệt vùng mũi, họng)<br>Tránh gió lạnh, môi trường ô nhiễm<br>Nghỉ ngơi đầy đủ<br><br>Vận động<br>Vận động nhẹ nhàng<br><br>Gợi ý<br>Rửa mũi bằng nước muối sinh lý<br>Xông hơi (lá sả, gừng…)<br>Uống nước ấm thường xuyên<br><br>Tránh nằm máy lạnh quá lạnh<br><br>Chăm sóc<br>Theo dõi triệu chứng:<br><br>Nghẹt mũi, chảy mũi<br>Đau vùng trán, má<br>Nhức đầu, giảm ngửi<br><br>Giữ vệ sinh mũi họng sạch<br><br>Tuân thủ điều trị<br>Dùng thuốc theo chỉ định<br>Không tự ý dùng kháng sinh<br>Đi khám nếu:<br><br>Đau nhiều<br>Sốt cao<br>Kéo dài không khỏi<br>"
+  },
+  {
+    TDLS18: "RỐI LOẠN TIỀN ĐÌNH",
+    ND: "Ăn uống<br>Ăn đủ chất, cân bằng dinh dưỡng<br>Ăn nhiều rau xanh, trái cây<br>Uống đủ nước<br><br>Hạn chế<br>Rượu bia<br>Cà phê, trà đặc<br>Đồ nhiều muối<br>Thuốc lá<br><br>Sinh hoạt<br>Ngủ đủ giấc<br>Tránh thay đổi tư thế đột ngột<br>Giữ tinh thần ổn định, tránh stress<br>Tránh làm việc quá sức<br><br>Vận động<br>Tập nhẹ nhàng, đều đặn<br><br>Gợi ý<br>Đi bộ 🚶<br>Yoga 🧘<br>Tập bài tập tiền đình (xoay đầu, giữ thăng bằng)<br><br>Tránh xoay đầu nhanh, đứng lên ngồi xuống đột ngột<br><br>Chăm sóc<br>Theo dõi triệu chứng:<br><br>Chóng mặt, hoa mắt<br>Mất thăng bằng<br>Buồn nôn<br><br>Nghỉ ngơi khi có cơn chóng mặt<br><br>Tuân thủ điều trị<br>Dùng thuốc theo chỉ định<br>Không tự ý ngưng thuốc<br>Tái khám nếu triệu chứng kéo dài hoặc nặng hơn<br>"
+  },
+  {
+    TDLS6: "SAY TÀU XE",
+    ND: "Ăn uống<br>Ăn nhẹ trước khi đi (tránh quá no hoặc quá đói)<br>Uống đủ nước<br>Có thể dùng gừng (giảm buồn nôn)<br><br>Hạn chế<br>Đồ dầu mỡ<br>Đồ có mùi nặng<br>Rượu bia<br>Đọc sách, nhìn điện thoại khi đang di chuyển<br><br>Sinh hoạt<br>Ngồi vị trí ít rung lắc (ghế trước, gần cửa sổ)<br>Nhìn ra xa, nhìn thẳng<br>Giữ không khí thoáng<br><br>Vận động<br>Hạn chế di chuyển nhiều khi xe đang chạy<br><br>Gợi ý<br>Ngậm kẹo gừng<br>Hít thở sâu<br>Nhắm mắt nghỉ ngơi<br><br>Có thể dùng thuốc chống say trước khi đi<br><br>Chăm sóc<br>Theo dõi triệu chứng:<br><br>Buồn nôn, nôn<br>Chóng mặt<br>Mệt, vã mồ hôi<br><br>Tuân thủ điều trị<br>Dùng thuốc chống say theo chỉ định<br>Không lạm dụng thuốc<br>Nghỉ ngơi sau khi đến nơi"
+  },
+  {
+    TDLS7: "ĐAU MẮT ĐỎ",
+    ND: "Ăn uống<br>Uống nhiều nước<br>Ăn nhiều rau xanh, trái cây (vitamin A, C)<br>Ăn thức ăn thanh đạm<br><br>Hạn chế<br>Dụi mắt<br>Dùng chung khăn, đồ cá nhân<br>Khói bụi, môi trường ô nhiễm<br>Rượu bia<br><br>Sinh hoạt<br>Rửa tay thường xuyên<br>Vệ sinh mắt bằng nước sạch hoặc nước muối sinh lý<br>Đeo kính bảo vệ khi ra ngoài<br>Nghỉ ngơi, tránh nhìn màn hình quá lâu<br><br>Vận động<br>Sinh hoạt nhẹ nhàng<br><br>Gợi ý<br>Nhỏ nước muối sinh lý<br>Lau mắt bằng khăn sạch, riêng biệt<br>Đeo kính để tránh lây nhiễm<br><br>Tránh tiếp xúc gần với người khác<br><br>Chăm sóc<br>Theo dõi triệu chứng:<br><br>Mắt đỏ<br>Chảy ghèn<br>Ngứa, cộm mắt<br><br>Tuân thủ điều trị<br>Dùng thuốc theo chỉ định<br>Không tự ý dùng thuốc nhỏ mắt chứa kháng sinh/corticoid<br>Đi khám nếu:<br><br>Đau nhiều<br>Giảm thị lực<br>Kéo dài không khỏi"
+  },
+    {
+    TDLS29: "DỌA SẢY THAI",
+    ND: "Ăn uống<br>Ăn đủ chất (đạm, vitamin, sắt, acid folic)<br>Ăn nhiều rau xanh, trái cây<br>Uống đủ nước<br><br>Hạn chế<br>Đồ cay nóng, kích thích<br>Rượu bia, cà phê<br>Tự ý dùng thuốc khi chưa có chỉ định<br><br>Sinh hoạt<br>Nghỉ ngơi nhiều, hạn chế đi lại<br>Tránh làm việc nặng<br>Giữ tinh thần ổn định, tránh stress<br>Kiêng quan hệ vợ chồng (khi có dấu hiệu dọa sảy)<br><br>Vận động<br>Hạn chế vận động mạnh<br>Chỉ vận động nhẹ khi bác sĩ cho phép<br><br>Gợi ý<br>Nằm nghỉ, kê cao chân nhẹ<br>Theo dõi ra máu âm đạo, đau bụng<br>Đi khám thai định kỳ<br><br>Chăm sóc<br>Theo dõi dấu hiệu:<br><br>Ra máu âm đạo<br>Đau bụng dưới<br>Mệt mỏi bất thường<br><br>Giữ vệ sinh cá nhân sạch sẽ<br><br>Tuân thủ điều trị<br>Dùng thuốc theo chỉ định bác sĩ<br>Tái khám đúng hẹn<br>Đi viện ngay nếu:<br><br>Ra máu nhiều<br>Đau bụng tăng<br>Choáng, mệt nhiều<br>"
+  },
+  {
+    TDLS31: "GIUN SÁN",
+    ND: "Ăn uống<br>Ăn chín, uống sôi<br>Rửa sạch rau sống, trái cây trước khi ăn<br>Uống đủ nước<br><br>Hạn chế<br>Ăn đồ sống, tái (gỏi, nem chua, thịt tái…)<br>Uống nước chưa đun sôi<br>Ăn uống không vệ sinh<br><br>Sinh hoạt<br>Rửa tay trước khi ăn và sau khi đi vệ sinh<br>Cắt móng tay gọn gàng<br>Giữ vệ sinh cá nhân và môi trường sống<br>Không đi chân đất ở nơi bẩn<br><br>Vận động<br>Sinh hoạt, vận động bình thường<br><br>Gợi ý<br>Tẩy giun định kỳ (6 tháng/lần)<br>Giặt chăn màn, quần áo sạch sẽ<br>Giữ vệ sinh nguồn nước, thực phẩm<br><br>Chăm sóc<br>Theo dõi triệu chứng: đau bụng, ngứa hậu môn, sụt cân<br>Kiểm tra phân khi nghi ngờ nhiễm giun<br><br>Tuân thủ điều trị<br>Dùng thuốc tẩy giun theo chỉ định<br>Uống đúng liều, đủ thời gian<br>Tái khám nếu triệu chứng không cải thiện<br>"
+  }
+
+];
+
+// DATA 3 tầng
+const menuData = {
+    "Chính sách công ty": {
+        "Các công ty không được tích điểm?": "- Eco: Jex, OTIV, Angela<br>- Nhất Nhất: Hoạt huyết nhất nhất, Dạ dày nhất nhất<br>- Thái Minh: Siro Heviho Thái Minh , Viên uống Cotripvo Thái Minh<br>- Nam Khánh<br>- Châu Hưng<br>- Tâm Bình<br>- Traphaco.<br>Bởi vì những công ty này đã có chương trình khuyến mãi riêng của công ty.",
+        "Các mặt hàng không được đổi trả.": "- Thuốc đặt trị covid có thành phần Molnupivaviv<br>- Hàng tiêm chích , hàng lạnh<br>- Sản phẩm được khuyến mãi .<br>- Sản phẩm không thể tái sử dụng: Bút/ que thử thai, vớ, nẹp, kim các loại .<br>- Thuốc điều trị ung thư có giá từ 5 triệu đông<br>- Hàng đặt lẻ kho .<br>- Hàng cắt liều .<br>- Sản phẩm đóng gói không có Garanti / tem niêm phong<br>- Đơn hàng mua trên 5 sản phẩm cùng mã trên 1 đơn hàng<br>- Sản phẩm không còn nguyên vẹn: vi dụ vỉ thuốc đã cắt thành viên hoặc sử dụng 1 phần; hộp gồm nhiều gói/chai và đã qua sử dụng ít nhất 1 gói/chai. Sản phẩm còn nguyên nhưng mất vỏ hộp thu phí 30% giá trên hoá đơn<br><br>Insulin không được đổi trả vì là mặt hàng tiêm chích và là hàng lạnh",
+        "Chính sách và phí giao hàng": "Giao hàng miễn phí<br>=> Áp dụng: App, Zalo<br><br>Giao hàng có phí (Website hoặc ĐT)<br><br>* Liên tỉnh / Thành phố<br>=> Đồng giá: 40K<br>• Dưới 200Km: 2 – 3 ngày làm việc<br>• ≥ 200Km: 2 – 3 ngày làm việc<br>• Tuyến huyện/xã: thêm 1 – 2 ngày làm việc<br><br>* Nội tỉnh<br>- Đơn hàng ≥ 300K<br>• Miễn phí (8h – 20h, tất cả các ngày trong tuần)<br><br>- Đơn hàng < 300K<br>• Phí: 25K (8h – 20h, tất cả các ngày trong tuần)<br><br>⭐ Hình thức thanh toán<br>• Thanh toán khi nhận hàng (Ship COD)<br>• Thanh toán qua thẻ ngân hàng<br>• Chuyển khoản trước<br>"
+    },
+    "Khách hàng": {
+        "Điểm thưởng ": "1000đ ➜ 1 điểm <br> 1 điểm ➜ 10đ <br><br>Đổi tiền<br>- Tối thiểu 50 điểm (500đ) <br>- Tối đa 10000đ (100k)<br><br>Đổi quà 1K<br>- Mốc 1500 điểm<br>- Mốc 3000 điểm<br>- Mốc 4500 điểm",
+        "Hướng dẫn KH chuyển khoản thông thường nhập stk": "- Đọc tên ngân hàng cho khách (BIDV/ Vietin bank)<br>- Đọc số tài khoản của Long Châu<br>- Đọc nội dung chuyển khoản 5 số đầu là mã shop, 6 số sau là mã đơn hàng<br>- Phải nhập đúng từng chữ số số tiền không được nhập dư, thiếu hay làm tròn ( vì đây là ck vào tài khoản  của công ty anh/chị vi lòng nhập đúng từng chữ số giùm em để đồng bộ với hệ thống thì em mới hoàn thành đơn cho mình được)<br>- Bấm gửi, đợi giao dịch thành công dược sĩ bấm đồng bộ khi nào màn hình hiện lên số tiền chuyển khoản là thành công",
+        "Hướng dẫn KH đặt nhắc hẹn uống thuốc": "- Vào app Long Châu chọn mục nhắc uống thuốc <br>- Bấm vào mục tạo lịch nhắc hiện ra :<br>+ chụp ảnh đơn thuốc nếu có đơn thuốc thì chụp vào hệ thống sẽ tự động thêm vào hoặc có thể nhập thuốc bằng tay và số lượng<br>+ chọn ngày bắt đầu và số ngày uống <br>+ chọn từng thuốc và nhập liều sử dụng thuốc ( thời gian uống , cách dùng , trước ăn, sau ăn , ghi chú )<br>+ bấm hẹn giờ, chọn giờ muốn uống thuốc rồi bấm lưu ",
+        "Khách hàng mua giá cao xử lý như thế nào?": "- Anh chị dã mua sãn phẩm này ở đâu, vào thời gian nào<br>- Anh chị cho em xin bill thanh toán sản phẩm đó <br>- Xác định thời gian mua, tên thuốc, số lượng, nếu gần đây thì nhờ SM dùng quỹ tự tin để giảm cho khách hàng không quá 5%"
+    },
+    "Sử dụng thuốc": {
+        "Hướng dẫn sử dụng bút tiêm Insulin": "Bước 1: Chuẩn bị bút tiêm<br>Kiểm tra bút tiêm insulin:<br>- Hạn sử dụng<br>- Cảm quang<br>- Đối với insulin màu trắng đục: Lăn tròn bút để trộn đều thuốc<br><br>Bước 2: Gắn kim tiêm<br>- Gỡ bỏ miếng giấy bảo vệ ở đáy của kim tiêm<br>- Ấn kim vào bút và vặn chặt<br>- Tháo bỏ nắp bảo vệ kim bên ngoài<br>- Tháo bỏ nắp bảo vệ kim bên trong<br><br>Bước 3: Thử bút tiêm và đuổi bọt khí<br>- Vặn núm chỉnh liều lượng Insulin lên 2 đơn vị<br>- Giữ bút thẳng đứng, nhấn nút tiêm cho đến khi về vạch 0<br>(Khi thấy Insulin chảy ra hoặc có giọt Insulin đầu kim thì đã xong bước 3. Nếu không thấy làm lại lần nữa.)<br><br>Bước 4: Chỉnh liều Insulin<br>- Vặn núm chỉnh liều đến vạch Insulin theo chỉ định bác sĩ (ví dụ 10 đơn vị như hình)<br><br>Bước 5: Chọn vùng tiêm Insulin<br>- Vị trí thường chọn là ở bụng (ngoài ra có thể tiêm ở mặt ngoài cánh tay hoặc mặt ngoài đùi)<br><br>Bước 6: Tiêm Insulin<br>- Cầm bút tiêm như hình, ngón cái đặt ngay vị trí nút tiêm<br>- Dùng cồn y tế sát trùng nơi tiêm. Tay còn lại véo da như hình<br>- Đâm kim theo góc 90° vào da sau đó thả chỗ véo da ra<br>- Dùng ngón cái ấn nút tiêm cho đến khi về vạch số 0. Giữ 5–10 giây sau đó mới rút kim ra để tránh trào thuốc ra ngoài<br>- Đậy nắp bảo vệ kim và vặn ngược chiều kim đồng hồ để tháo kim<br><br>Bảo quản Insulin:<br>- Với bút tiêm chưa sử dụng: bảo quản ở nhiệt độ 2-8°C<br>- Với bút tiêm đã dùng: có thể bảo quản ở nhiệt độ phòng trong vòng 1 tháng (tiêm insulin ở nhiệt độ lạnh gây đau nhiều hơn).",
+        "Zentel, Fugarca. Bao nhiêu tuổi sử dụng được? ": "- Zentel ( Albendazole 200mg) : 1 tuổi <br>- Fugacar ( Mebendazol 500mg) : 2 tuổi <br>không có yêu cầu đặc biệt khi dùng, có thể nhai nghiền thuốc khi sử dụng <br>khuyến nghị 6 tháng/lần <br>Nếu nhiễm giun sán nặng thì 3-4 tháng/lần <br>không dùng cho phụ nữ mang thai",
+        "Hướng dẫn sử dụng Alenta = Forsamax Plus ": "- Alenta (Natri alendronate)<br>10mg 1 ngày uống 1 viên <br>70mg 1 tuần uống 1 viên (uống vào 1 ngày cố định trong tuần)<br><br>- Forsamax Plus (Alendronate Sodium; Vitamin D3) <br>70mg/5600IU 1 tuần uống 1 viên (uống vào 1 ngày cố định trong tuần)<br><br>Cách dùng: Uống trước khi ăn sáng 30 phút với 1 ly nước đầy khoảng 200ml nước. <br>viên này có gốc acid vì vậy không được nhai, nghiền, bẻ bởi vì gây loét miệng, hầu họng.<br>Uống xong không được nằm liền vì gây trào ngược dạ dày. <br>uống tránh thức ăn và thuốc khác 30p",
+        "Hướng dẫn sử dụng Drofen = Jioinmenno": "- Drofen (Ibandronic acid 150mg)<br>- Jioinmenno (Acid ibandronic 150mg)<br>Uống 1 viên/1 lần/1 tháng.<br>Uống trước khi ăn sáng 60 phút với 1 ly nước đầy khoảng 200ml nước.<br>giữ tư thế đứng hoặc ngồi thẳng sau uống 60 phút.<br>viên này có gốc acid vì vậy không được nhai, nghiền, bẻ bởi vì gây loét miệng, hầu họng.<br>uống tránh thức ăn và thuốc khác 60p",
+        "Hướng dẫn sử dụng Sertide 50/250 - Dạng Bột": "1/ Mở nắp hộp: đặt tay vào chỗ lõm.<br>2/ Gạt hết cỡ theo chiều kim đồng hồ đến khi nghe tiếng “tách”. Tuyệt đối phải để hộp thuốc nằm ngang (vì dốc hộp thuốc xuống có thể làm mất thuốc).<br>3/ Thở ra hết sức. Ngậm kín miệng hộp thuốc sau đó hít vào mạnh - đều - sâu hết sức.<br>4/ Nín thở và đếm nhẩm từ 1 đến 10 hoặc khi thấy tức thở thì thở ra từ từ. <br>Sau 30 giây có thể dùng thêm liều khác nếu cần.<br>5/ Đóng nắp hộp thuốc lại bằng cách: Gạt hết cỡ theo chiều ngược kim đồng hồ đến khi nghe tiếng “tách”.<br>Chú ý: Súc miệng bằng nước muối sinh lý sau khi dùng. Hoặc: Đánh răng sau khi dùng để tránh bị nhiễm nấm khi dùng.",
+        "Hướng dẫn sử dụng Sertide 25/250 - Dạng xịt ": "1/ Mở nắp.<br>2/ Lắc nhẹ bình xịt khoảng 5 lần (xịt 2 nhát bỏ nếu lần đầu sử dụng hay ngưng quá 5 ngày sử dụng).<br>3/ Giữ vững bình xịt bằng cách đặt ngón tay trỏ lên đáy bình và ngón tay cái phía dưới cùng của vòi xả.<br>4/ Ngồi thẳng hoặc đứng.<br>5/ Ngửa đầu ra phía sau 1 chút (khoảng 15 độ).<br>6/ Thở ra hết sức.<br>7/ Ngậm kín miệng vòi xả, hít vào đều đặn và sâu đồng thời nhấn đáy bình xịt (xịt thuốc).<br>8/ Nín thở khoảng 10 giây. Rồi thở ra từ từ qua miệng hay mũi.<br>Sau 30 giây có thể dùng thêm liều khác nếu cần.<br>Chú ý: Súc miệng bằng nước muối sinh lý sau khi dùng để tránh bị nhiễm nấm khi dùng.",
+        "Hướng dẫn sử dụng Symbocort - Dạng bột ": "Bước 1: Cầm dụng cụ hít ở tư thế thẳng đứng<br>Bước 2: Mở nắp dụng cụ hít<br>Bước 3: Vặn phần đáy dụng cụ sang phải cho đến khi nghe tiếng “click”, sau đó vặn ngược lại vị trí ban đầu để nạp một liều thuốc<br>Bước 4: Ngồi thẳng lưng hoặc đứng<br>Bước 5: Hơi ngửa cổ ra sau<br>Bước 6: Thở ra không qua dụng cụ hít<br>Bước 7: Ngậm kín ống ngậm, sau đó hít vào nhanh và sâu<br>Bước 8: Nín thở trong vòng 10 giây, sau đó thở ra qua miệng hoặc mũi<br>Bước 9: Đóng nắp dụng cụ",
+        "Hướng dẫn sử dụng Symbocort - Dạng xịt": "1/ Mở nắp.<br>2/ Lắc nhẹ bình xịt khoảng 5 lần (xịt 2 nhát bỏ nếu lần đầu sử dụng hay ngưng quá 5 ngày sử dụng).<br>3/ Giữ vững bình xịt bằng cách đặt ngón tay trỏ lên đáy bình và ngón tay cái phía dưới cùng của vòi xả.<br>4/ Ngồi thẳng hoặc đứng.<br>5/ Ngửa đầu ra phía sau 1 chút (khoảng 15 độ).<br>6/ Thở ra hết sức.<br>7/ Ngậm kín miệng vòi xả, hít vào đều đặn và sâu đồng thời nhấn đáy bình xịt (xịt thuốc).<br>8/ Nín thở khoảng 10 giây. Rồi thở ra từ từ qua miệng hay mũi.",
+        "Hướng dẫn sử dụng Ventoline - Dạng xịt": "- Mở lắp<Br>- Lắc nhẹ bình xịt khoảng 5 lần ( xịt 2 nhát bỏ nếu lần đầu sử dụng hoặc quá 5 ngày sử dụng )<Br>- Giữ vững bình xịt bằng cách đặt ngón tay trỏ lên đáy bình và ngón tay cái phía dưới cùng của vòi xả<Br>- Ngồi thẳng hoặc đứng <Br>- Ngửa đầu ra phía sau một chút khoảng 15 độ<Br>- Thở ra hết sức <Br>- Ngậm kín miệng vòi xả, hít vào đều đặn và sâu đồng thời nhấn đáy bình xịt thuốc<Br>- Nín thở khoảng 10 giây rồi thở từ từ qua miệng hay mũi <Br>- Lưu ý sau 30 giây có thể dùng thêm liều khác nếu cần"
+    },
+	    "Combo Cắt liều": {
+        "Combo Cắt liều": "1. cảm ho khan có nhiễm khuẩn<br>+ Triệu chứng:Có sốt, mệt mỏi , uể oải , sổ mũi , ho nhiều đau rát họng, sưng viêm cổ họng, môi khô ớn lạnh , thời gian bị có thể 2-3 ngày trước  <br><br>2. cảm ho khan không nhiễm khuẩn<br>+ Triệu chứng: Mệt mỏi , uể oải, sổ mũi, đau đầu ( đặc trưng của cảm ), ho ngứa cổ họng không sốt <br><br>3. cảm ho đàm<br>+ Triệu chứng: Mệt mỏi , uể oải, sổ mũi, ho đờm , chán ăn, sốt <br><br>4. viêm họng thông thường<br>+ Triệu chứng: Đau họng , loét và khó nuốt, ho vài tiếng <br><br>5. đau rát họng có nhiễm khuẩn<br>+ Triệu chứng:  Môi khô , lưỡi bẩn, nổi hạch cổ, mệt mỏi, biếng ăn , nhức đầu, có sốt hoặc không<br><br>6. viêm mũi dị ứng<br>+ Triệu chứng: Nước mũi trắng hoặc trong, hắt hơi liên tục, chảy nước mắt, ngứa mũi, ngứa mắt đôi khi đau đầu<br><br>7. rối loạn tiền đình<br>+ Triệu chứng: Đau đầu chóng mặt buồn nôn , nôn , mất thăng bằng khi đứng lên ngồi xuống đột ngột, ù tai kéo dài<br><br>8. rối loạn tiêu hóa<br>+ Triệu chứng: Đau bụng âm ỉ , đầy hơi, chướng bụng, ợ nóng , tiêu chảy hoặc táo bón, phân nát , sệt , sống < 3 lần / 1 ngày <br><br>9. - tiêu chảy<br><br>10. - đau dạ dày<br><br>11. - viêm xoang<br>+ Triệu chứng: <br>Dịch mũi trong đặc ( 1 đến 2 ngày đầu ), xanh vàng có mùi hôi (3-4 ngày tiếp theo ), đau đầu, đau các hốc giữa 2 bên cánh mũi, ở giữa trán hoặc đỉnh đầu lan xuống gáy, dịch mũi chảy xuống họng tạo thành đờm, có sốt hoặc không sốt <br><br>12. - đau răng<br><br>13. - nhiệt miệng<br><br>14. - mụn nhọt<br><br>15. - đau mắt đỏ<br><br>16. - say tàu xe<br><br>17. - viêm da dị ứng<br><br>18. - vết thương ngoài da<br><br>19. - trĩ<br><br>20. - đau nhức xương khớp có đau dạ dày<br><br>21. - đau nhức xương khớp không đau dạ dày<br><br>22. - nhiễm trùng tiểu."
+        
+    },
+    "Cắt liều": {
+        "Đau họng": "Nội dung A của nhóm 4",
+        "Sổ mũi": "Nội dung B của nhóm 4",
+        "Đau đầu": "Nội dung C của nhóm 4",		
+        "Đau bụng": "Nội dung C của nhóm 4"
+    },
+	"Thư viện hình ảnh": "image-menu"
+};
+
+const catLieuTree = {
+  "Đau họng": {
+    question: "Có ho hay không?",
+    options: {
+      "Không ho": {
+        question: "Tình trạng sốt?",
+        options: {
+          "Có sốt, môi khô, lưỡi bẩn, nổi hạch cổ": {
+            result: "👉 Đau rát họng có nhiễm khuẩn"
+          },
+          "Không sốt hoặc sốt nhẹ": {
+            result: "👉 Viêm họng thông thường"
+          }
+        }
+      },
+
+      "Có ho": {
+        question: "Loại ho?",
+        options: {
+          "Ho đờm": {
+            result: "👉 Cảm ho đờm"
+          },
+
+          "Ho khan": {
+            question: "Triệu chứng kèm theo?",
+            options: {
+              "Sưng họng, môi khô, lưỡi bẩn, nổi hạch": {
+                result: "👉 Cảm ho khan có nhiễm khuẩn"
+              },
+              "Lưỡi sạch, môi không khô": {
+                result: "👉 Cảm ho khan không nhiễm khuẩn"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  
+  "Sổ mũi": {
+  question: "Có ho hay không?",
+  options: {
+    "Không ho": {
+      question: "Tình trạng nước mũi?",
+      options: {
+        "Nước mũi trong, loãng, ngứa mũi, hắt hơi nhiều": {
+          result: "👉 Viêm mũi dị ứng"
+        },
+        "Nước mũi đặc, có màu, đau nhức các hốc xoang": {
+          result: "👉 Viêm xoang"
+        }
+      }
+    },
+
+    "Có ho": {
+      question: "Loại ho?",
+      options: {
+        "Ho đờm": {
+          result: "👉 Cảm ho đờm"
+        },
+
+        "Ho khan": {
+          question: "Triệu chứng kèm theo?",
+          options: {
+            "Sưng họng, môi khô, lưỡi bẩn, nổi hạch cổ": {
+              result: "👉 Cảm ho khan có nhiễm khuẩn"
+            },
+            "Lưỡi sạch, môi không khô, mệt mỏi, ớn lạnh": {
+              result: "👉 Cảm ho khan không nhiễm khuẩn"
+            }
+          }
+        }
+      }
+    }
+  }
+},
+"Đau đầu": {
+  question: "Có ho hay không?",
+  options: {
+
+    "Có ho": {
+      question: "Tình trạng ho?",
+      options: {
+
+        "Có đờm": {
+          result: "👉 Cảm ho đờm\n- Đờm đặc, có màu\n- Đau rát họng\n- Mệt mỏi, ớn lạnh\n- Sổ mũi, ngạt mũi"
+        },
+
+        "Không đờm": {
+          question: "Triệu chứng kèm theo?",
+          options: {
+
+            "Sưng họng, môi khô, lưỡi bẩn, nổi hạch cổ": {
+              result: "👉 Cảm ho khan có nhiễm khuẩn"
+            },
+
+            "Lưỡi sạch, môi không khô, đau đầu, mệt mỏi, ớn lạnh": {
+              result: "👉 Cảm ho khan không nhiễm khuẩn"
+            }
+
+          }
+        }
+
+      }
+    },
+
+    "Không ho": {
+      question: "Đặc điểm đau đầu?",
+      options: {
+
+        "Đau vùng hốc mũi, xoang trán": {
+          question: "Tình trạng mũi?",
+          options: {
+            "Nước mũi đặc xanh, vàng": {
+              result: "👉 Viêm xoang"
+            }
+          }
+        },
+
+        "Hoa mắt, chóng mặt": {
+          question: "Triệu chứng kèm theo?",
+          options: {
+            "Buồn nôn": {
+              result: "👉 Rối loạn tiền đình"
+            }
+          }
+        }
+
+      }
+    }
+
+  }
+},
+"Đau bụng": {
+    question: "Đau ở vị trí nào?",
+    options: {
+
+      "Vùng thượng vị": {
+        question: "Triệu chứng kèm theo?",
+        options: {
+          "Đầy bụng, khó tiêu, buồn nôn": {
+            question: "Có ợ hơi, ợ chua không?",
+            options: {
+              "Có ợ hơi, ợ chua": {
+                result: "👉 Viêm loét dạ dày"
+              },
+              "Không": {
+                result: "👉 Rối loạn tiêu hóa"
+              }
+            }
+          }
+        }
+      },
+
+      "Xung quanh rốn": {
+        question: "Số lần đi ngoài?",
+        options: {
+
+          "≥ 3 lần/ngày, phân lỏng nhiều nước": {
+            result: "👉 Tiêu chảy"
+          },
+
+          "Dưới 3 lần/ngày, đầy bụng, khó tiêu": {
+            result: "👉 Rối loạn tiêu hóa"
+          }
+
+        }
+      },
+
+      "Dưới rốn": {
+        question: "Triệu chứng tiểu tiện?",
+        options: {
+
+          "Tiểu buốt, tiểu rát": {
+            question: "Có khí hư không?",
+            options: {
+
+              "Có khí hư, mùi hôi, huyết trắng, ngứa": {
+                result: "👉 Viêm âm đạo"
+              },
+
+              "Không có khí hư": {
+                result: "👉 Nhiễm trùng tiểu"
+              }
+
+            }
+          }
+
+        }
+      }
+
+    }
+  }
+};
+
+/* TÌM KIẾM */
+const searchInput = document.getElementById("search");
+const resultBox = document.getElementById("result");
+
+searchInput.addEventListener("input", function () {
+    const keyword = this.value.toUpperCase().trim();
+
+    if (!keyword) {
+        resultBox.innerHTML = "Kết quả sẽ hiển thị ở đây...";
+        return;
+    }
+
+    const found = data.filter(item =>
+        item.name && item.name.toUpperCase() === keyword
+    );
+
+    if (found.length > 0) {
+        resultBox.innerHTML = found.map(item => {
+
+            const notesHtml = item.note ? item.note.map(n => {
+
+                const codes = [...n.matchAll(/\[(.*?)\]/g)].map(m => m[1]);
+
+                const cleanText = n.replace(/\[(.*?)\]/g, "").trim();
+
+                return `
+                    <div style="
+                        display:flex;
+                        justify-content:space-between;
+                        align-items:flex-start;
+                        gap:10px;
+                        margin-top:6px;
+                    ">
+
+                        <!-- nội dung -->
+                        <div style="flex:1; line-height:1.4;">
+                            - ${cleanText}
+                        </div>
+
+                        <!-- nút copy -->
+                        <div style="
+                            display:flex;
+                            gap:6px;
+                            flex-shrink:0;
+                            justify-content:flex-end;
+                        ">
+                            ${codes.map(code => `
+                                <button 
+                                    onclick="copyText(this, '${code}')"
+                                    style="
+                                        padding:4px 10px;
+                                        border:none;
+                                        border-radius:6px;
+                                        background:#1976d2;
+                                        color:white;
+                                        cursor:pointer;
+                                        font-size:12px;
+                                        transition:0.2s;
+                                        min-width:70px;
+                                    ">
+                                    ${code}
+                                </button>
+                            `).join("")}
+                        </div>
+
+                    </div>
+                `;
+            }).join("") : "";
+
+            return `
+                <div style="
+                    padding:10px;
+                    border:1px solid #ddd;
+                    border-radius:8px;
+                    margin-bottom:10px;
+                    background:#fff;
+                ">
+
+                    <b>${item.name}</b>: 
+                    ${item.ND}
+
+                    ${item.note ? `
+                        <div style="
+                            margin-top:10px;
+                            padding:10px;
+                            background:#fff3e0;
+                            border-left:4px solid orange;
+                            border-radius:6px;
+                        ">
+                            
+                            ${notesHtml}
+                        </div>
+                    ` : ""}
+
+                </div>
+            `;
+        }).join("");
+    } else {
+        resultBox.innerHTML = "Không tìm thấy dữ liệu";
+    }
+});
+
+
+function copyText(btn, text) {
+    navigator.clipboard.writeText(text).then(() => {
+
+        btn.style.background = "#4caf50";
+        btn.innerText = "✔";
+
+        setTimeout(() => {
+            btn.style.background = "#1976d2";
+            btn.innerText = text;
+        }, 3000);
+
+    }).catch(() => {
+        btn.style.background = "#d32f2f";
+        btn.innerText = "✖";
+
+        setTimeout(() => {
+            btn.style.background = "#1976d2";
+            btn.innerText = text;
+        }, 1500);
+    });
+}
+
+/* ACCORDION */
+const buttons = document.querySelectorAll(".btn");
+
+buttons.forEach(btn => {
+    btn.addEventListener("click", function() {
+        this.classList.toggle("active");
+        const content = this.nextElementSibling;
+
+        if (content.style.maxHeight) {
+            content.style.maxHeight = null;
+        } else {
+            content.style.maxHeight = content.scrollHeight + "px";
+        }
+    });
+});
+
+const subBtns = document.querySelectorAll(".sub-btn");
+
+subBtns.forEach(btn => {
+    btn.addEventListener("click", function() {
+        const content = this.nextElementSibling;
+
+        if (content.style.maxHeight) {
+            content.style.maxHeight = null;
+        } else {
+            content.style.maxHeight = content.scrollHeight + "px";
+        }
+    });
+});
+
+/* lọc vacxin */
+const list = document.getElementById("vaccine-list");
+const vxContent = document.getElementById("vaccine-content");
+const panel = document.getElementById("vaccine-panel");
+
+// Render nhóm vaccine
+vaccineData.forEach((group) => {
+    const groupDiv = document.createElement("div");
+    groupDiv.className = "vx-group";
+    groupDiv.innerText = group.group;
+
+    const itemWrapper = document.createElement("div");
+    itemWrapper.className = "vx-sublist hidden";
+
+    // Click nhóm -> xổ danh sách
+    groupDiv.addEventListener("click", () => {
+        itemWrapper.classList.toggle("hidden");
+    });
+
+    // Render các item (vaccine)
+    group.items.forEach((item) => {
+        const itemDiv = document.createElement("div");
+        itemDiv.className = "vx-item";
+        itemDiv.innerHTML = `
+            <b>${item.name}</b><br>
+            <small>💰 ${item.price}</small><br>
+            <small>👶 ${item.age || ""}</small>
+        `;
+
+        // Sự kiện click vào vaccine -> hiển thị chi tiết
+        itemDiv.addEventListener("click", () => {
+            // Xóa active trên tất cả các item
+            document.querySelectorAll(".vx-item").forEach(el => {
+                el.classList.remove("active");
+            });
+
+            // Thêm active cho vaccine vừa chọn
+            itemDiv.classList.add("active");
+
+            // Hiển thị chi tiết vaccine
+			vxContent.innerHTML = `
+				<h3>${item.name}</h3>
+				<p><b>Giá:</b> ${item.price}</p>
+				<p><b>Độ tuổi:</b> ${item.age}</p>
+				<div>${item.nd}</div>
+			`;
+        });
+
+        itemWrapper.appendChild(itemDiv);
+    });
+
+    list.appendChild(groupDiv);
+    list.appendChild(itemWrapper);
+});
+
+function openVaccine() {
+    panel.classList.remove("hidden");
+}
+
+function closeVaccine() {
+    panel.classList.add("hidden");
+}
+
+
+const tdlsList = document.getElementById("tdls-list");
+const tdlsContent = document.getElementById("tdls-content");
+
+/* LẤY ĐÚNG DANH SÁCH TDLS */
+tdlsData.forEach(item => {
+
+    // tìm key bắt đầu bằng TDLS (TDLS1, TDLS2,...)
+    const key = Object.keys(item).find(k => k.startsWith("TDLS"));
+    const title = item[key];
+
+    const div = document.createElement("div");
+    div.className = "vx-item";
+    div.innerText = title;
+
+    div.addEventListener("click", () => {
+
+        // bỏ active cũ
+        document.querySelectorAll("#tdls-list .vx-item").forEach(el => {
+            el.classList.remove("active");
+        });
+
+        div.classList.add("active");
+
+        tdlsContent.innerHTML = `
+            <h3>${title}</h3>
+            <div>${item.ND}</div>
+        `;
+    });
+
+    tdlsList.appendChild(div);
+});
+
+/* PANEL */
+const tdlsPanel = document.getElementById("tdls-panel");
+
+function openTDLS(){
+    tdlsPanel.classList.remove("hidden");
+}
+
+function closeTDLS(){
+    tdlsPanel.classList.add("hidden");
+}
+
+
+let path = [];
+let currentNode = null;
+let nodeStack = [];
+
+function renderTree(node){
+    const content = document.getElementById("fabContent");
+
+    // nếu là kết quả cuối
+    if(node.result){
+        content.innerHTML = `
+            <div class="fab-detail">
+                <h3>Kết luận</h3>
+                <p>${node.result}</p>
+                <hr>
+                <p><b>Hành trình:</b><br>${path.join(" ➜ ")}</p>
+            </div>
+        `;
+        return;
+    }
+
+    let html = `<div class="fab-grid">`;
+
+    Object.keys(node.options).forEach(key => {
+        html += `<button class="fab-btn" onclick="chooseOption('${key}')">${key}</button>`;
+    });
+
+    html += `</div>`;
+
+    content.innerHTML = html;
+
+    currentNode = node;
+}
+
+function chooseOption(key){
+    path.push(key);
+
+    nodeStack.push(currentNode); // 👈 lưu node hiện tại
+
+    const nextNode = currentNode.options[key];
+    renderTree(nextNode);
+}
+
+let level = 1;
+let currentGroup = null;
+
+const content = document.getElementById("fabContent");
+const backBtn = document.getElementById("backBtn");
+const title = document.getElementById("fabTitle");
+
+// LEVEL 1
+function renderLevel1(){
+    level = 1;
+    title.innerText = "Menu";
+    backBtn.style.display = "none";
+
+    content.innerHTML = `<div class="fab-grid"></div>`;
+    const grid = content.querySelector(".fab-grid");
+
+    Object.keys(menuData).forEach(group => {
+        const btn = document.createElement("button");
+        btn.className = "fab-btn";
+        btn.innerText = group;
+
+        btn.onclick = () => {
+    if (menuData[group] === "image-menu") {
+        renderImageMenu();
+    } else {
+        renderLevel2(group);
+    }
+		};
+
+        grid.appendChild(btn);
+    });
+}
+
+// LEVEL 2
+function renderLevel2(group){
+
+    // 👉 nếu là image-menu thì bỏ qua level 2
+    if(menuData[group] === "image-menu"){
+        renderImageMenu();
+        return;
+    }
+
+    level = 2;
+    currentGroup = group;
+
+    title.innerText = group;
+    backBtn.style.display = "inline-block";
+
+    content.innerHTML = `<div class="fab-grid"></div>`;
+    const grid = content.querySelector(".fab-grid");
+
+    Object.keys(menuData[group]).forEach(key => {
+        const btn = document.createElement("button");
+        btn.className = "fab-btn";
+        btn.innerText = key;
+
+        btn.onclick = () => {
+            if (catLieuTree[key]) {
+                showIntro(key);
+            } else {
+                renderLevel3(key);
+            }
+        };
+
+        grid.appendChild(btn);
+    });
+}
+
+
+function showIntro(key){
+
+    title.innerText = key;
+    backBtn.style.display = "inline-block";
+
+    content.innerHTML = `
+        <div class="fab-detail">
+            <h3>📋 Hướng dẫn cắt liều</h3>
+
+            <p>
+            - Đối tượng sử dụng <br>
+            + (Nếu là nữ) Có thai hay CCB hay không? <br>
+			+ (Nếu là trẻ nhỏ) > 2 tuổi, > 10kg? <br>
+            - Có tiền sử bệnh hay dị ứng không? <br>
+			- Tìm nguyên nhân gây ra bệnh 
+            </p>
+
+            <hr>
+
+            <button class="fab-btn" onclick="startTree('${key}')">
+                👉 Nhấn vào đây để tiếp tục  .
+            </button>
+        </div>
+    `;
+}
+
+function startTree(key){
+    path = [key];
+    nodeStack = []; // reset
+
+    renderTree(catLieuTree[key]);
+}
+
+// LEVEL 3
+function renderLevel3(key){
+    level = 3;
+
+    title.innerText = key;
+    backBtn.style.display = "inline-block";
+
+    let extraHTML = "";
+
+    // 👉 Nếu là "Điểm thưởng" thì thêm 3 ô input
+    if(key === "Điểm thưởng "){   // nhớ có dấu cách cuối giống data của bạn
+        extraHTML = `
+            <hr>
+            <h4>💰 Tính điểm</h4>
+
+            <label>Giá bill:</label><br>
+            <input type="text" id="bill" placeholder="Nhập tiền..." style="width:100%;padding:8px;margin-bottom:8px"><br>
+
+            <label>Điểm:</label><br>
+            <input type="text" id="point" placeholder="Tự tính..." style="width:100%;padding:8px;margin-bottom:8px"><br>
+
+            <label>Trừ tiền:</label><br>
+            <input type="text" id="discount" placeholder="Tự tính..." style="width:100%;padding:8px"><br>
+        `;
+    }
+
+    content.innerHTML = `
+        <div class="fab-detail">
+            ${menuData[currentGroup][key]}
+            ${extraHTML}
+        </div>
+    `;
+
+    // 👉 Gắn sự kiện sau khi render
+    if(key === "Điểm thưởng "){
+        setupCalculator();
+    }
+}
+
+// BACK
+function goBack(){
+
+    if(nodeStack.length === 0){
+        renderLevel1();
+        return;
+    }
+
+    // pop node hiện tại
+    const prevNode = nodeStack.pop();
+
+    // xoá path bước cuối
+    path.pop();
+
+    renderTree(prevNode);
+}
+
+// TOGGLE
+function togglePanel(){
+    const panel = document.getElementById("fabPanel");
+    panel.classList.toggle("hidden");
+
+    if(!panel.classList.contains("hidden")){
+        renderLevel1();
+    }
+}
+
+
+function setupCalculator(){
+    const bill = document.getElementById("bill");
+    const point = document.getElementById("point");
+    const discount = document.getElementById("discount");
+
+    // 👉 hàm lấy số sạch (lọc ký tự)
+    function getNumber(value){
+        return Number(value.replace(/[^\d]/g, ""));
+    }
+
+    // 👉 format tiền 1.000.000
+    function formatNumber(num){
+        return num.toLocaleString("vi-VN");
+    }
+
+    // 👉 BILL → POINT + DISCOUNT
+    bill.addEventListener("input", () => {
+        let value = getNumber(bill.value);
+
+        if(isNaN(value) || value === 0){
+            point.value = "";
+            discount.value = "";
+            return;
+        }
+
+        let p = Math.round(value / 1000);
+        let d = p * 10;
+
+        point.value = formatNumber(p);
+        discount.value = formatNumber(d);
+        bill.value = formatNumber(value);
+    });
+
+    // 👉 POINT → BILL + DISCOUNT
+    point.addEventListener("input", () => {
+        let p = getNumber(point.value);
+
+        if(isNaN(p) || p === 0){
+            bill.value = "";
+            discount.value = "";
+            return;
+        }
+
+        let b = p * 1000;
+        let d = p * 10;
+
+        bill.value = formatNumber(b);
+        discount.value = formatNumber(d);
+        point.value = formatNumber(p);
+    });
+
+    // 👉 DISCOUNT → POINT + BILL
+    discount.addEventListener("input", () => {
+        let d = getNumber(discount.value);
+
+        if(isNaN(d) || d === 0){
+            bill.value = "";
+            point.value = "";
+            return;
+        }
+
+        let p = Math.round(d / 10);
+        let b = p * 1000;
+
+        bill.value = formatNumber(b);
+        point.value = formatNumber(p);
+        discount.value = formatNumber(d);
+    });
+}
+function renderImageMenu(){
+    title.innerText = "Hình ảnh";
+    backBtn.style.display = "inline-block";
+
+    content.innerHTML = `
+        <div class="fab-grid">
+            <button class="fab-btn" onclick="openImage('https://i.postimg.cc/50vgNrbs/1.jpg')">Đau họng</button>
+            <button class="fab-btn" onclick="openImage('https://i.postimg.cc/zBW7XQ8t/2.jpg')">Sổ mũi</button>
+            <button class="fab-btn" onclick="openImage('https://i.postimg.cc/ZR3HKQ4s/3.jpg')">Đau đầu</button>
+            <button class="fab-btn" onclick="openImage('https://i.postimg.cc/Twm0Ysfk/4.jpg')">Đau bụng</button>
+            <button class="fab-btn" onclick="openImage('https://i.postimg.cc/8cSHFbzm/5.jpg')">Thuốc các liều</button>
+        </div>
+    `;
+}
+function openImage(src){
+    document.getElementById("imgViewer").src = src;
+    document.getElementById("imgPanel").classList.remove("hidden");
+}
+
+function closeImage(){
+    document.getElementById("imgPanel").classList.add("hidden");
+}
+</script>
+
+</body>
+</html>

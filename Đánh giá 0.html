@@ -1,0 +1,9059 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quản Lý Sheet</title>
+
+  <style>
+
+    *{
+      box-sizing:border-box;
+      font-family:Arial,sans-serif;
+    }
+
+    body{
+      margin:0;
+      padding:20px;
+      background:#f1f5f9;
+    }
+
+    .top-menu{
+      display:flex;
+      gap:10px;
+      margin-bottom:20px;
+      flex-wrap:wrap;
+    }
+
+    .menu-btn{
+      padding:12px 24px;
+      border:none;
+      border-radius:8px;
+      cursor:pointer;
+      font-weight:bold;
+      background:#2563eb;
+      color:white;
+      font-size:14px;
+    }
+
+    .menu-btn.active{
+      background:#0f172a;
+    }
+
+    .sheet{
+      display:none;
+    }
+
+    .sheet.active{
+      display:block;
+    }
+
+    .wrapper,
+    .container{
+      width:100%;
+      max-width:100%;
+      margin:auto;
+      background:white;
+      border-radius:12px;
+      padding:20px;
+      box-shadow:0 2px 10px rgba(0,0,0,0.08);
+    }
+
+    h1{
+      margin-top:0;
+      color:#0f172a;
+    }
+
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+th{
+  background:#0070c0;
+  color:white;
+  border:1px solid #0f172a;
+  padding:10px;
+  font-size:14px;
+  text-align:center;
+  white-space:nowrap;
+}
+
+/* DÒNG 1 */
+
+thead tr:first-child th{
+
+  position:sticky;
+  top:0;
+  z-index:20;
+
+}
+
+/* DÒNG 2 */
+
+thead tr:nth-child(2) th{
+
+  position:sticky;
+  top:40px;
+  z-index:19;
+
+}
+
+    td{
+      border:1px solid #dbe2ea;
+      padding:8px;
+      font-size:13px;
+      white-space:nowrap;
+    }
+
+    tr:nth-child(even){
+      background:#f8fafc;
+    }
+
+    tr:hover{
+      background:#e0f2fe;
+    }
+
+    .editable{
+      background:#fef9c3;
+    }
+	
+	#targetTable td:nth-child(6),
+#targetTable th:nth-child(6){
+
+  text-align:center;
+
+}
+
+    .name-col{
+      text-align:left;
+      font-weight:bold;
+    }
+
+    .number{
+      text-align:right;
+    }
+
+    .percent{
+      text-align:right;
+      color:#0f766e;
+      font-weight:bold;
+    }
+
+    .text{
+      text-align:left;
+    }
+
+    .btn-area,
+    .btn-group{
+      display:flex;
+      gap:10px;
+      margin-top:15px;
+      flex-wrap:wrap;
+    }
+
+
+button{
+  border:none;
+  padding:12px 18px;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:bold;
+  font-size:14px;
+  min-width:140px;
+}
+
+    .save-btn{
+      background:#2563eb;
+      color:white;
+    }
+	
+
+
+    .add-btn{
+      background:#059669;
+      color:white;
+    }
+
+
+.delete-btn,
+
+
+    .table-wrapper{
+      overflow:auto;
+      border:1px solid #cbd5e1;
+      border-radius:10px;
+      background:white;
+      max-height:75vh;
+      margin-top:20px;
+    }
+
+    textarea{
+      width:100%;
+      min-height:220px;
+      border:1px solid #cbd5e1;
+      border-radius:10px;
+      padding:12px;
+      resize:vertical;
+      font-size:14px;
+      line-height:1.5;
+    }
+
+    .info{
+      margin-top:10px;
+      color:#475569;
+      font-size:14px;
+    }
+	
+	/* HEADER */
+
+.handsontable .htCore th{
+  background:#0070c0 !important;
+  color:white !important;
+  font-weight:bold !important;
+  text-align:center !important;
+  border:1px solid #0f172a !important;
+}
+
+/* ROW NUMBER */
+
+.handsontable .rowHeader{
+  background:#0070c0 !important;
+  color:white !important;
+  font-weight:bold !important;
+  text-align:center !important;
+}
+
+/* CELL */
+
+.handsontable td{
+  font-size:13px;
+  border:1px solid #dbe2ea;
+}
+
+/* SELECT AREA */
+
+.handsontable .area{
+  background:rgba(37,99,235,0.12) !important;
+}
+
+/* CURRENT CELL */
+
+.handsontable .current{
+  background:#dbeafe !important;
+}
+
+.htSearchResult {
+  background: #fef08a !important;
+  color: black !important;
+}
+
+
+
+
+
+.delete-btn-wrap{
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  gap:8px;
+
+}
+
+.row-number{
+
+  font-weight:bold;
+
+  color:#2563eb;
+
+  font-size:14px;
+
+  min-width:20px;
+
+  text-align:center;
+
+}
+
+.row-number{
+
+  font-weight:bold;
+
+  color:#2563eb;
+
+  font-size:14px;
+
+}
+
+.target-delete-btn{
+
+  font-size:13px;
+
+  border:none;
+
+  border-radius:6px;
+
+  background:#ff4d4f;
+
+  color:#fff;
+
+  cursor:pointer;
+
+  font-weight:600;
+
+  min-width:auto;
+
+  width:auto;
+
+  height:auto;
+
+  line-height:1.2;
+
+  transition:0.2s;
+
+}
+
+.target-delete-btn:hover{
+
+  opacity:0.85;
+
+}
+	
+.btn-primary{
+  background:#2563eb;
+  color:white;
+    width:400px;
+}
+  
+  
+.btn-danger, .btn-XACNHAN{
+
+  padding:12px 10px;
+
+  font-size:12px;
+
+  border-radius:6px;
+
+  width:auto;
+
+  min-width:auto;
+
+  height:auto;
+
+  line-height:1.2;
+
+  display:inline-flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+}
+
+.btn-danger{
+  background:#dc2626;
+  color:white;
+ }
+
+  	.btn-XACNHAN{
+  background:#2563eb;
+  color:white;}
+  </style>
+  
+  <link  rel="stylesheet"  href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css"/>
+  
+</head>
+<body>
+
+<!-- MENU -->
+<div class="top-menu">
+
+  <button
+    class="menu-btn active"
+    onclick="showSheet('sheetTarget', this)"
+  >
+    TARGET
+  </button>
+
+  <button
+    class="menu-btn"
+    onclick="showSheet('sheetImport', this)"
+  >
+    DATA THUỐC
+  </button>
+
+  <button
+    class="menu-btn"
+    onclick="showSheet('sheetVX', this)"
+  >
+    DATA_VX
+  </button>
+  
+<button
+  class="menu-btn"
+  onclick="openKPIPopup('sheetKPIs', this)"
+>
+  KPIs
+</button>
+
+</div>
+
+<!-- SHEET TARGET -->
+<div id="sheetTarget" class="sheet active">
+
+  <div class="wrapper">
+
+    <h1>📋 Target</h1>
+
+    <input
+      type="file"
+      id="targetExcelFile"
+      accept=".xlsx,.xls"
+      onchange="importTargetExcel(event)"
+      style="margin-bottom:15px;"
+    >
+
+    <div class="table-wrapper">
+
+      <table id="targetTable">
+
+        <thead>
+
+          <tr>
+
+            <th>Mã NV</th>
+
+            <th>Tên Nhân Viên</th>
+
+            <th>Doanh Thu</th>
+
+            <th style="
+              cursor:pointer;
+              font-weight:800;
+              text-align:center;
+            ">
+              TB Bill
+            </th>
+
+            <th style="
+              cursor:pointer;
+              font-weight:800;
+              text-align:center;
+            ">
+              DS HOT
+            </th>
+
+            <th style="
+              cursor:pointer;
+              font-weight:800;
+              text-align:center;
+            ">
+              TT Thuốc
+            </th>
+
+            <th style="
+              cursor:pointer;
+              font-weight:800;
+              text-align:center;
+            ">
+              ↑↓ Khách
+            </th>
+
+            <th style="
+              cursor:pointer;
+              font-weight:800;
+              text-align:center;
+            ">
+              Cận Date
+            </th>
+
+            <th style="
+              cursor:pointer;
+              font-weight:800;
+              text-align:center;
+            ">
+              Cắt Liều
+            </th>
+
+            <th style="
+              cursor:pointer;
+              font-weight:800;
+              text-align:center;
+            ">
+              Vaccine
+            </th>
+			<th style="
+              cursor:pointer;
+              font-weight:800;
+              text-align:center;
+            ">
+              Nhân sự
+            </th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+
+	    <div class="btn-area">
+
+ 	  <button
+		class="target-delete-btn"
+		onclick="toggleTargetBox()"
+		>
+		📊 Chia Target
+	  </button>
+
+    </div>
+	
+	<!-- KHUNG CHIA TARGET -->
+
+<div
+  id="targetBox"
+  style="
+    display:none;
+    margin-top:20px;
+    padding:20px;
+    border:1px solid #cbd5e1;
+    border-radius:12px;
+    background:#f8fafc;
+  "
+>
+
+  <h2 style="margin-top:0;">
+    📊 Chia Target Nhân Viên
+  </h2>
+
+  <div style="margin-bottom:20px;">
+
+    <div style="
+      font-weight:bold;
+      margin-bottom:6px;
+    ">
+      Nhập tổng Target
+    </div>
+
+    <input
+      type="text"
+      id="tong"
+      class="tong-input"
+      placeholder="Ví dụ: 10.000.000"
+      style="
+        width:250px;
+        padding:10px;
+        border:1px solid #cbd5e1;
+        border-radius:8px;
+      "
+    />
+
+  </div>
+
+  <div id="employeeList"></div>
+
+  <div style="
+    margin-top:20px;
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+  ">
+
+    <button
+      class="add-btn"
+      onclick="addEmployee()"
+    >
+      ➕ Thêm nhân viên
+    </button>
+
+    <button
+      class="save-btn"
+      onclick="calculateTarget()"
+    >
+      📈 Tính Target
+    </button>
+
+  </div>
+
+</div>
+
+  </div>
+
+</div>
+
+<!-- SHEET DATA THUỐC -->
+<div id="sheetImport" class="sheet">
+
+  <div class="container">
+
+    <h1>📥 DATA_Thuốc</h1>
+<input
+  type="file"
+  id="excelFile"
+  accept=".xlsx,.xls"
+  onchange="importExcelFile(event)"
+  style="margin-bottom:10px;"
+>
+    <textarea
+      id="excelInput"
+      placeholder="Paste dữ liệu Excel vào đây..."
+    ></textarea>
+
+    <div class="btn-group">
+
+      <button
+        class="btn-primary"
+        onclick="parseExcelData()"
+      >
+        Lưu dữ liệu
+      </button>
+
+      <button
+        class="btn-danger"
+        onclick="clearAllData()"
+      >
+        Xóa dữ liệu
+      </button>
+
+    </div>
+
+    <div class="info" id="info"></div>
+  <input
+  id="searchBox"
+  style="
+    display:none;
+    width:100%;
+    padding:10px;
+    border:1px solid #cbd5e1;
+    border-radius:8px;
+    margin-top:10px;
+  "
+  placeholder="Tìm mã NV / tên / dữ liệu..."
+  style="
+    width:100%;
+    padding:10px;
+    border:1px solid #cbd5e1;
+    border-radius:8px;
+    margin-top:10px;
+  "
+  onkeydown="handleSearchEnter(event)"
+>
+
+    <div
+  id="excelTable"
+  style="
+    width:100%;
+    height:75vh;
+    overflow:hidden;
+    margin-top:20px;
+  "
+></div>
+
+  </div>
+
+</div>
+
+<!-- SHEET DATA_VX -->
+<div id="sheetVX" class="sheet">
+
+  <div class="container">
+
+    <h1>📥 DATA_VX</h1>
+<input
+  type="file"
+  id="vxFile"
+  accept=".xlsx,.xls"
+  onchange="importVXFile(event)"
+  style="margin-bottom:10px;"
+>
+    <textarea
+      id="vxInput"
+      placeholder="Paste dữ liệu DATA_VX vào đây..."
+    ></textarea>
+
+    <div class="btn-group">
+
+      <button
+        class="btn-primary"
+        onclick="parseVXData()"
+      >
+        Lưu dữ liệu
+      </button>
+
+      <button
+        class="btn-danger"
+        onclick="clearVXData()"
+      >
+        Xóa dữ liệu
+      </button>
+
+    </div>
+
+<div class="info" id="vxInfo"></div>
+
+<input
+  id="vxSearchBox"
+  style="
+    display:none;
+    width:100%;
+    padding:10px;
+    border:1px solid #cbd5e1;
+    border-radius:8px;
+    margin-top:10px;
+  "
+  placeholder="Tìm mã NV / tên / dữ liệu..."
+  style="
+    width:100%;
+    padding:10px;
+    border:1px solid #cbd5e1;
+    border-radius:8px;
+    margin-top:10px;
+  "
+  onkeydown="handleVXSearchEnter(event)"
+>
+
+<div
+  id="vxExcelTable"
+  style="
+    width:100%;
+    height:75vh;
+    overflow:hidden;
+    margin-top:20px;
+  "
+></div>
+
+  </div>
+
+</div>
+
+<!-- KPI POPUP -->
+
+<div id="kpiPopup" style="
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.45);
+  z-index:9999;
+  align-items:center;
+  justify-content:center;
+">
+
+  <div style="
+    background:white;
+    padding:25px;
+    border-radius:16px;
+    width:320px;
+    max-width:90%;
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+  ">
+
+    <h2 style="
+      margin-top:0;
+      margin-bottom:20px;
+      color:#0f172a;
+      text-align:center;
+    ">
+      KPI
+    </h2>
+
+    <div style="margin-bottom:15px;">
+
+      <div style="
+        font-size:14px;
+        font-weight:bold;
+        margin-bottom:6px;
+      ">
+        Ngày đã chạy
+      </div>
+
+      <input
+        type="number"
+        id="popupPassedDays"
+        style="
+          width:100%;
+          padding:10px;
+          border:1px solid #cbd5e1;
+          border-radius:10px;
+        "
+      >
+
+    </div>
+
+    <div style="margin-bottom:20px;">
+
+      <div style="
+        font-size:14px;
+        font-weight:bold;
+        margin-bottom:6px;
+      ">
+        Tổng số ngày
+      </div>
+
+      <input
+        type="number"
+        id="popupTotalDays"
+        style="
+          width:100%;
+          padding:10px;
+          border:1px solid #cbd5e1;
+          border-radius:10px;
+        "
+      >
+
+    </div>
+
+    <div style="
+      display:flex;
+      gap:10px;
+    ">
+
+      <button
+        class="btn-XACNHAN"
+        style="flex:1;"
+        onclick="confirmKPIPopup()"
+      >
+        Xác nhận
+      </button>
+
+      <button
+        class="btn-danger"
+        style="flex:1;"
+        onclick="closeKPIPopup()"
+      >
+        Đóng
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- SHEET KPIs -->
+<!-- SHEET KPIs -->
+<div id="sheetKPIs" class="sheet">
+
+  <div class="container">
+
+    <div style="
+      display:flex;
+      align-items:center;
+      gap:30px;
+      flex-wrap:nowrap;
+      margin-bottom:20px;
+    ">
+
+      <!-- TITLE -->
+      <h1 style="
+        margin:0;
+        white-space:nowrap;
+      ">
+        📊 KPI
+      </h1>
+
+      <!-- PASSED DAYS -->
+      <div style="text-align:center;">
+
+        <input
+          type="number"
+          id="passedDaysInput"
+          hidden
+        >
+
+        <div id="passedDaysView" style="
+          font-size:32px;
+          font-weight:bold;
+          color:#dc2626;
+          line-height:1;
+        ">
+          0
+        </div>
+
+        <div style="
+          font-size:12px;
+          color:#64748b;
+          margin-top:6px;
+        ">
+          Ngày đã chạy
+        </div>
+
+      </div>
+
+      <!-- TOTAL DAYS -->
+      <div style="text-align:center;">
+
+        <input
+          type="number"
+          id="totalDaysInput"
+          hidden
+        >
+
+        <div id="totalDaysView" style="
+          font-size:32px;
+          font-weight:bold;
+          color:#dc2626;
+          line-height:1;
+        ">
+          0
+        </div>
+
+        <div style="
+          font-size:12px;
+          color:#64748b;
+          margin-top:6px;
+        ">
+          Tổng số ngày
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+<!-- KPI 01 --------------------------------------------------------------------------------------------------------------------------------------->
+<div style="
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:10px;
+">
+<button
+  class="btn-primary"
+  onclick="toggleKPI('kpi01Table')"
+>
+  KPI 01: DOANH SỐ TỔNG
+</button>
+
+<button
+  class="add-btn"
+  onclick="exportKPIImage('kpi01Table','KPI_01_DOANH_SO')"
+>
+  📸 Xuất Ảnh
+</button>
+
+</div>
+
+  <div
+    style="
+      display:flex;
+      align-items:center;
+      gap:5px;
+      margin-left:20px;
+    "
+  >
+
+
+
+
+  </div>
+
+    <div class="table-wrapper kpi-content" style="display:none;">
+
+      <table id="kpi01Table">
+
+        <thead>
+
+          <tr>
+
+            <th colspan="8"
+              style="
+                background:#1e293b;
+                font-size:18px;
+              "
+            >
+              DOANH SỐ TỔNG
+            </th>
+
+          </tr>
+
+          <tr>
+
+            <th>STT</th>
+			
+			<th>Mã NV</th>
+
+            <th>Tên Nhân Viên</th>
+
+            <th>Target</th>
+
+            <th id="monthToDateHeader">
+
+  <div>
+    Month To Date
+  </div>
+
+  <div
+    style="
+      font-size:11px;
+      margin-top:4px;
+      color:#dbeafe;
+      font-weight:normal;
+    "
+  >
+    Ngày đã chạy:
+  </div>
+
+</th>
+
+<th id="percentHeader">
+
+  <div>%HT</div>
+
+  <div
+    style="
+      font-size:11px;
+      margin-top:4px;
+      color:#fef08a;
+    "
+  >
+    0%
+  </div>
+
+</th>
+
+            <th>Estimate</th>
+
+            <th>TB/Ngày Còn Lại</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody id="kpi01Body"></tbody>
+
+      </table>
+
+    </div>
+	<br><br><br>
+
+
+<!-- KPI 02 ----------------------------------------------------------------------------------------------------------------------------------------->
+<div style="
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:10px;
+">
+<button
+  class="btn-primary"
+  onclick="toggleKPI('kpi02Table')"
+>
+  KPI 02: GIÁ TRỊ TRUNG BÌNH BILL
+</button>
+
+<button
+  class="add-btn"
+  onclick="exportKPIImage('kpi02Table','KPI_02_GIA_TRI_TRUNG_BÌNH_BILL')"
+>
+  📸 Xuất Ảnh
+</button>
+
+</div>
+
+<div style="margin-top:5px;">
+
+  <div class="table-wrapper kpi-content" style="display:none;">
+
+    <table id="kpi02Table">
+
+      <thead>
+
+        <tr>
+
+          <th colspan="6"
+            style="
+              background:#1e293b;
+              font-size:18px;
+            "
+          >
+            GIÁ TRỊ TRUNG BÌNH BILL
+          </th>
+
+        </tr>
+
+        <tr>
+
+          <th>STT</th>
+		  
+		  <th>Mã NV</th>
+
+          <th>Tên Nhân Viên</th>
+
+          <th>Target</th>
+
+          <th id="kpi02MonthHeader">
+            Month To Date
+          </th>
+
+          <th id="kpi02PercentHeader">
+            %HT
+          </th>
+
+        </tr>
+
+      </thead>
+
+      <tbody id="kpi02Body"></tbody>
+
+    </table>
+
+  </div>
+
+</div><br><br><br>
+
+
+	
+	<!-- KPI 03 ----------------------------------------------------------------------------------------------------------------------------->
+<div style="
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:10px;
+">
+<button
+  class="btn-primary"
+  onclick="toggleKPI('kpi03Table')"
+>
+  KPI 03: DOANH THU HOT
+</button>
+
+<button
+  class="add-btn"
+  onclick="exportKPIImage('kpi03Table','KPI_03_DOANH_THU_HOT')"
+>
+  📸 Xuất Ảnh
+</button>
+
+</div>
+
+<div style="margin-top:5px;">
+
+  <div class="table-wrapper kpi-content" style="display:none;">
+
+    <table id="kpi03Table">
+
+      <thead>
+
+        <tr>
+
+          <th colspan="9"
+            style="
+              background:#1e293b;
+              font-size:18px;
+            "
+          >
+            DOANH THU HOT
+          </th>
+
+        </tr>
+
+        <tr>
+
+          <th>STT</th>
+		  
+		  <th>Mã NV</th>
+
+          <th>Tên Nhân Viên</th>
+
+          <th>Target</th>
+
+          <th id="kpi03MonthHeader">
+            Month To Date
+          </th>
+
+          <th id="kpi03PercentHeader">
+            %HT
+          </th>
+
+          <th>Estimate</th>
+
+          <th>TB/Ngày Còn Lại</th>
+
+          <th id="kpi03TTHotHeader">
+            TT HOT
+          </th>
+
+        </tr>
+
+      </thead>
+
+      <tbody id="kpi03Body"></tbody>
+
+    </table>
+
+  </div>
+	<br><br><br>
+
+<!-- KPI 04 --------------------------------------------------------------------------------------------------------------------------------------->
+<div style="
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:10px;
+">
+<button
+  class="btn-primary"
+  onclick="toggleKPI('kpi04Table')"
+>
+  KPI 04: DOANH SỐ VACCINE VỆ TINH
+</button>
+
+<button
+  class="add-btn"
+  onclick="exportKPIImage('kpi04Table','KPI_04_VACCINE_VE_TINH')"
+>
+  📸 Xuất Ảnh
+</button>
+
+</div>
+
+<div style="margin-top:5px;">
+
+  <div class="table-wrapper kpi-content" style="display:none;">
+
+    <table id="kpi04Table">
+
+      <thead>
+
+        <tr>
+
+          <th colspan="8"
+            style="
+              background:#1e293b;
+              font-size:18px;
+            "
+          >
+            DOANH SỐ VACCINE VỆ TINH
+          </th>
+
+        </tr>
+
+        <tr>
+
+          <th>STT</th>
+		  
+		  <th>Mã NV</th>
+
+          <th>Tên Nhân Viên</th>
+
+          <th>Target</th>
+
+          <th id="kpi04MonthHeader">
+            Month To Date
+          </th>
+
+          <th id="kpi04PercentHeader">
+            %HT
+          </th>
+
+          <th>Estimate</th>
+
+          <th>
+            TB/Ngày Còn Lại
+          </th>
+
+        </tr>
+
+      </thead>
+
+      <tbody id="kpi04Body"></tbody>
+
+    </table>
+
+  </div>
+
+</div> <br><br><br>
+<!-- KPI 05 -------------------------------------------------------------------------------------------------------------------------------------->
+<div style="
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:10px;
+">
+<button
+  class="btn-primary"
+  onclick="toggleKPI('kpi05Table')"
+>
+  KPI 05: DOANH THU CẮT LIỀU
+</button>
+
+<button
+  class="add-btn"
+  onclick="exportKPIImage('kpi05Table','KPI_05_CAT_LIEU')"
+>
+  📸 Xuất Ảnh
+</button>
+</div>
+
+<div
+  style="
+    margin-top:5px;
+  "
+>
+
+  <div class="table-wrapper kpi-content" style="display:none;">
+
+    <table id="kpi05Table">
+
+      <thead>
+
+        <tr>
+
+          <th colspan="8"
+            style="
+              background:#1e293b;
+              font-size:18px;
+            "
+          >
+            DOANH THU CẮT LIỀU
+          </th>
+
+        </tr>
+
+        <tr>
+
+          <th>STT</th>
+		  
+		  <th>Mã NV</th>
+
+          <th>Tên Nhân Viên</th>
+
+          <th>Target</th>
+
+          <th id="kpi05MonthHeader">
+            Month To Date
+          </th>
+
+          <th id="kpi05PercentHeader">
+            %HT
+          </th>
+
+          <th>Estimate</th>
+
+          <th>TB/Ngày Còn Lại</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody id="kpi05Body"></tbody>
+
+    </table>
+
+  </div>
+  	<br><br><br>
+<!-- KPI 06 ------------------------------------------------------------------------------------------------------------------------------------->
+<div style="
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:10px;
+">
+
+<button
+  class="btn-primary"
+  onclick="toggleKPI('kpi06Table')"
+>
+  KPI 06: TỈ TRỌNG DOANH SỐ THUỐC
+</button>
+
+<button
+  class="add-btn"
+  onclick="exportKPIImage('kpi06Table','KPI_06_TI_TRONG_DS_THUOC')"
+>
+  📸 Xuất Ảnh
+</button>
+</div>
+
+<div style="margin-top:5px;">
+
+  <div class="table-wrapper kpi-content" style="display:none;">
+
+    <table id="kpi06Table">
+
+      <thead>
+
+        <tr>
+
+          <th colspan="7"
+            style="
+              background:#1e293b;
+              font-size:18px;
+            "
+          >
+            TỈ TRỌNG DOANH SỐ THUỐC
+          </th>
+
+        </tr>
+
+        <tr>
+
+          <th>STT</th>
+		  
+		  <th>Mã NV</th>
+
+          <th>Tên Nhân Viên</th>
+
+          <th>Target</th>
+
+          <th id="kpi06MonthHeader">
+            Month To Date
+          </th>
+
+          <th id="kpi06PercentHeader">
+            %HT
+          </th>
+
+        </tr>
+
+      </thead>
+
+      <tbody id="kpi06Body"></tbody>
+
+    </table>
+
+  </div>
+<br><br><br>
+
+<!-- KPI 07 ------------------------------------------------------------------------------------------------------------------------------------->
+<div style="
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:10px;
+">
+<button
+  class="btn-primary"
+  onclick="toggleKPI('kpi07Table')"
+>
+  KPI 07: TĂNG TRƯỞNG LƯỢT KHÁCH
+</button>
+
+<button
+  class="add-btn"
+  onclick="exportKPIImage('kpi07Table','KPI_07_TANG_TRUONG_LUOT_KHACH')"
+>
+  📸 Xuất Ảnh
+</button>
+</div>
+
+<div style="margin-top:5px;">
+
+  <div class="table-wrapper kpi-content" style="display:none;">
+
+    <table id="kpi07Table">
+
+      <thead>
+
+        <tr>
+
+          <th colspan="7"
+            style="
+              background:#1e293b;
+              font-size:18px;
+            "
+          >
+            TĂNG TRƯỞNG LƯỢT KHÁCH
+          </th>
+
+        </tr>
+
+        <tr>
+
+          <th>STT</th>
+		  
+		  <th>Mã NV</th>
+
+          <th>Tên Nhân Viên</th>
+
+          <th>Target</th>
+
+          <th id="kpi07MonthHeader">
+            Month To Date
+          </th>
+
+          <th id="kpi07PercentHeader">
+            %HT
+          </th>
+
+          <th>Estimate</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody id="kpi07Body"></tbody>
+
+    </table>
+
+  </div>
+  
+<br><br><br>
+
+<!-- KPI 08 ------------------------------------------------------------------------------------------------------------------------------------->
+<div style="
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:10px;
+">
+<button
+  class="btn-primary"
+  onclick="toggleKPI('kpi08Table')"
+>
+  KPI 08: CLEAR HÀNG CẬN DATE
+</button>
+
+<button
+  class="add-btn"
+  onclick="exportKPIImage('kpi08Table','KPI_08_CLEAR_CAN_DATE')"
+>
+  📸 Xuất Ảnh
+</button>
+</div>
+
+<div style="margin-top:5px;">
+
+  <div class="table-wrapper kpi-content" style="display:none;">
+
+    <table id="kpi08Table">
+
+      <thead>
+
+        <tr>
+
+          <th colspan="8"
+            style="
+              background:#1e293b;
+              font-size:18px;
+            "
+          >
+            CLEAR HÀNG CẬN DATE
+          </th>
+
+        </tr>
+
+        <tr>
+
+          <th>STT</th>
+		  
+		  <th>Mã NV</th>
+
+          <th>Tên Shop</th>
+
+          <th>Target</th>
+
+          <th id="kpi08MonthHeader">
+            Month To Date
+          </th>
+
+          <th id="kpi08PercentHeader">
+            %HT
+          </th>
+
+          <th>Estimate</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody id="kpi08Body"></tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
+<br><br><br>
+<!-- KPI 09 : FS+APP - TPCN - CẮT LIỀU ================================================================================================= -->
+
+<div class="kpi-container">
+
+  <!-- BUTTON -->
+
+  <div style="
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:10px;
+  ">
+
+<button
+  class="btn-primary"
+  onclick="toggleKPI('kpi09Table')"
+>
+  KPI 09: TỈ LỆ FS-APP, TPCN, CẮT LIỀU
+</button>
+
+    <button
+      class="add-btn"
+      onclick="exportKPIImage('kpi09Table', 'KPI_09_FS_APP_TPCN_CAT_LIEU')"
+    >
+      📸 Xuất Ảnh
+    </button>
+
+  </div>
+
+  <!-- TABLE -->
+
+  <div class="table-wrapper kpi-content" style="display:none;">
+
+    <table
+      id="kpi09Table"
+      class="kpi-table"
+    >
+
+      <thead>
+
+        <!-- HEADER -->
+
+        <tr>
+
+          <th
+            colspan="3"
+            style="
+              background:#1e293b;
+              color:white;
+              font-weight:bold;
+              text-align:center;
+              font-size:18px;
+            "
+          >
+            TỈ LỆ FS-APP, TPCN, CẮT LIỀU
+          </th>
+
+          <th
+            colspan="3"
+            id="kpi09DateHeader"
+            style="
+              background:#1e293b;
+              color:white;
+              font-weight:bold;
+              text-align:center;
+              font-size:18px;
+            "
+          >
+            16/05/2026
+          </th>
+
+        </tr>
+
+        <!-- COLUMN -->
+
+        <tr>
+
+          <th
+            style="
+              width:60px;
+              background:#0070d1;
+              color:white;
+            "
+          >
+            STT
+          </th>
+
+          <th
+            style="
+              background:#0070d1;
+              color:white;
+            "
+          >
+            Mã NV
+          </th>
+
+          <th
+            style="
+              min-width:260px;
+              background:#0070d1;
+              color:white;
+            "
+          >
+            Tên Nhân Viên
+          </th>
+
+          <!-- FS APP -->
+
+          <th
+            style="
+              width:130px;
+              background:#0070d1;
+              color:white;
+              cursor:pointer;
+            "
+          >
+
+            <label style="
+              display:flex;
+              align-items:center;
+              justify-content:center;
+              gap:4px;
+              cursor:pointer;
+              font-weight:800;
+            ">
+
+              <input
+                type="radio"
+                name="kpi09Sort"
+                value="fsApp"
+                checked
+              >
+
+              FS+APP
+
+            </label>
+
+          </th>
+
+          <!-- TPCN -->
+
+          <th
+            style="
+              width:130px;
+              background:#0070d1;
+              color:white;
+              cursor:pointer;
+            "
+          >
+
+            <label style="
+              display:flex;
+              align-items:center;
+              justify-content:center;
+              gap:4px;
+              cursor:pointer;
+              font-weight:800;
+            ">
+
+              <input
+                type="radio"
+                name="kpi09Sort"
+                value="ttTPCN"
+              >
+
+              TT TPCN
+
+            </label>
+
+          </th>
+
+          <!-- CAT LIEU -->
+
+          <th
+            style="
+              width:180px;
+              background:#0070d1;
+              color:white;
+              cursor:pointer;
+            "
+          >
+
+            <label style="
+              display:flex;
+              align-items:center;
+              justify-content:center;
+              gap:4px;
+              cursor:pointer;
+              font-weight:800;
+            ">
+
+              <input
+                type="radio"
+                name="kpi09Sort"
+                value="catLieu"
+              >
+
+              Cắt Liều
+
+            </label>
+
+          </th>
+
+        </tr>
+
+      </thead>
+
+      <tbody id="kpi09Body"></tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
+<br><br><br>
+
+<!-- KPI 10 ================================================================================================= -->
+
+<div style="
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:10px;
+">
+
+<button
+  class="btn-primary"
+  onclick="toggleKPI('kpi10Table')"
+>
+  KPI 10: ĐÁNH GIÁ TỔNG QUAN NHÂN VIÊN SHOP
+</button>
+
+  <button
+    class="add-btn"
+    onclick="exportKPIImage('kpi10Table','KPI_10_DANH_GIA_TONG_QUAN')"
+  >
+    📸 Xuất Ảnh
+  </button>
+
+</div>
+
+<div style="margin-top:5px;">
+
+  <div class="table-wrapper kpi-content" style="display:none;">
+
+    <table id="kpi10Table">
+
+      <thead>
+
+        <tr>
+
+          <th colspan="10"
+            style="
+              background:#1e293b;
+              font-size:18px;
+            "
+          >
+            ĐÁNH GIÁ TỔNG QUAN NHÂN VIÊN SHOP
+          </th>
+
+        </tr>
+
+        <tr>
+
+          <th>STT</th>
+
+          <th>Mã NV</th>
+
+          <th>Tên Nhân Viên</th>
+
+          <!-- DOANH THU -->
+
+          <th style="cursor:pointer;">
+
+            <label style="
+              display:flex;
+              align-items:center;
+              justify-content:center;
+              gap:4px;
+              cursor:pointer;
+              font-weight:800;
+            ">
+              <input
+                type="radio"
+                name="kpiSort"
+                value="doanhThu"
+                checked
+              >
+              Doanh Thu
+            </label>
+
+          </th>
+
+          <!-- CAT LIEU -->
+
+          <th style="cursor:pointer;">
+
+            <label style="
+              display:flex;
+              align-items:center;
+              justify-content:center;
+              gap:4px;
+              cursor:pointer;
+              font-weight:800;
+            ">
+              <input
+                type="radio"
+                name="kpiSort"
+                value="catLieu"
+              >
+              Cắt Liều
+            </label>
+
+          </th>
+
+          <!-- DS HOT -->
+
+          <th style="cursor:pointer;">
+
+            <label style="
+              display:flex;
+              align-items:center;
+              justify-content:center;
+              gap:4px;
+              cursor:pointer;
+              font-weight:800;
+            ">
+              <input
+                type="radio"
+                name="kpiSort"
+                value="dsHot"
+              >
+              DS HOT
+            </label>
+
+          </th>
+
+          <!-- TT THUOC -->
+
+          <th style="cursor:pointer;">
+
+            <label style="
+              display:flex;
+              align-items:center;
+              justify-content:center;
+              gap:4px;
+              cursor:pointer;
+              font-weight:800;
+            ">
+              <input
+                type="radio"
+                name="kpiSort"
+                value="ttThuoc"
+              >
+              TT Thuốc
+            </label>
+
+          </th>
+
+          <!-- KHACH -->
+
+          <th style="cursor:pointer;">
+
+            <label style="
+              display:flex;
+              align-items:center;
+              justify-content:center;
+              gap:4px;
+              cursor:pointer;
+              font-weight:800;
+            ">
+              <input
+                type="radio"
+                name="kpiSort"
+                value="khach"
+              >
+              ↑↓ Khách
+            </label>
+
+          </th>
+
+          <!-- TB BILL -->
+
+          <th style="cursor:pointer;">
+
+            <label style="
+              display:flex;
+              align-items:center;
+              justify-content:center;
+              gap:4px;
+              cursor:pointer;
+              font-weight:800;
+            ">
+              <input
+                type="radio"
+                name="kpiSort"
+                value="tbBill"
+              >
+              TB Bill
+            </label>
+
+          </th>
+
+          <!-- VACCINE -->
+
+          <th style="cursor:pointer;">
+
+            <label style="
+              display:flex;
+              align-items:center;
+              justify-content:center;
+              gap:4px;
+              cursor:pointer;
+              font-weight:800;
+            ">
+              <input
+                type="radio"
+                name="kpiSort"
+                value="vaccine"
+              >
+              Vaccine
+            </label>
+
+          </th>
+
+        </tr>
+
+      </thead>
+
+      <tbody id="kpi10Body"></tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
+<!-- ------------------------------------------------------------------------------------------------------------------------------------->
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+</div>
+</div>
+
+<script>
+//
+// GLOBAL DATA
+//
+
+let drugData = [];
+let hot;
+let vxData = [];
+let vxHot;
+
+function normalizeMaNV(value){
+
+  return String(value || '')
+    .trim()
+    .replace(/'/g,'')
+    .replace(/\s+/g,'')
+    .replace(/^0+/,'');
+}
+
+//
+// CHUYỂN SHEET
+//
+
+function showSheet(id, btn){
+
+  document
+    .querySelectorAll('.sheet')
+    .forEach(s => s.classList.remove('active'));
+
+  document
+    .querySelectorAll('.menu-btn')
+    .forEach(b => b.classList.remove('active'));
+
+  document
+    .getElementById(id)
+    .classList.add('active');
+
+  btn.classList.add('active');
+
+  // KÉO LÊN ĐẦU TRANG
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+
+}
+//
+// FORMAT MONEY
+//
+
+document.addEventListener('blur', function(e){
+
+  if(e.target.classList.contains('money')){
+
+    let value = e.target.innerText;
+
+    value = value.replace(/\./g,'');
+    value = value.replace(/\D/g,'');
+
+    if(value === ''){
+      e.target.innerText = '0';
+      return;
+    }
+
+    e.target.innerText =
+      Number(value).toLocaleString('vi-VN');
+	  updateTargetTotal();
+  }
+
+}, true);
+
+function placeCaretAtEnd(el){
+
+  el.focus();
+
+  let range = document.createRange();
+
+  range.selectNodeContents(el);
+
+  range.collapse(false);
+
+  let sel = window.getSelection();
+
+  sel.removeAllRanges();
+
+  sel.addRange(range);
+}
+
+function formatAllMoney(){
+
+  document.querySelectorAll('.money')
+    .forEach(cell => {
+
+      let value = cell.innerText;
+
+      value = value.replace(/\./g,'');
+      value = value.replace(/\D/g,'');
+
+      if(value !== ''){
+
+        cell.innerText = Number(value)
+          .toLocaleString('vi-VN');
+      }
+
+    });
+}
+
+//
+// TARGET SHEET
+//
+
+
+
+function loadData(){
+
+  const saved = localStorage.getItem(
+    'TARGET_SHEET'
+  );
+
+  if(saved){
+
+    document.querySelector(
+      '#targetTable tbody'
+    ).innerHTML = saved;
+  }
+
+  formatAllMoney();
+  updateTargetTotal();
+}
+
+
+function importTargetExcel(event){
+
+  const file = event.target.files[0];
+
+  if(!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function(e){
+
+    const data = new Uint8Array(e.target.result);
+
+    const workbook = XLSX.read(data,{
+      type:'array'
+    });
+
+    const firstSheet =
+      workbook.Sheets[
+        workbook.SheetNames[0]
+      ];
+
+    const rows = XLSX.utils.sheet_to_json(
+      firstSheet,
+      {
+        header:1,
+        raw:false,
+        defval:''
+      }
+    );
+
+    if(rows.length === 0){
+
+      return;
+
+    }
+
+    //
+    // HEADER
+    //
+
+    const header =
+      rows[0].map(h =>
+        String(h || '')
+          .trim()
+          .toLowerCase()
+      );
+
+    //
+    // FIND COLUMN
+    //
+
+    function findColumn(names){
+
+      for(let i=0;i<header.length;i++){
+
+        const col = header[i];
+
+        for(const name of names){
+
+          if(col.includes(name)){
+
+            return i;
+
+          }
+
+        }
+
+      }
+
+      return -1;
+
+    }
+
+    //
+    // MAP COLUMN
+    //
+
+    const colMaNV =
+      findColumn([
+        'mã nv',
+        'ma nv',
+        'manv'
+      ]);
+
+    const colTenNV =
+      findColumn([
+        'tên nhân viên',
+        'ten nhan vien',
+        'tên nv',
+        'ten nv'
+      ]);
+
+    const colDoanhThu =
+      findColumn([
+        'doanh thu',
+        'target ds'
+      ]);
+
+    const colTBBill =
+      findColumn([
+        'tb/ bill',
+        'tb bill'
+      ]);
+
+    const colHOT =
+      findColumn([
+        'hot'
+      ]);
+
+    const colTyTrong =
+      findColumn([
+        'tỉ trọng',
+        'ty trong'
+      ]);
+
+    const colLuotKhach =
+      findColumn([
+        'lượt khách',
+        'luot khach'
+      ]);
+
+    const colCanDate =
+      findColumn([
+        'cận date',
+        'can date'
+      ]);
+
+    const colCatLieu =
+      findColumn([
+        'cắt liều',
+        'cat lieu'
+      ]);
+
+    const colVaccine =
+      findColumn([
+        'vaccine'
+      ]);
+
+    //
+    // CHECK
+    //
+
+    if(
+      colMaNV === -1 ||
+      colTenNV === -1
+    ){
+
+      return;
+
+    }
+
+    //
+    // CLEAR TABLE
+    //
+
+    const tbody =
+      document.querySelector(
+        '#targetTable tbody'
+      );
+
+    tbody.innerHTML = '';
+
+    //
+    // IMPORT DATA
+    //
+
+    rows.slice(1).forEach(row => {
+
+      const maNV =
+        String(
+          row[colMaNV] || ''
+        ).trim();
+
+      const tenNV =
+        String(
+          row[colTenNV] || ''
+        ).trim();
+
+      //
+      // BỎ DÒNG RỖNG
+      //
+
+      if(!maNV || !tenNV){
+
+        return;
+
+      }
+
+      //
+      // BỎ DÒNG TỔNG
+      //
+
+      if(
+        tenNV.toLowerCase().includes('tổng') ||
+        tenNV.toLowerCase().includes('total')
+      ){
+
+        return;
+
+      }
+
+      //
+      // CREATE ROW
+      //
+
+      const tr =
+        document.createElement('tr');
+
+      tr.innerHTML = `
+
+        <td class="editable" contenteditable="true">
+          ${maNV}
+        </td>
+
+        <td class="editable name-col" contenteditable="true">
+          ${tenNV}
+        </td>
+
+        <td class="editable number money" contenteditable="true">
+          ${row[colDoanhThu] || 0}
+        </td>
+
+        <td class="editable number money" contenteditable="true">
+          ${row[colTBBill] || 0}
+        </td>
+
+        <td class="editable number money" contenteditable="true">
+          ${row[colHOT] || 0}
+        </td>
+
+        <td class="editable" contenteditable="true">
+          ${row[colTyTrong] || '0%'}
+        </td>
+
+        <td class="editable number money" contenteditable="true">
+          ${row[colLuotKhach] || 0}
+        </td>
+
+        <td class="editable number money" contenteditable="true">
+          ${row[colCanDate] || 0}
+        </td>
+
+        <td class="editable number money" contenteditable="true">
+          ${row[colCatLieu] || 0}
+        </td>
+
+        <td class="editable number money" contenteditable="true">
+          ${row[colVaccine] || 0}
+        </td>
+
+        <td>
+
+          <div class="delete-btn-wrap">
+
+            <div class="row-number"></div>
+
+            <button
+              class="target-delete-btn"
+              onclick="deleteRow(this)"
+            >
+              Xóa
+            </button>
+
+          </div>
+
+        </td>
+
+      `;
+
+      tbody.appendChild(tr);
+
+    });
+
+    //
+    // FORMAT
+    //
+
+    formatAllMoney();
+
+    updateTargetSTT();
+
+    updateTargetTotal();
+
+  };
+
+  reader.readAsArrayBuffer(file);
+
+}
+
+function updateTargetSTT(){
+
+  const rows =
+    document.querySelectorAll(
+      '#targetTable tbody tr:not(.total-row)'
+    );
+
+  rows.forEach((row,index) => {
+
+    const numberElement =
+      row.querySelector('.row-number');
+
+    if(numberElement){
+
+      numberElement.innerText =
+        index + 1;
+
+    }
+
+  });
+
+}
+
+function addRow(){
+
+  const tbody = document.querySelector(
+    '#targetTable tbody'
+  );
+
+  const row = document.createElement('tr');
+
+  row.innerHTML = `
+
+    <td class="editable" contenteditable="true"></td>
+
+    <td class="editable name-col" contenteditable="true"></td>
+
+    <td class="editable number money" contenteditable="true">0</td>
+
+    <td class="editable number money" contenteditable="true">0</td>
+
+    <td class="editable number money" contenteditable="true">0</td>
+
+    <td class="editable" contenteditable="true">0%</td>
+
+    <td class="editable number money" contenteditable="true">0</td>
+
+    <td class="editable number money" contenteditable="true">0</td>
+
+    <td class="editable number money" contenteditable="true">0</td>
+
+    <td class="editable number money" contenteditable="true">0</td>
+
+<td>
+
+  <div class="delete-btn-wrap">
+
+    <div class="row-number"></div>
+
+    <button
+      class="target-delete-btn"
+      onclick="deleteRow(this)"
+    >
+      Xóa
+    </button>
+
+  </div>
+
+</td>
+
+  `;
+
+  tbody.appendChild(row);
+
+  formatAllMoney();
+  updateTargetTotal();
+  updateTargetSTT();
+}
+
+function deleteRow(button){
+
+  button.closest('tr').remove();
+
+  updateTargetTotal();
+  updateTargetSTT();
+}
+
+function updateTargetTotal(){
+
+  const tbody =
+    document.querySelector(
+      '#targetTable tbody'
+    );
+
+  //
+  // XÓA TOTAL CŨ
+  //
+
+  const oldTotal =
+    tbody.querySelector('.total-row');
+
+  if(oldTotal){
+
+    oldTotal.remove();
+  }
+
+  //
+  // LẤY ROW THƯỜNG
+  //
+
+  const rows =
+    tbody.querySelectorAll('tr');
+
+  let totalDoanhThu = 0;
+  let totalTBBill = 0;
+  let totalHOT = 0;
+  let totalTyTrongThuoc = 0;
+  let tyTrongCount = 0;
+  let totalLuotKhach = 0;
+  let totalCanDate = 0;
+  let totalCatLieu = 0;
+  let totalVaccine = 0;
+
+  rows.forEach(row => {
+
+    const cells =
+      row.querySelectorAll('td');
+
+    if(cells.length < 10) return;
+
+    totalDoanhThu +=
+      parseNumber(cells[2].innerText);
+
+    totalTBBill +=
+      parseNumber(cells[3].innerText);
+
+    totalHOT +=
+      parseNumber(cells[4].innerText);
+	  
+
+    totalLuotKhach +=
+      parseNumber(cells[6].innerText);
+
+    totalCanDate +=
+      parseNumber(cells[7].innerText);
+
+    totalCatLieu +=
+      parseNumber(cells[8].innerText);
+
+    totalVaccine +=
+      parseNumber(cells[9].innerText);
+	  
+	//
+// TỈ TRỌNG THUỐC
+//
+
+const tyTrongText =
+  cells[5].innerText
+    .replace('%','')
+    .replace(',','.');
+
+const tyTrong =
+  parseFloat(tyTrongText);
+
+if(!isNaN(tyTrong)){
+
+  totalTyTrongThuoc += tyTrong;
+  tyTrongCount++;
+
+}
+
+});
+  
+  
+  let avgTyTrongThuoc = 0;
+
+if(tyTrongCount > 0){
+
+  avgTyTrongThuoc =
+    totalTyTrongThuoc / tyTrongCount;
+
+}
+
+  //
+  // TẠO TOTAL ROW
+  //
+
+  const totalRow =
+    document.createElement('tr');
+
+  totalRow.className = 'total-row';
+
+  totalRow.innerHTML = `
+
+    <td colspan="2"
+      style="
+        background:#2563eb;
+        color:white;
+        font-weight:bold;
+        text-align:center;
+      "
+    >
+      TỔNG
+    </td>
+
+    <td style="
+      background:#2563eb;
+      color:white;
+      font-weight:bold;
+      text-align:right;
+    ">
+      ${totalDoanhThu.toLocaleString('vi-VN')}
+    </td>
+
+    <td style="
+      background:#2563eb;
+      color:white;
+      font-weight:bold;
+      text-align:right;
+    ">
+      ${Math.round(totalTBBill).toLocaleString('vi-VN')}
+    </td>
+
+    <td style="
+      background:#2563eb;
+      color:white;
+      font-weight:bold;
+      text-align:right;
+    ">
+      ${totalHOT.toLocaleString('vi-VN')}
+    </td>
+
+<td style="
+  background:#2563eb;
+  color:white;
+  font-weight:bold;
+  text-align:center;
+">
+  ${avgTyTrongThuoc.toFixed(1)}%
+</td>
+
+    <td style="
+      background:#2563eb;
+      color:white;
+      font-weight:bold;
+      text-align:right;
+    ">
+      ${totalLuotKhach.toLocaleString('vi-VN')}
+    </td>
+
+    <td style="
+      background:#2563eb;
+      color:white;
+      font-weight:bold;
+      text-align:right;
+    ">
+      ${totalCanDate.toLocaleString('vi-VN')}
+    </td>
+
+    <td style="
+      background:#2563eb;
+      color:white;
+      font-weight:bold;
+      text-align:right;
+    ">
+      ${totalCatLieu.toLocaleString('vi-VN')}
+    </td>
+
+    <td style="
+      background:#2563eb;
+      color:white;
+      font-weight:bold;
+      text-align:right;
+    ">
+      ${totalVaccine.toLocaleString('vi-VN')}
+    </td>
+
+<td style="
+  background:#2563eb;
+  padding:0;
+">
+  <button
+    class="add-btn"
+    onclick="addRow()"
+    style="
+      width:100%;
+      height:100%;
+      border-radius:0;
+      padding:12px;
+      font-size:13px;
+      display:block;
+    "
+  >
+    ➕ Thêm
+  </button>
+</td>
+
+  `;
+
+  tbody.appendChild(totalRow);
+
+}
+
+function parseNumber(value){
+
+  return Number(
+    String(value)
+      .replace(/\./g,'')
+      .replace(/,/g,'')
+      .replace(/[^\d\-]/g,'')
+  ) || 0;
+}
+
+function importExcelFile(event){
+
+  const file = event.target.files[0];
+
+  if(!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function(e){
+
+    const data = new Uint8Array(e.target.result);
+
+    const workbook = XLSX.read(data, {
+      type:'array'
+    });
+
+    const firstSheet =
+      workbook.Sheets[
+        workbook.SheetNames[0]
+      ];
+
+const rows = XLSX.utils.sheet_to_json(
+  firstSheet,
+  {
+    header:1,
+    raw:false,
+    defval:''
+  }
+);
+
+    //
+    // convert to textarea format
+    //
+
+    const text = rows
+      .map(row => row.join('\t'))
+      .join('\n');
+
+    document.getElementById(
+      'excelInput'
+    ).value = text;
+
+    //
+    // dùng luôn function cũ
+    //
+
+    parseExcelData();
+
+  };
+
+  reader.readAsArrayBuffer(file);
+}
+
+//
+// HIỆN / ẨN BOX
+//
+
+function toggleTargetBox(){
+
+  const box =
+    document.getElementById('targetBox');
+
+  if(box.style.display === 'none'){
+
+    box.style.display = 'block';
+
+  }else{
+
+    box.style.display = 'none';
+
+  }
+
+}
+
+//
+// TARGET TOOL
+//
+
+function formatNumber(value){
+
+  return Number(value)
+    .toLocaleString("vi-VN");
+
+}
+
+function parseTargetNumber(value){
+
+  return Number(
+    String(value)
+      .replace(/\./g, "")
+      .replace(/,/g, "")
+  );
+
+}
+
+function addEmployee(){
+
+  const employeeList =
+    document.getElementById("employeeList");
+
+  const row =
+    document.createElement("div");
+
+  row.className = "employee-row";
+
+  row.style.display = "grid";
+  row.style.gridTemplateColumns =
+    "2fr 1fr 1fr 100px";
+
+  row.style.gap = "10px";
+  row.style.marginBottom = "10px";
+  row.style.alignItems = "center";
+
+  row.innerHTML = `
+
+    <input
+      type="text"
+      placeholder="Tên nhân viên"
+      style="
+        padding:10px;
+        border:1px solid #cbd5e1;
+        border-radius:8px;
+      "
+    >
+
+    <input
+      type="number"
+      class="work-day"
+      placeholder="Số ngày"
+      style="
+        padding:10px;
+        border:1px solid #cbd5e1;
+        border-radius:8px;
+      "
+    >
+
+    <input
+      type="text"
+      class="target"
+      placeholder="Target"
+      readonly
+      style="
+        padding:10px;
+        border:1px solid #cbd5e1;
+        border-radius:8px;
+        background:#f1f5f9;
+      "
+    >
+
+    <button
+      class="target-delete-btn"
+    >
+      Xóa
+    </button>
+
+  `;
+
+  row.querySelector(".target-delete-btn")
+    .addEventListener("click", () => {
+
+      row.remove();
+
+    });
+
+  employeeList.appendChild(row);
+
+}
+
+//
+// TÍNH TARGET
+//
+
+function calculateTarget(){
+
+  const tongInput =
+    document.getElementById("tong").value;
+
+  const A =
+    parseTargetNumber(tongInput);
+
+  if(!A || A <= 0){
+
+    alert("Vui lòng nhập tổng hợp lệ");
+
+    return;
+
+  }
+
+  const rows =
+    document.querySelectorAll(".employee-row");
+
+  let B = 0;
+
+  //
+  // TỔNG NGÀY
+  //
+
+  rows.forEach(row => {
+
+    const day = Number(
+      row.querySelector(".work-day").value
+    ) || 0;
+
+    B += day;
+
+  });
+
+  if(B <= 0){
+
+    alert("Tổng số ngày phải lớn hơn 0");
+
+    return;
+
+  }
+
+  //
+  // CHIA TARGET
+  //
+
+  rows.forEach(row => {
+
+    const C = Number(
+      row.querySelector(".work-day").value
+    ) || 0;
+
+    const target = (A / B) * C;
+
+    row.querySelector(".target").value =
+      formatNumber(Math.round(target));
+
+  });
+
+}
+
+//
+// FORMAT INPUT TỔNG
+//
+
+document.addEventListener("input", function(e){
+
+  if(e.target.id === "tong"){
+
+    let value =
+      e.target.value.replace(/\D/g, "");
+
+    if(value === ""){
+
+      e.target.value = "";
+
+      return;
+
+    }
+
+    e.target.value =
+      formatNumber(value);
+
+  }
+
+});
+
+
+//
+// DATA THUỐC
+//
+
+const headers = [
+
+  'Vùng',                     // A
+  'ASM',                      // B
+  'Mã shop',                  // C
+  'Tên Shop',                 // D
+  'Phân loại shop vệ tinh',   // E
+  'Mã NV',                    // F
+  'Tên nhân viên',            // G
+  'Ngày làm việc',            // H
+  'Lượt khách',               // I
+  'Tỷ lệ FS+App',             // J
+  'Tỷ lệ cài App',            // K
+  'Tỷ trọng DS thuốc',        // L
+  'Tỷ trọng DS TPCN',         // M
+
+  // DOANH THU TỔNG
+  'Target DS',                // N
+  'DS MTD',                   // O
+  '% HT DS',                  // P
+  'Tỷ trọng DS/Shop',         // Q
+  '% EST DS',                 // R
+  'TB Bill',                  // S
+
+  // HÀNG HOT
+  'Chỉ tiêu HOT',             // T
+  'DS HOT',                   // U
+  '% HT Hot',                 // V
+  '% EST HOT',                // W
+  'Tỷ lệ HOT',                // X
+
+  // CẬN DATE
+  'Target Cận Date',          // Y
+  'Cận Date MTD',             // Z
+  '% HT Cận date',            // AA
+  '% EST Cận Date',           // AB
+
+  // CẮT LIỀU
+  'Cắt liều MTD'              // AC
+
+];
+
+function parseExcelData(){
+
+  const input = document
+    .getElementById('excelInput')
+    .value
+    .trim();
+
+  if(!input){
+
+    alert('Vui lòng paste dữ liệu Excel');
+
+    return;
+  }
+
+  //
+  // SPLIT ROW
+  //
+
+  const rawRows = input
+    .split('\n')
+    .map(row => row.split('\t'));
+
+const rows = rawRows;
+
+  //
+  // OBJECT DATA
+  //
+
+  drugData = rows.map(row => {
+
+    return {
+
+      maNV: normalizeMaNV(row[5]),
+
+      tenNV:
+        row[6] || '',
+
+      targetDS:
+        row[13] || '0',
+
+      dsMTD:
+        row[14] || '0',
+
+      tbBill:
+        row[18] || '0',
+
+      dsHOT:
+        row[20] || '0',
+
+      canDate:
+        row[25] || '0',
+
+      catLieu:
+        row[28] || '0',
+		
+	  tyTrongThuoc:
+		row[11] || '0',
+		
+	  luotKhach:
+		row[8] || '0',
+		
+	  fsApp:
+		row[9] || '0',
+
+	  ttTPCN:
+		row[12] || '0',
+		
+	  vaccine:
+		row[24] || '0',
+
+
+    };
+
+  });
+
+
+  //
+  // RENDER TABLE
+  //
+
+  renderTable(rawRows);
+
+  document.getElementById('info')
+    .innerHTML =
+    `Tổng dòng: <b>${rows.length}</b>`;
+	document.getElementById('searchBox')
+  .style.display = 'block';
+}
+
+function renderTable(rows){
+
+  const container =
+    document.getElementById('excelTable');
+
+  //
+  // DESTROY TABLE CŨ
+  //
+
+  if(hot){
+    hot.destroy();
+  }
+
+  //
+  // CÁC CỘT %
+  //
+
+  const percentColumns = [
+    9,   // Tỷ lệ FS+App
+    10,  // Tỷ lệ cài App
+    11,  // Tỷ trọng DS thuốc
+    12,  // Tỷ trọng DS TPCN
+    15,  // % HT DS
+    16,  // Tỷ trọng DS/Shop
+    17,  // % EST DS
+    21,  // % HT Hot
+    22,  // % EST HOT
+    23,  // Tỷ lệ HOT
+    26,  // % HT Cận date
+    27   // % EST Cận Date
+  ];
+
+  //
+  // FORMAT DATA
+  //
+
+  const formattedRows = rows.map(row => {
+
+    return headers.map((h,index) => {
+
+      let value = row[index] || '';
+
+      value = String(value).trim();
+
+      //
+      // FORMAT %
+      //
+
+ if(percentColumns.includes(index)){
+
+  //
+  // GIỮ NGUYÊN GIÁ TRỊ EXCEL
+  //
+
+  return value;
+}
+
+      //
+      // TEXT COLUMN
+      //
+
+      const textColumns = [
+        0,1,2,3,4,5,6
+      ];
+
+      //
+      // NUMBER FORMAT
+      //
+
+      if(!textColumns.includes(index)){
+
+        const clean =
+          value.replace(/,/g,'');
+
+        if(
+          clean !== '' &&
+          !isNaN(clean)
+        ){
+          return Number(clean);
+        }
+      }
+
+      return value;
+
+    });
+
+  });
+
+  //
+  // HANDSONTABLE
+  //
+
+  hot = new Handsontable(container, {
+
+    data: formattedRows,
+
+    colHeaders: headers,
+
+    rowHeaders: true,
+
+    search: true,
+
+    height: '75vh',
+
+    width: '100%',
+
+    stretchH: 'all',
+
+    licenseKey:
+      'non-commercial-and-evaluation',
+
+    manualColumnResize: true,
+
+    manualRowResize: true,
+
+    contextMenu: true,
+
+    filters: true,
+
+    dropdownMenu: true,
+
+    columnSorting: true,
+
+    copyPaste: true,
+
+    fillHandle: true,
+
+    undo: true,
+
+    redo: true,
+
+    navigableHeaders: true,
+
+    selectionMode: 'multiple',
+
+    autoWrapRow: true,
+
+    autoWrapCol: true,
+
+    wordWrap: false,
+
+    comments: true,
+
+    fixedRowsTop: 0,
+
+    fixedColumnsStart: 0,
+
+    //
+    // CELL CONFIG
+    //
+
+    cells(row,col){
+
+      const cellProperties = {};
+
+      //
+      // CỘT %
+      //
+
+      if(percentColumns.includes(col)){
+
+        //
+        // QUAN TRỌNG:
+        // KHÔNG ĐỂ numeric
+        //
+
+        cellProperties.type = 'text';
+
+        cellProperties.className =
+          'htCenter';
+
+        return cellProperties;
+      }
+
+      //
+      // NUMBER COLUMN
+      //
+
+      if(col >= 7){
+
+        cellProperties.type = 'numeric';
+
+        cellProperties.numericFormat = {
+          pattern:'0,0.00'
+        };
+
+        cellProperties.className =
+          'htRight';
+      }
+
+      //
+      // TEXT COLUMN
+      //
+
+      else{
+
+        cellProperties.className =
+          'htLeft';
+      }
+
+      return cellProperties;
+    },
+
+    //
+    // AUTO UPDATE
+    //
+
+    afterChange(changes, source){
+
+      if(
+        source === 'loadData' ||
+        !changes
+      ){
+        return;
+      }
+
+      const allData =
+        hot.getData();
+
+      drugData = allData.map(row => ({
+
+        maNV:
+          normalizeMaNV(row[5]),
+
+        tenNV:
+          String(row[6] || '').trim(),
+
+        targetDS:
+          Number(row[13]) || 0,
+
+        dsMTD:
+          Number(row[14]) || 0,
+
+        tbBill:
+          Number(row[18]) || 0,
+
+        dsHOT:
+          Number(row[20]) || 0,
+
+        canDate:
+          Number(row[25]) || 0,
+
+        catLieu:
+          Number(row[28]) || 0,
+		  
+		luotKhach:
+			Number(row[8]) || 0,
+
+        //
+        // % -> NUMBER
+        //
+
+        tyTrongThuoc:
+          parseFloat(
+            String(row[11] || '')
+              .replace('%','')
+              .replace(',','.')
+          ) || 0
+
+      }));
+
+      console.log(
+        'drugData updated:',
+        drugData
+      );
+    }
+
+  });
+
+}
+
+function importVXFile(event){
+
+  const file = event.target.files[0];
+
+  if(!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function(e){
+
+    const data = new Uint8Array(e.target.result);
+
+    const workbook = XLSX.read(data,{
+      type:'array'
+    });
+
+    const firstSheet =
+      workbook.Sheets[
+        workbook.SheetNames[0]
+      ];
+	  
+	  //
+// FIX FILE EXCEL EXPORT LỖI
+//
+
+if(firstSheet['!merges']){
+
+  firstSheet['!merges'].forEach(range => {
+
+    const startCell =
+      XLSX.utils.encode_cell(range.s);
+
+    const startValue =
+      firstSheet[startCell];
+
+    for(let r = range.s.r; r <= range.e.r; r++){
+
+      for(let c = range.s.c; c <= range.e.c; c++){
+
+        const cell =
+          XLSX.utils.encode_cell({
+            r:r,
+            c:c
+          });
+
+        if(!firstSheet[cell]){
+
+          firstSheet[cell] = {
+
+            t:startValue?.t || 's',
+            v:startValue?.v || '',
+            w:startValue?.w || ''
+
+          };
+
+        }
+
+      }
+
+    }
+
+  });
+
+}
+
+    //
+    // READ ALL ROWS
+    //
+
+const rows = XLSX.utils.sheet_to_json(
+  firstSheet,
+  {
+    header:1,
+    raw:true,
+    defval:'',
+    blankrows:false
+  }
+).filter(r =>
+
+  r.some(cell =>
+
+    String(cell || '')
+      .trim() !== ''
+
+  )
+
+);
+
+    if(rows.length === 0){
+
+      alert('File rỗng');
+
+      return;
+    }
+
+    //
+    // HEADER
+    //
+
+    //
+// TỰ TÌM DÒNG HEADER
+//
+
+const headerRowIndex = rows.findIndex(r =>
+
+  r.some(cell =>
+
+    String(cell || '')
+      .toLowerCase()
+      .includes('dược sĩ vệ tinh')
+
+  )
+
+);
+
+if(headerRowIndex === -1){
+
+  alert('Không tìm thấy header');
+
+  return;
+}
+
+//
+// HEADER
+//
+
+const header =
+  rows[headerRowIndex];
+
+    //
+    // TÌM INDEX CỘT
+    //
+
+    const colDSVT =
+      header.indexOf('Dược sĩ vệ tinh');
+
+    const colVT =
+      header.indexOf('Doanh thu KPI VT');
+
+    const colBau =
+      header.indexOf('Doanh thu KPI bầu');
+
+    const colTarget =
+      header.indexOf('Target Doanh thu KPI');
+
+    const colThieu =
+      header.indexOf('Doanh thu KPI còn thiếu');
+
+    const colPercent =
+      header.indexOf('%HT Target Doanh thu KPI');
+
+    //
+    // CHECK
+    //
+
+    if(
+      colDSVT === -1 ||
+      colVT === -1 ||
+      colBau === -1 ||
+      colTarget === -1 ||
+      colThieu === -1 ||
+      colPercent === -1
+    ){
+
+      alert('Thiếu cột trong file Excel');
+
+      return;
+    }
+
+    //
+    // BUILD NEW DATA
+    //
+
+const filteredRows = rows
+  .slice(headerRowIndex + 1)
+      .map(row => [
+
+        row[colDSVT],
+        row[colVT],
+        row[colBau],
+        row[colTarget],
+        row[colThieu],
+        row[colPercent]
+
+      ]);
+
+    //
+    // CONVERT TO TEXTAREA FORMAT
+    //
+
+    const text = filteredRows
+      .map(row => row.join('\t'))
+      .join('\n');
+
+    //
+    // PUT INTO TEXTAREA
+    //
+
+    document.getElementById(
+      'vxInput'
+    ).value = text;
+
+    //
+    // AUTO PARSE
+    //
+
+    parseVXData();
+
+  };
+
+  reader.readAsArrayBuffer(file);
+}
+
+//
+// DATA_VX
+//
+
+const vxHeaders = [
+  'Mã NV',
+  'Tên Nhân Viên',
+  'Doanh thu KPI VT',
+  'Doanh thu KPI bầu',
+  'Target Doanh thu KPI',
+  'Doanh thu KPI còn thiếu',
+  '%HT Target Doanh thu KPI'
+];
+
+function parseVXData(){
+
+  const input = document
+    .getElementById('vxInput')
+    .value
+    .trim();
+
+  if(!input){
+
+    alert('Vui lòng paste dữ liệu DATA_VX');
+
+    return;
+  }
+
+  const rows = input
+    .split('\n')
+    .map(row => row.split('\t'));
+
+    vxData = rows;
+
+  renderVXTable(rows);
+
+  document.getElementById('vxInfo')
+    .innerHTML =
+    `Tổng dòng: <b>${rows.length}</b>`;
+	document.getElementById('vxSearchBox')
+  .style.display = 'block';
+}
+
+function renderVXTable(rows){
+
+  const container =
+    document.getElementById('vxExcelTable');
+
+  //
+  // DESTROY TABLE CŨ
+  //
+
+  if(vxHot){
+
+    vxHot.destroy();
+  }
+
+  //
+  // FORMAT DATA
+  //
+
+  const formattedRows = rows.map(row => {
+
+    const nvInfo = String(row[0] || '')
+      .split('-');
+
+    const maNV = nvInfo[0] || '';
+
+    const tenNV =
+      nvInfo.slice(1).join('-') || '';
+
+    return [
+
+      maNV,
+      tenNV,
+
+      Number(
+        String(row[1] || '')
+        .replace(/,/g,'')
+      ) || 0,
+
+      Number(
+        String(row[2] || '')
+        .replace(/,/g,'')
+      ) || 0,
+
+      Number(
+        String(row[3] || '')
+        .replace(/,/g,'')
+      ) || 0,
+
+      Number(
+        String(row[4] || '')
+        .replace(/,/g,'')
+      ) || 0,
+
+      String(row[5] || '')
+
+    ];
+
+  });
+
+  //
+  // HANDSONTABLE
+  //
+
+  vxHot = new Handsontable(container, {
+
+    data: formattedRows,
+
+    colHeaders: vxHeaders,
+
+    rowHeaders: true,
+
+    search: true,
+
+    height: '75vh',
+
+    width: '100%',
+
+    stretchH: 'all',
+
+    licenseKey:
+      'non-commercial-and-evaluation',
+
+    manualColumnResize: true,
+
+    manualRowResize: true,
+
+    contextMenu: true,
+
+    filters: true,
+
+    dropdownMenu: true,
+
+    columnSorting: true,
+
+    copyPaste: true,
+
+    fillHandle: true,
+
+    undo: true,
+
+    redo: true,
+
+    navigableHeaders: true,
+
+    selectionMode: 'multiple',
+
+    autoWrapRow: true,
+
+    autoWrapCol: true,
+
+    wordWrap: false,
+
+    comments: true,
+
+    cells(row,col){
+
+      const cellProperties = {};
+
+      //
+      // NUMBER COLUMN
+      //
+
+      if(col >= 2 && col <= 5){
+
+        cellProperties.type = 'numeric';
+
+        cellProperties.numericFormat = {
+
+          pattern:'0,0'
+        };
+
+        cellProperties.className =
+          'htRight';
+      }
+
+      //
+      // PERCENT
+      //
+
+      else if(col === 6){
+
+        cellProperties.className =
+          'htCenter';
+      }
+
+      //
+      // TEXT
+      //
+
+      else{
+
+        cellProperties.className =
+          'htLeft';
+      }
+
+      return cellProperties;
+    },
+
+    //
+    // AUTO SAVE
+    //
+
+    afterChange(changes, source){
+
+      if(
+        source === 'loadData' ||
+        !changes
+      ){
+        return;
+      }
+
+      //
+      // SAVE DATA
+      //
+
+      const allData =
+        vxHot.getData();
+
+      vxData = allData;
+
+      localStorage.setItem(
+        'DATA_VX',
+        JSON.stringify(allData)
+      );
+
+      console.log(
+        'VX saved',
+        allData
+      );
+    }
+
+  });
+
+}
+
+let kpiTargetSheet = '';
+let kpiTargetButton = null;
+
+function openKPIPopup(sheetId, btn){
+
+  kpiTargetSheet = sheetId;
+  kpiTargetButton = btn;
+
+  //
+  // copy giá trị cũ
+  //
+
+  document.getElementById('popupPassedDays').value =
+    document.getElementById('passedDaysInput').value;
+
+  document.getElementById('popupTotalDays').value =
+    document.getElementById('totalDaysInput').value;
+
+  //
+  // show popup
+  //
+
+  document.getElementById('kpiPopup')
+    .style.display = 'flex';
+}
+
+function closeKPIPopup(){
+
+  document.getElementById('kpiPopup')
+    .style.display = 'none';
+}
+
+function confirmKPIPopup(){
+
+//
+// HIỆN SỐ ĐỎ
+//
+
+document.getElementById(
+  'passedDaysView'
+).innerText =
+document.getElementById(
+  'popupPassedDays'
+).value;
+
+document.getElementById(
+  'totalDaysView'
+).innerText =
+document.getElementById(
+  'popupTotalDays'
+).value;
+
+  //
+  // copy về input thật
+  //
+
+  document.getElementById('passedDaysInput').value =
+    document.getElementById('popupPassedDays').value;
+
+  document.getElementById('totalDaysInput').value =
+    document.getElementById('popupTotalDays').value;
+
+  //
+  // đóng popup
+  //
+
+  closeKPIPopup();
+
+  //
+  // mở KPI DASHBOARD
+  //
+
+  showSheet(
+    kpiTargetSheet,
+    kpiTargetButton
+  );
+
+  //
+  // AUTO GENERATE ALL KPI
+  //
+
+  generateKPI01();
+  generateKPI02();
+  generateKPI03();
+  generateKPI04();
+  generateKPI05();
+  generateKPI06();
+  generateKPI07();
+  generateKPI08();
+  generateKPI09();
+  generateKPI10();
+
+  //
+  // lên đầu trang
+  //
+
+  window.scrollTo({
+    top:0,
+    behavior:'smooth'
+  });
+
+}
+
+function toggleKPI(tableId){
+
+  const table = document
+    .getElementById(tableId)
+    .closest('.table-wrapper');
+
+  if(table.style.display === 'none'){
+
+    table.style.display = 'block';
+
+  }else{
+
+    table.style.display = 'none';
+
+  }
+
+}
+
+
+
+//111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111
+// KPI 01 : DOANH SỐ TỔNG
+//
+
+function generateKPI01(){
+
+  const tbody =
+    document.getElementById('kpi01Body');
+
+  tbody.innerHTML = '';
+
+  //
+  // INPUT
+  //
+
+  const totalDays =
+    parseInt(
+      document.getElementById(
+        'totalDaysInput'
+      ).value
+    ) || 0;
+
+  const passedDays =
+    parseInt(
+      document.getElementById(
+        'passedDaysInput'
+      ).value
+    ) || 0;
+
+  //
+  // %HT THỜI GIAN
+  //
+
+  let monthPercent = 0;
+
+  if(totalDays > 0){
+
+    monthPercent =
+      (passedDays / totalDays) * 100;
+  }
+
+  monthPercent =
+    Math.round(monthPercent * 10) / 10;
+
+  //
+  // DATE TEXT
+  //
+
+  const currentDate = new Date();
+
+  const displayDate = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth(),
+    passedDays
+  );
+
+  const dateText =
+    displayDate.toLocaleDateString('vi-VN');
+
+  //
+  // HEADER
+  //
+
+  document.getElementById(
+    'monthToDateHeader'
+  ).innerHTML = `
+
+    <div>Month To Date</div>
+
+    <div
+      style="
+        font-size:11px;
+        margin-top:4px;
+        color:#dbeafe;
+      "
+    >
+      ${dateText}
+    </div>
+
+  `;
+
+  document.getElementById(
+    'percentHeader'
+  ).innerHTML = `
+
+    <div>%HT</div>
+
+    <div
+      style="
+        font-size:11px;
+        margin-top:4px;
+        color:#fef08a;
+        font-weight:bold;
+      "
+    >
+      ${monthPercent.toFixed(1)}%
+    </div>
+
+  `;
+
+  //
+  // TARGET TABLE
+  //
+
+  const targetRows =
+    document.querySelectorAll(
+      '#targetTable tbody tr:not(.total-row)'
+    );
+
+  let kpiData = [];
+
+  //
+  // TOTAL
+  //
+
+  let totalTarget = 0;
+  let totalMTD = 0;
+  let totalRemain = 0;
+
+  //
+  // LOOP
+  //
+
+  targetRows.forEach(row => {
+
+    const cells =
+      row.querySelectorAll('td');
+
+    //
+    // MÃ NV
+    //
+
+    const maNV =
+      normalizeMaNV(
+        cells[0].innerText
+      );
+
+    //
+    // TÊN NV
+    //
+
+    const tenNV =
+      cells[1].innerText.trim();
+
+    //
+    // TARGET
+    //
+
+    let target =
+      parseFloat(
+        cells[2]
+          .innerText
+          .replace(/\./g,'')
+          .replace(/,/g,'')
+      ) || 0;
+
+    //
+    // ROUND 1000
+    //
+
+    target =
+      Math.round(target / 1000)
+      * 1000;
+
+    //
+    // DATA THUỐC
+    //
+
+    const dataRow =
+
+      drugData.find(r =>
+
+        String(r.maNV)
+          .trim()
+          .replace(/^0+/,'')
+          == maNV
+
+      );
+
+    //
+    // MTD
+    //
+
+    let monthToDate = 0;
+
+    if(dataRow){
+
+      monthToDate =
+        parseFloat(
+          String(dataRow.dsMTD)
+            .replace(/,/g,'')
+        ) || 0;
+    }
+
+    //
+    // ROUND 1000
+    //
+
+    monthToDate =
+      Math.round(monthToDate / 1000)
+      * 1000;
+
+    //
+    // %HT
+    //
+
+    let percent = 0;
+
+    if(target > 0){
+
+      percent =
+        (monthToDate / target) * 100;
+    }
+
+    percent =
+      Math.round(percent * 10) / 10;
+
+    //
+    // ESTIMATE
+    //
+
+    let estimate = 0;
+
+    if(
+      passedDays > 0 &&
+      totalDays > 0 &&
+      target > 0
+    ){
+
+      const estimateRevenue =
+
+        (monthToDate / passedDays)
+        * totalDays;
+
+      estimate =
+        (estimateRevenue / target)
+        * 100;
+    }
+
+    estimate =
+      Math.round(estimate * 10) / 10;
+
+    //
+    // TB NGÀY CÒN LẠI
+    //
+
+    let remainAvg = 0;
+
+    if(totalDays > passedDays){
+
+      remainAvg =
+
+        Math.max(
+          0,
+          (target - monthToDate)
+          / (totalDays - passedDays)
+        );
+    }
+
+    remainAvg =
+      Math.round(remainAvg / 1000)
+      * 1000;
+
+    //
+    // TOTAL
+    //
+
+    totalTarget += target;
+    totalMTD += monthToDate;
+    totalRemain += remainAvg;
+
+    //
+    // PUSH
+    //
+
+    kpiData.push({
+
+      maNV,
+
+      tenNV,
+
+      target,
+
+      monthToDate,
+
+      percent,
+
+      estimate,
+
+      remainAvg
+
+    });
+
+  });
+
+  //
+  // SORT
+  //
+
+  kpiData.sort((a,b) =>
+    b.percent - a.percent
+  );
+
+  //
+  // RENDER
+  //
+
+  kpiData.forEach((item,index) => {
+
+    const tr =
+      document.createElement('tr');
+
+    //
+    // COLOR %HT
+    //
+
+    let percentBg =
+      '#dc2626';
+
+    if(item.percent >= monthPercent){
+
+      percentBg =
+        '#16a34a';
+    }
+
+    //
+    // COLOR ESTIMATE
+    //
+
+    let estimateBg =
+      '#dc2626';
+
+    if(item.estimate >= 100){
+
+      estimateBg =
+        '#16a34a';
+    }
+
+    //
+    // HTML
+    //
+
+    tr.innerHTML = `
+
+      <td
+        style="
+          text-align:center;
+          font-weight:bold;
+        "
+      >
+        ${index + 1}
+      </td>
+
+      <td
+        style="
+          text-align:center;
+          font-weight:bold;
+        "
+      >
+        ${item.maNV}
+      </td>
+
+      <td class="name-col">
+        ${item.tenNV}
+      </td>
+
+      <td class="number">
+        ${item.target.toLocaleString('vi-VN')}
+      </td>
+
+      <td class="number">
+        ${item.monthToDate.toLocaleString('vi-VN')}
+      </td>
+
+      <td
+        style="
+          background:${percentBg};
+          color:white;
+          font-weight:bold;
+          text-align:center;
+        "
+      >
+        ${item.percent.toFixed(1)}%
+      </td>
+
+      <td
+        style="
+          color:${item.estimate >= 100 ? '#2563eb' : '#dc2626'};
+          font-weight:bold;
+          text-align:center;
+        "
+      >
+        ${item.estimate.toFixed(1)}%
+      </td>
+
+      <td class="number">
+        ${item.remainAvg.toLocaleString('vi-VN')}
+      </td>
+
+    `;
+
+    tbody.appendChild(tr);
+
+  });
+
+  //
+  // TOTAL %
+  //
+
+  let totalPercent = 0;
+
+  if(totalTarget > 0){
+
+    totalPercent =
+      (totalMTD / totalTarget) * 100;
+  }
+
+  totalPercent =
+    Math.round(totalPercent * 10) / 10;
+
+  //
+  // TOTAL ESTIMATE
+  //
+
+  let totalEstimate = 0;
+
+  if(
+    passedDays > 0 &&
+    totalTarget > 0
+  ){
+
+    const estimateRevenue =
+
+      (totalMTD / passedDays)
+      * totalDays;
+
+    totalEstimate =
+      (estimateRevenue / totalTarget)
+      * 100;
+  }
+
+  totalEstimate =
+    Math.round(totalEstimate * 10) / 10;
+
+  //
+  // TOTAL ROW
+  //
+
+  const totalRow =
+    document.createElement('tr');
+
+  totalRow.innerHTML = `
+
+    <td
+      colspan="3"
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+        text-align:center;
+      "
+    >
+      TỔNG SHOP
+    </td>
+
+    <td
+      class="number"
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+      "
+    >
+      ${totalTarget.toLocaleString('vi-VN')}
+    </td>
+
+    <td
+      class="number"
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+      "
+    >
+      ${totalMTD.toLocaleString('vi-VN')}
+    </td>
+
+    <td
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+        text-align:center;
+      "
+    >
+      ${totalPercent.toFixed(1)}%
+    </td>
+
+    <td
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+        text-align:center;
+      "
+    >
+      ${totalEstimate.toFixed(1)}%
+    </td>
+
+    <td
+      class="number"
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+      "
+    >
+      ${totalRemain.toLocaleString('vi-VN')}
+    </td>
+
+  `;
+
+  tbody.appendChild(totalRow);
+
+}
+
+//222222222222222222222222222222222222222222222222222222222222222222222222222222222222222222
+//
+// KPI 02 : GIÁ TRỊ TRUNG BÌNH BILL
+//
+
+function generateKPI02(){
+
+  const tbody =
+    document.getElementById('kpi02Body');
+
+  tbody.innerHTML = '';
+
+  //
+  // HEADER DATE
+  //
+
+  const passedDays =
+    Number(
+      document.getElementById(
+        'passedDaysInput'
+      ).value
+    ) || 1;
+
+  const totalDays =
+    Number(
+      document.getElementById(
+        'totalDaysInput'
+      ).value
+    ) || 30;
+
+  const today = new Date();
+
+  const dateText =
+    String(passedDays).padStart(2,'0')
+    + '/'
+    + String(today.getMonth()+1).padStart(2,'0')
+    + '/'
+    + today.getFullYear();
+
+  document.getElementById(
+    'kpi02MonthHeader'
+  ).innerHTML = `
+
+    <div>
+      Month To Date
+    </div>
+
+    <div
+      style="
+        font-size:11px;
+        margin-top:4px;
+        color:#dbeafe;
+        font-weight:normal;
+      "
+    >
+      ${dateText}
+    </div>
+
+  `;
+
+  //
+  // HEADER %HT
+  //
+
+  document.getElementById(
+    'kpi02PercentHeader'
+  ).innerHTML = `
+
+    <div>%HT</div>
+
+    <div
+      style="
+        font-size:11px;
+        margin-top:4px;
+        color:#fef08a;
+      "
+    >
+      95.0%
+    </div>
+
+  `;
+
+  //
+  // GET DATA
+  //
+
+  const targetRows =
+    document.querySelectorAll(
+      '#targetTable tbody tr:not(.total-row)'
+    );
+
+  let data = [];
+
+  let totalTarget = 0;
+  let totalMTD = 0;
+
+  targetRows.forEach(row => {
+
+    const cells =
+      row.querySelectorAll('td');
+
+    //
+    // MÃ NV
+    //
+
+    const maNV =
+      normalizeMaNV(
+        cells[0].innerText
+      );
+
+    //
+    // TÊN NV
+    //
+
+    const tenNV =
+      cells[1].innerText.trim();
+
+    //
+    // TARGET TB/BILL
+    //
+
+    const target =
+      Number(
+        cells[3]
+          .innerText
+          .replace(/\./g,'')
+          .replace(/,/g,'')
+      ) || 0;
+
+    //
+    // FIND DATA
+    //
+
+    const found =
+      drugData.find(
+        d => normalizeMaNV(d.maNV) === maNV
+      );
+
+    //
+    // TB BILL MTD
+    //
+
+    const mtd =
+      Number(
+        String(found?.tbBill || 0)
+          .replace(/\./g,'')
+          .replace(/,/g,'')
+      ) || 0;
+
+    //
+    // %HT
+    //
+
+    const percent =
+      target > 0
+      ? (mtd / target) * 100
+      : 0;
+
+    //
+    // TOTAL
+    //
+
+    if(target > 0){
+
+      totalTarget += target;
+      totalMTD += mtd;
+
+    }
+
+    //
+    // PUSH
+    //
+
+    data.push({
+
+      maNV,
+      tenNV,
+      target,
+      mtd,
+      percent
+
+    });
+
+  });
+
+  //
+  // SORT
+  //
+
+  data.sort((a,b) =>
+    b.percent - a.percent
+  );
+
+  //
+  // RENDER
+  //
+
+  data.forEach((item,index) => {
+
+    const percentColor =
+      item.percent >= 95
+        ? '#22c55e'
+        : '#ef4444';
+
+    const tr =
+      document.createElement('tr');
+
+    tr.innerHTML = `
+
+      <td style="
+        text-align:center;
+        font-weight:bold;
+      ">
+        ${index + 1}
+      </td>
+
+      <td style="
+        text-align:center;
+        font-weight:bold;
+      ">
+        ${item.maNV}
+      </td>
+
+      <td>
+        ${item.tenNV}
+      </td>
+
+      <td class="number">
+        ${item.target.toLocaleString('vi-VN')}
+      </td>
+
+      <td class="number">
+        ${item.mtd.toLocaleString('vi-VN')}
+      </td>
+
+      <td style="
+        text-align:center;
+        font-weight:bold;
+        background:${percentColor};
+        color:white;
+      ">
+        ${item.percent.toFixed(1)}%
+      </td>
+
+    `;
+
+    tbody.appendChild(tr);
+
+  });
+
+  //
+  // TOTAL SHOP
+  //
+
+  let avgTarget = 0;
+  let avgMTD = 0;
+
+  const count = data.length;
+
+  if(count > 0){
+
+    //
+    // TARGET AVG
+    //
+
+    avgTarget =
+      data.reduce(
+        (sum,item) => sum + item.target,
+        0
+      ) / count;
+
+    //
+    // MTD AVG
+    //
+
+    avgMTD =
+      data.reduce(
+        (sum,item) => sum + item.mtd,
+        0
+      ) / count;
+
+  }
+
+  //
+  // TOTAL %
+  //
+
+  let totalPercent = 0;
+
+  if(avgTarget > 0){
+
+    totalPercent =
+      (avgMTD / avgTarget) * 100;
+
+  }
+
+  //
+  // TOTAL ROW
+  //
+
+  const totalRow =
+    document.createElement('tr');
+
+  totalRow.innerHTML = `
+
+    <td colspan="3"
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+        text-align:center;
+      "
+    >
+      TỔNG SHOP
+    </td>
+
+    <td
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+        text-align:right;
+        padding-right:10px;
+      "
+    >
+      ${Math.round(avgTarget).toLocaleString('vi-VN')}
+    </td>
+
+    <td
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+        text-align:right;
+        padding-right:10px;
+      "
+    >
+      ${Math.round(avgMTD).toLocaleString('vi-VN')}
+    </td>
+
+    <td
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+        text-align:center;
+      "
+    >
+      ${totalPercent.toFixed(1)}%
+    </td>
+
+  `;
+
+  tbody.appendChild(totalRow);
+
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// KPI 03 : DOANH THU HOT
+//
+
+function generateKPI03(){
+
+  const tbody =
+    document.getElementById('kpi03Body');
+
+  tbody.innerHTML = '';
+
+  //
+  // INPUT
+  //
+
+  const totalDays =
+    parseInt(
+      document.getElementById(
+        'totalDaysInput'
+      ).value
+    ) || 0;
+
+  const passedDays =
+    parseInt(
+      document.getElementById(
+        'passedDaysInput'
+      ).value
+    ) || 0;
+
+  //
+  // % THỜI GIAN
+  //
+
+  let monthPercent = 0;
+
+  if(totalDays > 0){
+
+    monthPercent =
+      (passedDays / totalDays) * 100;
+  }
+
+  monthPercent =
+    Math.round(monthPercent * 10) / 10;
+
+  //
+  // DATE
+  //
+
+  const currentDate = new Date();
+
+  const displayDate = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth(),
+    passedDays
+  );
+
+  const dateText =
+    displayDate.toLocaleDateString('vi-VN');
+
+  //
+  // HEADER
+  //
+
+  document.getElementById(
+    'kpi03MonthHeader'
+  ).innerHTML = `
+
+    <div>
+      Month To Date
+    </div>
+
+    <div
+      style="
+        font-size:11px;
+        margin-top:4px;
+        color:#dbeafe;
+      "
+    >
+      ${dateText}
+    </div>
+
+  `;
+
+  document.getElementById(
+    'kpi03PercentHeader'
+  ).innerHTML = `
+
+    <div>%HT</div>
+
+    <div
+      style="
+        font-size:11px;
+        margin-top:4px;
+        color:#fef08a;
+      "
+    >
+      ${monthPercent.toFixed(1)}%
+    </div>
+
+  `;
+
+  //
+  // TT HOT HEADER
+  //
+
+  document.getElementById(
+    'kpi03TTHotHeader'
+  ).innerHTML = `
+
+    <div>TT HOT</div>
+
+    <div
+      style="
+        font-size:11px;
+        margin-top:4px;
+        color:#fef08a;
+      "
+    >
+      40.0%
+    </div>
+
+  `;
+
+  //
+  // DATA
+  //
+
+  const targetRows = document.querySelectorAll(
+    '#targetTable tbody tr:not(.total-row)'
+  );
+
+  let kpiData = [];
+
+  //
+  // TOTAL
+  //
+
+  let totalTarget = 0;
+  let totalMTD = 0;
+  let totalRemain = 0;
+  let totalDS = 0;
+
+  //
+  // LOOP
+  //
+
+  targetRows.forEach(row => {
+
+    const cells =
+      row.querySelectorAll('td');
+
+    //
+    // MÃ NV
+    //
+
+    const maNV = normalizeMaNV(
+      cells[0].innerText
+    );
+
+    //
+    // TÊN NV
+    //
+
+    const tenNV =
+      cells[1].innerText.trim();
+
+    //
+    // TARGET HOT
+    //
+
+    let target =
+      parseFloat(
+        cells[4]
+          .innerText
+          .replace(/\./g,'')
+          .replace(/,/g,'')
+      ) || 0;
+
+    target =
+      Math.round(target / 1000) * 1000;
+
+    //
+    // DATA
+    //
+
+    const dataRow =
+      drugData.find(r =>
+
+        String(r.maNV)
+          .trim()
+          .replace(/^0+/,'')
+          == maNV
+
+      );
+
+    //
+    // DS HOT
+    //
+
+    let monthToDate = 0;
+
+    //
+    // DS TOTAL
+    //
+
+    let totalRevenue = 0;
+
+    if(dataRow){
+
+      monthToDate =
+        parseFloat(
+          String(dataRow.dsHOT)
+            .replace(/,/g,'')
+        ) || 0;
+
+      totalRevenue =
+        parseFloat(
+          String(dataRow.dsMTD)
+            .replace(/,/g,'')
+        ) || 0;
+    }
+
+    //
+    // ROUND
+    //
+
+    monthToDate =
+      Math.round(monthToDate / 1000)
+      * 1000;
+
+    //
+    // %HT
+    //
+
+    let percent = 0;
+
+    if(target > 0){
+
+      percent =
+        (monthToDate / target) * 100;
+    }
+
+    percent =
+      Math.round(percent * 10) / 10;
+
+    //
+    // ESTIMATE
+    //
+
+    let estimate = 0;
+
+    if(
+      passedDays > 0 &&
+      totalDays > 0 &&
+      target > 0
+    ){
+
+      const estimateRevenue =
+
+        (monthToDate / passedDays)
+        * totalDays;
+
+      estimate =
+        (estimateRevenue / target)
+        * 100;
+    }
+
+    estimate =
+      Math.round(estimate * 10) / 10;
+
+    //
+    // TB NGÀY CÒN LẠI
+    //
+
+    let remainAvg = 0;
+
+    if(totalDays > passedDays){
+
+      remainAvg =
+        Math.max(
+          0,
+          (target - monthToDate)
+          / (totalDays - passedDays)
+        );
+    }
+
+    remainAvg =
+      Math.round(remainAvg / 1000)
+      * 1000;
+
+    //
+    // TT HOT
+    //
+
+    let ttHot = 0;
+
+    if(totalRevenue > 0){
+
+      ttHot =
+        (monthToDate / totalRevenue)
+        * 100;
+    }
+
+    ttHot =
+      Math.round(ttHot * 10) / 10;
+
+    //
+    // TOTAL
+    //
+
+    totalTarget += target;
+    totalMTD += monthToDate;
+    totalRemain += remainAvg;
+    totalDS += totalRevenue;
+
+    //
+    // PUSH
+    //
+
+    kpiData.push({
+
+      maNV,
+
+      tenNV,
+
+      target,
+
+      monthToDate,
+
+      percent,
+
+      estimate,
+
+      remainAvg,
+
+      ttHot
+
+    });
+
+  });
+
+  //
+  // SORT
+  //
+
+  kpiData.sort((a,b) =>
+    b.percent - a.percent
+  );
+
+  //
+  // RENDER
+  //
+
+  kpiData.forEach((item,index) => {
+
+    let percentBg = '#dc2626';
+
+    if(item.percent >= monthPercent){
+
+      percentBg = '#16a34a';
+    }
+
+    const tr =
+      document.createElement('tr');
+
+    tr.innerHTML = `
+
+      <td
+        style="
+          text-align:center;
+          font-weight:bold;
+        "
+      >
+        ${index + 1}
+      </td>
+
+      <td
+        style="
+          text-align:center;
+          font-weight:bold;
+        "
+      >
+        ${item.maNV}
+      </td>
+
+      <td class="name-col">
+        ${item.tenNV}
+      </td>
+
+      <td class="number">
+        ${item.target.toLocaleString('vi-VN')}
+      </td>
+
+      <td class="number">
+        ${item.monthToDate.toLocaleString('vi-VN')}
+      </td>
+
+      <td
+        style="
+          background:${percentBg};
+          color:white;
+          text-align:center;
+          font-weight:bold;
+        "
+      >
+        ${item.percent.toFixed(1)}%
+      </td>
+
+      <td
+        style="
+          color:${item.estimate >= 100 ? '#2563eb' : '#dc2626'};
+          text-align:center;
+          font-weight:bold;
+        "
+      >
+        ${item.estimate.toFixed(1)}%
+      </td>
+
+      <td class="number">
+        ${item.remainAvg.toLocaleString('vi-VN')}
+      </td>
+
+      <td
+        style="
+          color:${item.ttHot >= 40 ? '#2563eb' : '#dc2626'};
+          text-align:center;
+          font-weight:bold;
+        "
+      >
+        ${item.ttHot.toFixed(1)}%
+      </td>
+
+    `;
+
+    tbody.appendChild(tr);
+
+  });
+
+  //
+  // TOTAL %
+  //
+
+  let totalPercent = 0;
+
+  if(totalTarget > 0){
+
+    totalPercent =
+      (totalMTD / totalTarget) * 100;
+  }
+
+  totalPercent =
+    Math.round(totalPercent * 10) / 10;
+
+  //
+  // TOTAL ESTIMATE
+  //
+
+  let totalEstimate = 0;
+
+  if(
+    passedDays > 0 &&
+    totalTarget > 0
+  ){
+
+    const estimateRevenue =
+
+      (totalMTD / passedDays)
+      * totalDays;
+
+    totalEstimate =
+      (estimateRevenue / totalTarget)
+      * 100;
+  }
+
+  totalEstimate =
+    Math.round(totalEstimate * 10) / 10;
+
+  //
+  // TOTAL ROW
+  //
+
+  const totalRow =
+    document.createElement('tr');
+
+  totalRow.innerHTML = `
+
+    <td colspan="3"
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+        text-align:center;
+      "
+    >
+      TỔNG SHOP
+    </td>
+
+    <td
+      class="number"
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+      "
+    >
+      ${totalTarget.toLocaleString('vi-VN')}
+    </td>
+
+    <td
+      class="number"
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+      "
+    >
+      ${totalMTD.toLocaleString('vi-VN')}
+    </td>
+
+    <td
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+        text-align:center;
+      "
+    >
+      ${totalPercent.toFixed(1)}%
+    </td>
+
+    <td
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+        text-align:center;
+      "
+    >
+      ${totalEstimate.toFixed(1)}%
+    </td>
+
+    <td
+      class="number"
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+      "
+    >
+      ${totalRemain.toLocaleString('vi-VN')}
+    </td>
+
+    <td
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+        text-align:center;
+      "
+    >
+      ${totalDS > 0
+        ? ((totalMTD / totalDS) * 100).toFixed(1)
+        : 0
+      }%
+    </td>
+
+  `;
+
+  tbody.appendChild(totalRow);
+
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// KPI 04 : DOANH SỐ VACCINE VỆ TINH
+//
+
+function generateKPI04(){
+
+  const tbody =
+    document.getElementById('kpi04Body');
+
+  tbody.innerHTML = '';
+
+  //
+  // DATE
+  //
+
+  const passedDays =
+    Number(
+      document.getElementById(
+        'passedDaysInput'
+      ).value
+    ) || 1;
+
+  const totalDays =
+    Number(
+      document.getElementById(
+        'totalDaysInput'
+      ).value
+    ) || 30;
+
+  const today = new Date();
+
+  //
+  // HEADER DATE
+  //
+
+  const dateText =
+    String(passedDays).padStart(2,'0')
+    + '/'
+    + String(today.getMonth()+1).padStart(2,'0')
+    + '/'
+    + today.getFullYear();
+
+  document.getElementById(
+    'kpi04MonthHeader'
+  ).innerHTML = `
+
+    <div>
+      Month To Date
+    </div>
+
+    <div
+      style="
+        font-size:11px;
+        margin-top:4px;
+        color:#dbeafe;
+        font-weight:normal;
+      "
+    >
+      ${dateText}
+    </div>
+
+  `;
+
+  //
+  // GLOBAL %
+  //
+
+  const globalPercent =
+    ((passedDays / totalDays) * 100);
+
+  document.getElementById(
+    'kpi04PercentHeader'
+  ).innerHTML = `
+
+    <div>%HT</div>
+
+    <div
+      style="
+        font-size:11px;
+        margin-top:4px;
+        color:#fef08a;
+      "
+    >
+      ${globalPercent.toFixed(1)}%
+    </div>
+
+  `;
+
+  //
+  // GET TARGET
+  //
+
+  const targetRows =
+    document.querySelectorAll(
+      '#targetTable tbody tr:not(.total-row)'
+    );
+
+  let data = [];
+
+  let totalTarget = 0;
+  let totalMTD = 0;
+  let totalRemainingPerDay = 0;
+
+  targetRows.forEach(row => {
+
+    const cells =
+      row.querySelectorAll('td');
+
+    //
+    // MÃ NV
+    //
+
+    const maNV =
+      normalizeMaNV(
+        cells[0].innerText
+      );
+
+    //
+    // TÊN NV
+    //
+
+    const tenNV =
+      cells[1].innerText.trim();
+
+    //
+    // TARGET VACCINE
+    //
+
+    const target =
+      Number(
+        cells[9]
+          .innerText
+          .replace(/\./g,'')
+          .replace(/,/g,'')
+      ) || 0;
+
+    //
+    // FIND DATA VX
+    //
+
+    const found =
+      vxData.find(v => {
+
+        const raw =
+          String(v[0] || '');
+
+        const ma =
+          normalizeMaNV(
+            raw.split('-')[0]
+          );
+
+        return ma === maNV;
+
+      });
+
+    //
+    // MTD
+    //
+
+    const mtd =
+      Number(
+        String(found?.[1] || 0)
+          .replace(/\./g,'')
+          .replace(/,/g,'')
+      ) || 0;
+
+    //
+    // %HT
+    //
+
+    const percent =
+      target > 0
+      ? (mtd / target) * 100
+      : 0;
+
+    //
+    // ESTIMATE
+    //
+
+    const estimate =
+      passedDays > 0
+      ? (mtd / passedDays) * totalDays
+      : 0;
+
+    const estimatePercent =
+      target > 0
+      ? (estimate / target) * 100
+      : 0;
+
+    //
+    // TB NGÀY CÒN LẠI
+    //
+
+    const remain =
+      target - mtd;
+
+    const remainDays =
+      totalDays - passedDays;
+
+    const remainPerDay =
+      remainDays > 0
+      ? Math.max(0, remain / remainDays)
+      : 0;
+
+    //
+    // TOTAL
+    //
+
+    totalTarget += target;
+    totalMTD += mtd;
+    totalRemainingPerDay += remainPerDay;
+
+    //
+    // PUSH
+    //
+
+    data.push({
+
+      maNV,
+      tenNV,
+      target,
+      mtd,
+      percent,
+      estimatePercent,
+      remainPerDay
+
+    });
+
+  });
+
+  //
+  // SORT
+  //
+
+  data.sort((a,b) =>
+    b.percent - a.percent
+  );
+
+  //
+  // RENDER
+  //
+
+  data.forEach((item,index) => {
+
+    //
+    // %HT COLOR
+    //
+
+    const percentColor =
+      item.percent >= globalPercent
+      ? '#22c55e'
+      : '#ef4444';
+
+    //
+    // ESTIMATE COLOR
+    //
+
+    const estimateColor =
+      item.estimatePercent >= 100
+      ? '#2563eb'
+      : '#dc2626';
+
+    const tr =
+      document.createElement('tr');
+
+    tr.innerHTML = `
+
+      <td style="
+        text-align:center;
+        font-weight:bold;
+      ">
+        ${index + 1}
+      </td>
+
+<td
+  style="
+    text-align:center;
+    font-weight:bold;
+  "
+>
+  ${item.maNV}
+</td>
+
+      <td>
+        ${item.tenNV}
+      </td>
+
+      <td class="number">
+        ${item.target.toLocaleString('vi-VN')}
+      </td>
+
+      <td class="number">
+        ${item.mtd.toLocaleString('vi-VN')}
+      </td>
+
+      <td style="
+        text-align:center;
+        font-weight:bold;
+        background:${percentColor};
+        color:white;
+      ">
+        ${item.percent.toFixed(1)}%
+      </td>
+
+      <td style="
+        text-align:center;
+        font-weight:bold;
+        color:${estimateColor};
+      ">
+        ${item.estimatePercent.toFixed(1)}%
+      </td>
+
+      <td class="number">
+        ${Math.round(item.remainPerDay)
+          .toLocaleString('vi-VN')}
+      </td>
+
+    `;
+
+    tbody.appendChild(tr);
+
+  });
+
+  //
+  // TOTAL
+  //
+
+  const totalPercent =
+    totalTarget > 0
+    ? (totalMTD / totalTarget) * 100
+    : 0;
+
+  const totalEstimate =
+    passedDays > 0
+    ? (totalMTD / passedDays) * totalDays
+    : 0;
+
+  const totalEstimatePercent =
+    totalTarget > 0
+    ? (totalEstimate / totalTarget) * 100
+    : 0;
+
+  //
+  // TOTAL ROW
+  //
+
+  const totalRow =
+    document.createElement('tr');
+
+  totalRow.innerHTML = `
+
+    <td colspan="3"
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+        text-align:center;
+      "
+    >
+      TỔNG SHOP
+    </td>
+
+    <td style="
+      background:#000000;
+      color:white;
+      font-weight:bold;
+      text-align:right;
+      padding-right:10px;
+    ">
+      ${totalTarget.toLocaleString('vi-VN')}
+    </td>
+
+    <td style="
+      background:#000000;
+      color:white;
+      font-weight:bold;
+      text-align:right;
+      padding-right:10px;
+    ">
+      ${totalMTD.toLocaleString('vi-VN')}
+    </td>
+
+    <td style="
+      background:#000000;
+      color:white;
+      font-weight:bold;
+      text-align:center;
+    ">
+      ${totalPercent.toFixed(1)}%
+    </td>
+
+    <td style="
+      background:#000000;
+      color:white;
+      font-weight:bold;
+      text-align:center;
+    ">
+      ${totalEstimatePercent.toFixed(1)}%
+    </td>
+
+    <td style="
+      background:#000000;
+      color:white;
+      font-weight:bold;
+      text-align:right;
+      padding-right:10px;
+    ">
+      ${Math.round(totalRemainingPerDay)
+        .toLocaleString('vi-VN')}
+    </td>
+
+  `;
+
+  tbody.appendChild(totalRow);
+
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// KPI 05 : DOANH THU CẮT LIỀU
+//
+
+function generateKPI05(){
+
+  const tbody =
+    document.getElementById('kpi05Body');
+
+  tbody.innerHTML = '';
+
+  //
+  // INPUT
+  //
+
+  const totalDays =
+    parseInt(
+      document.getElementById(
+        'totalDaysInput'
+      ).value
+    ) || 0;
+
+  const passedDays =
+    parseInt(
+      document.getElementById(
+        'passedDaysInput'
+      ).value
+    ) || 0;
+
+  //
+  // %HT THỜI GIAN
+  //
+
+  let monthPercent = 0;
+
+  if(totalDays > 0){
+
+    monthPercent =
+      (passedDays / totalDays) * 100;
+  }
+
+  monthPercent =
+    Math.round(monthPercent * 10) / 10;
+
+  //
+  // NGÀY HIỂN THỊ
+  //
+
+  const currentDate = new Date();
+
+  const displayDate = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth(),
+    passedDays
+  );
+
+  const dateText =
+    displayDate.toLocaleDateString('vi-VN');
+
+  //
+  // UPDATE HEADER
+  //
+
+  document.getElementById(
+    'kpi05MonthHeader'
+  ).innerHTML = `
+
+    <div>
+      Month To Date
+    </div>
+
+    <div
+      style="
+        font-size:11px;
+        margin-top:4px;
+        color:#dbeafe;
+      "
+    >
+      ${dateText}
+    </div>
+
+  `;
+
+  document.getElementById(
+    'kpi05PercentHeader'
+  ).innerHTML = `
+
+    <div>%HT</div>
+
+    <div
+      style="
+        font-size:11px;
+        margin-top:4px;
+        color:#fef08a;
+      "
+    >
+      ${monthPercent.toFixed(1)}%
+    </div>
+
+  `;
+
+  //
+  // TARGET TABLE
+  //
+
+  const targetRows = document.querySelectorAll(
+    '#targetTable tbody tr:not(.total-row)'
+  );
+
+  let kpiData = [];
+
+  //
+  // TOTAL
+  //
+
+  let totalTarget = 0;
+  let totalMTD = 0;
+  let totalRemain = 0;
+
+  //
+  // LOOP
+  //
+
+  targetRows.forEach(row => {
+
+    const cells =
+      row.querySelectorAll('td');
+
+    //
+    // MÃ NV
+    //
+
+    const maNV = normalizeMaNV(
+      cells[0].innerText
+    );
+
+    //
+    // TÊN NV
+    //
+
+    const tenNV =
+      cells[1].innerText.trim();
+
+    //
+    // TARGET CẮT LIỀU
+    // CỘT 9
+    //
+
+    let target =
+      parseFloat(
+        cells[8]
+        .innerText
+        .replace(/\./g,'')
+        .replace(/,/g,'')
+      ) || 0;
+
+    //
+    // ROUND 1000
+    //
+
+    target =
+      Math.round(target / 1000) * 1000;
+
+    //
+    // DATA ROW
+    //
+
+    const dataRow =
+      drugData.find(r =>
+
+        String(r.maNV)
+        .trim()
+        .replace(/^0+/,'')
+        == maNV
+
+      );
+
+    //
+    // MONTH TO DATE
+    //
+
+    let monthToDate = 0;
+
+    if(dataRow){
+
+      monthToDate =
+        parseFloat(
+          String(dataRow.catLieu)
+          .replace(/,/g,'')
+        ) || 0;
+    }
+
+    //
+    // ROUND 1000
+    //
+
+    monthToDate =
+      Math.round(monthToDate / 1000)
+      * 1000;
+
+    //
+    // %HT
+    //
+
+    let percent = 0;
+
+    if(target > 0){
+
+      percent =
+        (monthToDate / target) * 100;
+    }
+
+    percent =
+      Math.round(percent * 10) / 10;
+
+    //
+    // ESTIMATE
+    //
+
+    let estimate = 0;
+
+    if(
+      passedDays > 0 &&
+      totalDays > 0 &&
+      target > 0
+    ){
+
+      const estimateRevenue =
+
+        (monthToDate / passedDays)
+        * totalDays;
+
+      estimate =
+        (estimateRevenue / target)
+        * 100;
+    }
+
+    estimate =
+      Math.round(estimate * 10) / 10;
+
+    //
+    // TB NGÀY CÒN LẠI
+    //
+
+    let remainAvg = 0;
+
+    if(
+      totalDays > passedDays
+    ){
+
+      remainAvg =
+        Math.max(
+          0,
+          (target - monthToDate)
+          / (totalDays - passedDays)
+        );
+    }
+
+    //
+    // ROUND 1000
+    //
+
+    remainAvg =
+      Math.round(remainAvg / 1000)
+      * 1000;
+
+    //
+    // TOTAL
+    //
+
+    totalTarget += target;
+    totalMTD += monthToDate;
+    totalRemain += remainAvg;
+
+    //
+    // PUSH
+    //
+
+    kpiData.push({
+
+      maNV,
+
+      tenNV,
+
+      target,
+
+      monthToDate,
+
+      percent,
+
+      estimate,
+
+      remainAvg
+
+    });
+
+  });
+
+  //
+  // SORT %HT DESC
+  //
+
+  kpiData.sort((a,b) =>
+    b.percent - a.percent
+  );
+
+  //
+  // RENDER
+  //
+
+  kpiData.forEach((item,index) => {
+
+    //
+    // MÀU %HT
+    //
+
+    let percentBg = '#dc2626';
+
+    if(item.percent >= monthPercent){
+
+      percentBg = '#16a34a';
+    }
+
+    const tr =
+      document.createElement('tr');
+
+    tr.innerHTML = `
+
+      <td
+        style="
+          text-align:center;
+          font-weight:bold;
+        "
+      >
+        ${index + 1}
+      </td>
+
+      <td
+        style="
+          text-align:center;
+          font-weight:bold;
+        "
+      >
+        ${item.maNV}
+      </td>
+
+      <td class="name-col">
+        ${item.tenNV}
+      </td>
+
+      <td class="number">
+        ${item.target.toLocaleString('vi-VN')}
+      </td>
+
+      <td class="number">
+        ${item.monthToDate.toLocaleString('vi-VN')}
+      </td>
+
+      <td
+        style="
+          background:${percentBg};
+          color:white;
+          text-align:center;
+          font-weight:bold;
+        "
+      >
+        ${item.percent.toFixed(1)}%
+      </td>
+
+      <td
+        style="
+          color:${item.estimate >= 100 ? '#2563eb' : '#dc2626'};
+          text-align:center;
+          font-weight:bold;
+        "
+      >
+        ${item.estimate.toFixed(1)}%
+      </td>
+
+      <td class="number">
+        ${item.remainAvg.toLocaleString('vi-VN')}
+      </td>
+
+    `;
+
+    tbody.appendChild(tr);
+
+  });
+
+  //
+  // TOTAL %
+  //
+
+  let totalPercent = 0;
+
+  if(totalTarget > 0){
+
+    totalPercent =
+      (totalMTD / totalTarget) * 100;
+  }
+
+  totalPercent =
+    Math.round(totalPercent * 10) / 10;
+
+  //
+  // TOTAL ESTIMATE
+  //
+
+  let totalEstimate = 0;
+
+  if(
+    passedDays > 0 &&
+    totalTarget > 0
+  ){
+
+    const estimateRevenue =
+
+      (totalMTD / passedDays)
+      * totalDays;
+
+    totalEstimate =
+      (estimateRevenue / totalTarget)
+      * 100;
+  }
+
+  totalEstimate =
+    Math.round(totalEstimate * 10) / 10;
+
+  //
+  // TOTAL ROW
+  //
+
+  const totalRow =
+    document.createElement('tr');
+
+  totalRow.innerHTML = `
+
+    <td
+      colspan="3"
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+        text-align:center;
+      "
+    >
+      TỔNG SHOP
+    </td>
+
+    <td
+      class="number"
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+      "
+    >
+      ${totalTarget.toLocaleString('vi-VN')}
+    </td>
+
+    <td
+      class="number"
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+      "
+    >
+      ${totalMTD.toLocaleString('vi-VN')}
+    </td>
+
+    <td
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+        text-align:center;
+      "
+    >
+      ${totalPercent.toFixed(1)}%
+    </td>
+
+    <td
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+        text-align:center;
+      "
+    >
+      ${totalEstimate.toFixed(1)}%
+    </td>
+
+    <td
+      class="number"
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+      "
+    >
+      ${totalRemain.toLocaleString('vi-VN')}
+    </td>
+
+  `;
+
+  tbody.appendChild(totalRow);
+
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// KPI 06 : TỶ TRỌNG THUỐC
+//
+
+function generateKPI06(){
+
+  const tbody =
+    document.getElementById('kpi06Body');
+
+  tbody.innerHTML = '';
+
+  //
+  // INPUT
+  //
+
+  const totalDays =
+    parseInt(
+      document.getElementById(
+        'totalDaysInput'
+      ).value
+    ) || 0;
+
+  const passedDays =
+    parseInt(
+      document.getElementById(
+        'passedDaysInput'
+      ).value
+    ) || 0;
+
+  //
+  // HEADER %HT
+  //
+
+  let monthPercent = 95.0;
+
+  //
+  // DATE
+  //
+
+  const currentDate = new Date();
+
+  const displayDate = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth(),
+    passedDays
+  );
+
+  const dateText =
+    displayDate.toLocaleDateString('vi-VN');
+
+  //
+  // HEADER
+  //
+
+  document.getElementById(
+    'kpi06MonthHeader'
+  ).innerHTML = `
+
+    <div>
+      Month To Date
+    </div>
+
+    <div
+      style="
+        font-size:11px;
+        margin-top:4px;
+        color:#dbeafe;
+      "
+    >
+      ${dateText}
+    </div>
+
+  `;
+
+  document.getElementById(
+    'kpi06PercentHeader'
+  ).innerHTML = `
+
+    <div>%HT</div>
+
+    <div
+      style="
+        font-size:11px;
+        margin-top:4px;
+        color:#fef08a;
+      "
+    >
+      ${monthPercent.toFixed(1)}%
+    </div>
+
+  `;
+
+  //
+  // DATA
+  //
+
+  const targetRows =
+    document.querySelectorAll(
+      '#targetTable tbody tr:not(.total-row)'
+    );
+
+  let kpiData = [];
+
+  //
+  // TOTAL
+  //
+
+  let totalTarget = 0;
+  let totalMTD = 0;
+
+  //
+  // LOOP
+  //
+
+  targetRows.forEach(row => {
+
+    const cells =
+      row.querySelectorAll('td');
+
+    //
+    // MÃ NV
+    //
+
+    const maNV =
+      normalizeMaNV(
+        cells[0].innerText
+      );
+
+    //
+    // TÊN NV
+    //
+
+    const tenNV =
+      cells[1].innerText.trim();
+
+    //
+    // TARGET %
+    // CỘT 5
+    //
+
+    let target =
+      parseFloat(
+
+        String(
+          cells[5].innerText || '0'
+        )
+        .replace('%','')
+        .replace(',','.')
+        .trim()
+
+      ) || 0;
+
+    //
+    // DATA ROW
+    //
+
+    const dataRow =
+      drugData.find(r =>
+
+        String(r.maNV)
+        .trim()
+        .replace(/^0+/,'')
+        == maNV
+
+      );
+
+    //
+    // MONTH TO DATE %
+    //
+
+    let monthToDate = 0;
+
+    if(dataRow){
+
+      monthToDate =
+        parseFloat(
+
+          String(
+            dataRow.tyTrongThuoc || '0'
+          )
+          .replace('%','')
+          .replace(',','.')
+          .trim()
+
+        ) || 0;
+    }
+
+    //
+    // %HT
+    //
+
+    let percent = 0;
+
+    if(target > 0){
+
+      percent =
+        (monthToDate / target) * 100;
+    }
+
+    percent =
+      Math.round(percent * 10) / 10;
+
+    //
+    // TOTAL
+    //
+
+    totalTarget += target;
+    totalMTD += monthToDate;
+
+    //
+    // PUSH
+    //
+
+    kpiData.push({
+
+      maNV,
+
+      tenNV,
+
+      target,
+
+      monthToDate,
+
+      percent
+
+    });
+
+  });
+
+  //
+  // SORT
+  //
+
+  kpiData.sort((a,b) =>
+
+    b.percent - a.percent
+
+  );
+
+  //
+  // RENDER
+  //
+
+  kpiData.forEach((item,index) => {
+
+    let percentBg = '#dc2626';
+
+    if(item.percent >= 100){
+
+      percentBg = '#16a34a';
+    }
+
+    const tr =
+      document.createElement('tr');
+
+    tr.innerHTML = `
+
+      <td
+        style="
+          text-align:center;
+          font-weight:bold;
+        "
+      >
+        ${index + 1}
+      </td>
+
+      <td
+        style="
+          text-align:center;
+          font-weight:bold;
+          width:80px;
+        "
+      >
+        ${item.maNV}
+      </td>
+
+      <td class="name-col">
+        ${item.tenNV}
+      </td>
+
+      <td
+        style="
+          text-align:center;
+          font-weight:bold;
+        "
+      >
+        ${item.target.toFixed(1)}%
+      </td>
+
+      <td
+        style="
+          text-align:center;
+          font-weight:bold;
+        "
+      >
+        ${item.monthToDate.toFixed(1)}%
+      </td>
+
+      <td
+        style="
+          background:${percentBg};
+          color:white;
+          text-align:center;
+          font-weight:bold;
+        "
+      >
+        ${item.percent.toFixed(1)}%
+      </td>
+
+    `;
+
+    tbody.appendChild(tr);
+
+  });
+
+  //
+  // TỔNG SHOP
+  //
+
+  let avgTarget = 0;
+  let avgMTD = 0;
+
+  if(kpiData.length > 0){
+
+    avgTarget =
+      totalTarget / kpiData.length;
+
+    avgMTD =
+      totalMTD / kpiData.length;
+  }
+
+  //
+  // %HT TỔNG
+  //
+
+  let totalPercent = 0;
+
+  if(avgTarget > 0){
+
+    totalPercent =
+      (avgMTD / avgTarget) * 100;
+  }
+
+  totalPercent =
+    Math.round(totalPercent * 10) / 10;
+
+  //
+  // TOTAL ROW
+  //
+
+  const totalRow =
+    document.createElement('tr');
+
+  totalRow.innerHTML = `
+
+    <td colspan="3"
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+        text-align:center;
+      "
+    >
+      TỔNG SHOP
+    </td>
+
+    <td
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+        text-align:center;
+      "
+    >
+      ${avgTarget.toFixed(1)}%
+    </td>
+
+    <td
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+        text-align:center;
+      "
+    >
+      ${avgMTD.toFixed(1)}%
+    </td>
+
+    <td
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+        text-align:center;
+      "
+    >
+      ${totalPercent.toFixed(1)}%
+    </td>
+
+  `;
+
+  tbody.appendChild(totalRow);
+
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// KPI 07 : ↑↓ LƯỢT KHÁCH
+//
+
+function generateKPI07(){
+
+  const tbody =
+    document.getElementById('kpi07Body');
+
+  tbody.innerHTML = '';
+
+  const passedDays =
+    Number(
+      document.getElementById(
+        'passedDaysInput'
+      ).value
+    ) || 1;
+
+  const totalDays =
+    Number(
+      document.getElementById(
+        'totalDaysInput'
+      ).value
+    ) || 30;
+
+  //
+  // UPDATE HEADER
+  //
+
+  const today = new Date();
+
+  const dateText =
+    String(passedDays).padStart(2,'0')
+    + '/'
+    + String(today.getMonth()+1).padStart(2,'0')
+    + '/'
+    + today.getFullYear();
+
+  document.getElementById(
+    'kpi07MonthHeader'
+  ).innerHTML = `
+    <div>Month To Date</div>
+
+    <div style="
+      font-size:11px;
+      margin-top:4px;
+      color:#dbeafe;
+      font-weight:normal;
+    ">
+      ${dateText}
+    </div>
+  `;
+
+  //
+  // HEADER %HT
+  //
+
+  const globalPercent =
+    ((passedDays / totalDays) * 100);
+
+  document.getElementById(
+    'kpi07PercentHeader'
+  ).innerHTML = `
+    <div>%HT</div>
+
+    <div style="
+      font-size:11px;
+      margin-top:4px;
+      color:#fef08a;
+    ">
+      ${globalPercent.toFixed(1)}%
+    </div>
+  `;
+
+  //
+  // GET TARGET DATA
+  //
+
+  const targetRows =
+    document.querySelectorAll(
+      '#targetTable tbody tr:not(.total-row)'
+    );
+
+  let data = [];
+
+  let totalTarget = 0;
+  let totalMTD = 0;
+
+  //
+  // LOOP
+  //
+
+  targetRows.forEach(row => {
+
+    const cells =
+      row.querySelectorAll('td');
+
+    //
+    // MÃ NV
+    //
+
+    const maNV =
+      normalizeMaNV(
+        cells[0].innerText
+      );
+
+    //
+    // TÊN NV
+    //
+
+    const tenNV =
+      cells[1].innerText.trim();
+
+    //
+    // TARGET
+    // CỘT ↑↓Lượt Khách = index 6
+    //
+
+    const target =
+      Number(
+        cells[6]
+          .innerText
+          .replace(/\./g,'')
+          .replace(/,/g,'')
+      ) || 0;
+
+    //
+    // FIND DATA
+    //
+
+    const found =
+      drugData.find(
+        d => normalizeMaNV(d.maNV) === maNV
+      );
+
+    //
+    // LƯỢT KHÁCH
+    //
+
+    const mtd =
+      Number(found?.luotKhach || 0);
+
+    //
+    // CALC
+    //
+
+    const percent =
+      target > 0
+      ? (mtd / target) * 100
+      : 0;
+
+    const estimate =
+      passedDays > 0
+      ? (mtd / passedDays) * totalDays
+      : 0;
+
+    const estimatePercent =
+      target > 0
+      ? (estimate / target) * 100
+      : 0;
+
+    //
+    // TOTAL
+    //
+
+    totalTarget += target;
+    totalMTD += mtd;
+
+    //
+    // PUSH
+    //
+
+    data.push({
+
+      maNV,
+      tenNV,
+      target,
+      mtd,
+      percent,
+      estimatePercent
+
+    });
+
+  });
+
+  //
+  // SORT DESC
+  //
+
+  data.sort((a,b) =>
+    b.percent - a.percent
+  );
+
+  //
+  // RENDER
+  //
+
+  data.forEach((item,index) => {
+
+    //
+    // %HT COLOR
+    //
+
+    const percentColor =
+      item.percent >= globalPercent
+        ? '#16a34a'
+        : '#dc2626';
+
+    //
+    // ESTIMATE COLOR
+    //
+
+    const estimateColor =
+      item.estimatePercent >= 100
+        ? '#2563eb'
+        : '#dc2626';
+
+    const tr =
+      document.createElement('tr');
+
+    tr.innerHTML = `
+
+      <td style="
+        text-align:center;
+        font-weight:bold;
+      ">
+        ${index + 1}
+      </td>
+
+      <td style="
+        text-align:center;
+        font-weight:bold;
+        width:80px;
+      ">
+        ${item.maNV}
+      </td>
+
+      <td class="name-col">
+        ${item.tenNV}
+      </td>
+
+      <td class="number">
+        ${item.target.toLocaleString('vi-VN')}
+      </td>
+
+      <td class="number">
+        ${item.mtd.toLocaleString('vi-VN')}
+      </td>
+
+      <td style="
+        text-align:center;
+        font-weight:bold;
+        background:${percentColor};
+        color:white;
+      ">
+        ${item.percent.toFixed(1)}%
+      </td>
+
+      <td style="
+        text-align:center;
+        font-weight:bold;
+        color:${estimateColor};
+      ">
+        ${item.estimatePercent.toFixed(1)}%
+      </td>
+
+    `;
+
+    tbody.appendChild(tr);
+
+  });
+
+  //
+  // TOTAL SHOP
+  //
+
+  const totalPercent =
+    totalTarget > 0
+    ? (totalMTD / totalTarget) * 100
+    : 0;
+
+  const totalEstimate =
+    passedDays > 0
+    ? (totalMTD / passedDays) * totalDays
+    : 0;
+
+  const totalEstimatePercent =
+    totalTarget > 0
+    ? (totalEstimate / totalTarget) * 100
+    : 0;
+
+  //
+  // TOTAL ROW
+  //
+
+  const totalRow =
+    document.createElement('tr');
+
+  totalRow.innerHTML = `
+
+    <td colspan="3"
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+        text-align:center;
+      "
+    >
+      TỔNG SHOP
+    </td>
+
+    <td style="
+      background:#000000;
+      color:white;
+      font-weight:bold;
+      text-align:right;
+      padding-right:10px;
+    ">
+      ${totalTarget.toLocaleString('vi-VN')}
+    </td>
+
+    <td style="
+      background:#000000;
+      color:white;
+      font-weight:bold;
+      text-align:right;
+      padding-right:10px;
+    ">
+      ${totalMTD.toLocaleString('vi-VN')}
+    </td>
+
+    <td style="
+      background:#000000;
+      color:white;
+      font-weight:bold;
+      text-align:center;
+    ">
+      ${totalPercent.toFixed(1)}%
+    </td>
+
+    <td style="
+      background:#000000;
+      color:white;
+      font-weight:bold;
+      text-align:center;
+    ">
+      ${totalEstimatePercent.toFixed(1)}%
+    </td>
+
+  `;
+
+  tbody.appendChild(totalRow);
+
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// KPI 08 : CLEAR HÀNG CẬN DATE
+//
+
+function generateKPI08(){
+
+  const tbody =
+    document.getElementById('kpi08Body');
+
+  tbody.innerHTML = '';
+
+  //
+  // INPUT
+  //
+
+  const totalDays =
+    parseInt(
+      document.getElementById(
+        'totalDaysInput'
+      ).value
+    ) || 0;
+
+  const passedDays =
+    parseInt(
+      document.getElementById(
+        'passedDaysInput'
+      ).value
+    ) || 0;
+
+  //
+  // % THỜI GIAN
+  //
+
+  let monthPercent = 0;
+
+  if(totalDays > 0){
+
+    monthPercent =
+      (passedDays / totalDays) * 100;
+
+  }
+
+  monthPercent =
+    Math.round(monthPercent * 10) / 10;
+
+  //
+  // DATE
+  //
+
+  const currentDate = new Date();
+
+  const displayDate = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth(),
+    passedDays
+  );
+
+  const dateText =
+    displayDate.toLocaleDateString('vi-VN');
+
+  //
+  // HEADER
+  //
+
+  document.getElementById(
+    'kpi08MonthHeader'
+  ).innerHTML = `
+
+    <div>
+      Month To Date
+    </div>
+
+    <div
+      style="
+        font-size:11px;
+        margin-top:4px;
+        color:#dbeafe;
+      "
+    >
+      ${dateText}
+    </div>
+
+  `;
+
+  document.getElementById(
+    'kpi08PercentHeader'
+  ).innerHTML = `
+
+    <div>%HT</div>
+
+    <div
+      style="
+        font-size:11px;
+        margin-top:4px;
+        color:#fef08a;
+      "
+    >
+      ${monthPercent.toFixed(1)}%
+    </div>
+
+  `;
+
+  //
+  // DATA
+  //
+
+  const targetRows = document.querySelectorAll(
+    '#targetTable tbody tr:not(.total-row)'
+  );
+
+  let kpiData = [];
+
+  //
+  // TOTAL
+  //
+
+  let totalTarget = 0;
+  let totalMTD = 0;
+
+  //
+  // LOOP
+  //
+
+  targetRows.forEach(row => {
+
+    const cells =
+      row.querySelectorAll('td');
+
+    //
+    // MÃ NV
+    //
+
+    const maNV =
+      normalizeMaNV(
+        cells[0].innerText
+      );
+
+    //
+    // TÊN NV
+    //
+
+    const tenNV =
+      cells[1].innerText.trim();
+
+    //
+    // TARGET CẬN DATE
+    // CỘT CẬN DATE = index 7
+    //
+
+    let target =
+      parseFloat(
+        cells[7]
+        .innerText
+        .replace(/\./g,'')
+        .replace(/,/g,'')
+      ) || 0;
+
+    //
+    // ROUND 1000
+    //
+
+    target =
+      Math.round(target / 1000)
+      * 1000;
+
+    //
+    // FIND DATA
+    //
+
+    const dataRow =
+      drugData.find(r =>
+
+        String(r.maNV)
+        .trim()
+        .replace(/^0+/,'')
+        == maNV
+
+      );
+
+    //
+    // MONTH TO DATE
+    //
+
+    let monthToDate = 0;
+
+    if(dataRow){
+
+      monthToDate =
+        parseFloat(
+          String(dataRow.canDate)
+          .replace(/,/g,'')
+        ) || 0;
+
+    }
+
+    //
+    // %HT
+    //
+
+    let percent = 0;
+
+    if(target > 0){
+
+      percent =
+        (monthToDate / target) * 100;
+
+    }
+
+    percent =
+      Math.round(percent * 10) / 10;
+
+    //
+    // ESTIMATE
+    //
+
+    let estimate = 0;
+
+    if(
+      passedDays > 0 &&
+      totalDays > 0 &&
+      target > 0
+    ){
+
+      const estimateRevenue =
+
+        (monthToDate / passedDays)
+        * totalDays;
+
+      estimate =
+        (estimateRevenue / target)
+        * 100;
+
+    }
+
+    estimate =
+      Math.round(estimate * 10) / 10;
+
+    //
+    // GAP
+    //
+
+    let gap =
+      target - monthToDate;
+
+    //
+    // KHÔNG ÂM
+    //
+
+    if(gap < 0){
+
+      gap = 0;
+
+    }
+
+    gap =
+      Math.round(gap / 1000)
+      * 1000;
+
+    //
+    // TOTAL
+    //
+
+    totalTarget += target;
+    totalMTD += monthToDate;
+
+    //
+    // PUSH
+    //
+
+    kpiData.push({
+
+      maNV,
+
+      tenNV,
+
+      target,
+
+      monthToDate,
+
+      percent,
+
+      estimate,
+
+      gap
+
+    });
+
+  });
+
+  //
+  // SORT
+  //
+
+  kpiData.sort((a,b) =>
+    b.percent - a.percent
+  );
+
+  //
+  // RENDER
+  //
+
+  kpiData.forEach((item,index) => {
+
+    //
+    // CHỈ 2 MÀU
+    //
+
+    let percentBg = '#dc2626';
+
+    if(item.percent >= monthPercent){
+
+      percentBg = '#16a34a';
+
+    }
+
+    //
+    // ESTIMATE COLOR
+    //
+
+    let estimateColor =
+      '#dc2626';
+
+    if(item.estimate >= 100){
+
+      estimateColor =
+        '#2f6aec';
+
+    }
+
+    //
+    // CREATE ROW
+    //
+
+    const tr =
+      document.createElement('tr');
+
+    tr.innerHTML = `
+
+      <td
+        style="
+          text-align:center;
+          font-weight:bold;
+        "
+      >
+        ${index + 1}
+      </td>
+
+      <td
+        style="
+          text-align:center;
+          font-weight:bold;
+          white-space:nowrap;
+        "
+      >
+        ${item.maNV}
+      </td>
+
+      <td class="name-col">
+        ${item.tenNV}
+      </td>
+
+      <td class="number">
+        ${item.target.toLocaleString('vi-VN')}
+      </td>
+
+      <td class="number">
+        ${Math.round(item.monthToDate)
+          .toLocaleString('vi-VN')}
+      </td>
+
+      <td
+        style="
+          background:${percentBg};
+          color:white;
+          font-weight:bold;
+          text-align:center;
+        "
+      >
+        ${item.percent.toFixed(1)}%
+      </td>
+
+      <td
+        style="
+          color:${estimateColor};
+          font-weight:bold;
+          text-align:center;
+        "
+      >
+        ${item.estimate.toFixed(1)}%
+      </td>
+
+    `;
+
+    tbody.appendChild(tr);
+
+  });
+
+  //
+  // TOTAL %HT
+  //
+
+  let totalPercent = 0;
+
+  if(totalTarget > 0){
+
+    totalPercent =
+      (totalMTD / totalTarget) * 100;
+
+  }
+
+  totalPercent =
+    Math.round(totalPercent * 10) / 10;
+
+  //
+  // TOTAL ESTIMATE
+  //
+
+  let totalEstimate = 0;
+
+  if(
+    passedDays > 0 &&
+    totalTarget > 0
+  ){
+
+    const estimateRevenue =
+
+      (totalMTD / passedDays)
+      * totalDays;
+
+    totalEstimate =
+      (estimateRevenue / totalTarget)
+      * 100;
+
+  }
+
+  totalEstimate =
+    Math.round(totalEstimate * 10) / 10;
+
+  //
+  // TOTAL ROW
+  //
+
+  const totalRow =
+    document.createElement('tr');
+
+  totalRow.innerHTML = `
+
+    <td colspan="3"
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+        text-align:center;
+      "
+    >
+      TỔNG SHOP
+    </td>
+
+    <td
+      class="number"
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+      "
+    >
+      ${totalTarget.toLocaleString('vi-VN')}
+    </td>
+
+    <td
+      class="number"
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+      "
+    >
+      ${Math.round(totalMTD)
+        .toLocaleString('vi-VN')}
+    </td>
+
+    <td
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+        text-align:center;
+      "
+    >
+      ${totalPercent.toFixed(1)}%
+    </td>
+
+    <td
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+        text-align:center;
+      "
+    >
+      ${totalEstimate.toFixed(1)}%
+    </td>
+
+  `;
+
+  tbody.appendChild(totalRow);
+
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// KPI 09 : FS+APP - TPCN - CẮT LIỀU
+//
+
+function generateKPI09(){
+
+  //
+  // BODY
+  //
+
+  const tbody =
+    document.getElementById(
+      'kpi09Body'
+    );
+
+  tbody.innerHTML = '';
+
+  //
+  // DATE
+  //
+
+  const passedDays =
+    parseInt(
+
+      document.getElementById(
+        'passedDaysInput'
+      ).value
+
+    ) || 1;
+
+  const currentDate =
+    new Date();
+
+  const displayDate =
+    new Date(
+
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      passedDays
+
+    );
+
+  const dateText =
+    displayDate
+    .toLocaleDateString('vi-VN');
+
+  //
+  // UPDATE HEADER
+  //
+
+  document.getElementById(
+    'kpi09DateHeader'
+  ).innerHTML = dateText;
+
+  //
+  // TARGET
+  //
+
+  const targetRows =
+
+    document.querySelectorAll(
+
+      '#targetTable tbody tr:not(.total-row)'
+
+    );
+
+  //
+  // DATA
+  //
+
+  let kpiData = [];
+
+  //
+  // TOTAL
+  //
+
+  let totalFS = 0;
+  let totalTPCN = 0;
+  let totalCatLieu = 0;
+  let totalCount = 0;
+
+  //
+  // LOOP
+  //
+
+  targetRows.forEach(row => {
+
+    const cells =
+      row.querySelectorAll('td');
+
+    //
+    // MA NV
+    //
+
+    const maNV =
+
+      normalizeMaNV(
+        cells[0].innerText
+      );
+
+    //
+    // TEN NV
+    //
+
+    const tenNV =
+      cells[1].innerText.trim();
+
+    //
+    // FIND DATA
+    //
+
+    const dataRow =
+
+      drugData.find(r =>
+
+        String(r.maNV)
+        .trim()
+        .replace(/^0+/,'')
+
+        == maNV
+
+      );
+
+    //
+    // NO DATA
+    //
+
+    if(!dataRow){
+
+      return;
+
+    }
+
+    //
+    // FS APP
+    //
+
+    let fsApp =
+      parseFloat(
+
+        String(
+          dataRow.fsApp || '0'
+        )
+        .replace('%','')
+        .replace(',','.')
+
+      ) || 0;
+
+    //
+    // TT TPCN
+    //
+
+    let ttTPCN =
+      parseFloat(
+
+        String(
+          dataRow.ttTPCN || '0'
+        )
+        .replace('%','')
+        .replace(',','.')
+
+      ) || 0;
+
+    //
+    // CAT LIEU
+    //
+
+    let catLieu =
+
+      parseNumber(
+        dataRow.catLieu || 0
+      );
+
+    //
+    // TOTAL
+    //
+
+    totalFS += fsApp;
+
+    totalTPCN += ttTPCN;
+
+    totalCatLieu += catLieu;
+
+    totalCount++;
+
+    //
+    // PUSH
+    //
+
+    kpiData.push({
+
+      maNV,
+
+      tenNV,
+
+      fsApp,
+
+      ttTPCN,
+
+      catLieu
+
+    });
+
+  });
+
+  //
+  // SORT
+  //
+
+  const checkedSort =
+
+    document.querySelector(
+      'input[name="kpi09Sort"]:checked'
+    )?.value || 'fsApp';
+
+  kpiData.sort((a,b) =>
+    b[checkedSort] - a[checkedSort]
+  );
+
+  //
+  // COLOR
+  //
+
+  function getColor(v){
+
+    //
+    // > 100%
+    //
+
+    if(v > 100){
+
+      return '#16a34a';
+
+    }
+
+    //
+    // 50 -> 100
+    //
+
+    if(v >= 50){
+
+      return '#2563eb';
+
+    }
+
+    //
+    // < 50
+    //
+
+    return '#dc2626';
+
+  }
+
+  //
+  // RENDER
+  //
+
+  kpiData.forEach((item,index) => {
+
+    const tr =
+      document.createElement('tr');
+
+    tr.innerHTML = `
+
+      <td
+        style="
+          text-align:center;
+          font-weight:bold;
+        "
+      >
+        ${index + 1}
+      </td>
+
+      <td
+        style="
+          text-align:center;
+          font-weight:bold;
+          white-space:nowrap;
+        "
+      >
+        ${item.maNV}
+      </td>
+
+      <td class="name-col">
+
+        ${item.tenNV}
+
+      </td>
+
+      <!-- FS APP -->
+
+      <td
+        style="
+          color:${getColor(item.fsApp)};
+          font-weight:bold;
+          text-align:center;
+        "
+      >
+
+        ${item.fsApp.toFixed(1)}%
+
+      </td>
+
+      <!-- TPCN -->
+
+      <td
+        style="
+          color:${getColor(item.ttTPCN)};
+          font-weight:bold;
+          text-align:center;
+        "
+      >
+
+        ${item.ttTPCN.toFixed(1)}%
+
+      </td>
+
+      <!-- CAT LIEU -->
+
+      <td
+        class="number"
+        style="
+          font-weight:bold;
+          text-align:right;
+          padding-right:10px;
+        "
+      >
+
+        ${Math.round(item.catLieu)
+          .toLocaleString('vi-VN')}
+
+      </td>
+
+    `;
+
+    tbody.appendChild(tr);
+
+  });
+
+  //
+  // AVG
+  //
+
+  let avgFS = 0;
+  let avgTPCN = 0;
+
+  if(totalCount > 0){
+
+    avgFS =
+      totalFS / totalCount;
+
+    avgTPCN =
+      totalTPCN / totalCount;
+
+  }
+
+  //
+  // TOTAL ROW
+  //
+
+  const totalRow =
+    document.createElement('tr');
+
+  totalRow.classList.add('total-row');
+
+  totalRow.innerHTML = `
+
+    <td colspan="3"
+
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+        text-align:center;
+      "
+
+    >
+
+      TỔNG SHOP
+
+    </td>
+
+    <td
+
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+        text-align:center;
+      "
+
+    >
+
+      ${avgFS.toFixed(1)}%
+
+    </td>
+
+    <td
+
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+        text-align:center;
+      "
+
+    >
+
+      ${avgTPCN.toFixed(1)}%
+
+    </td>
+
+    <td
+
+      style="
+        background:#000000;
+        color:white;
+        font-weight:bold;
+        text-align:right;
+        padding-right:10px;
+      "
+
+    >
+
+      ${Math.round(totalCatLieu)
+        .toLocaleString('vi-VN')}
+
+    </td>
+
+  `;
+
+  tbody.appendChild(totalRow);
+
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// AUTO UPDATE
+//
+
+document.addEventListener('change', e => {
+
+  if(
+    e.target.name === 'kpi09Sort'
+  ){
+
+    generateKPI09();
+
+  }
+
+});
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// AUTO LOAD
+//
+
+window.addEventListener('load', () => {
+
+  generateKPI09();
+
+});
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// KPI 10 : TỔNG HỢP KPI
+//
+
+function generateKPI10(){
+
+  //
+  // CHẠY TOÀN BỘ KPI
+  //
+
+  generateKPI01();
+  generateKPI02();
+  generateKPI03();
+  generateKPI04();
+  generateKPI05();
+  generateKPI06();
+  generateKPI07();
+
+  //
+  // BODY
+  //
+
+  const tbody =
+    document.getElementById('kpi10Body');
+
+  tbody.innerHTML = '';
+
+  //
+  // LẤY DS NHÂN VIÊN
+  //
+
+  const targetRows =
+    document.querySelectorAll(
+      '#targetTable tbody tr:not(.total-row)'
+    );
+
+  let kpiData = [];
+
+  //
+  // LOOP NHÂN VIÊN
+  //
+
+  targetRows.forEach(row => {
+
+    const cells =
+      row.querySelectorAll('td');
+
+    const maNV =
+      normalizeMaNV(
+        cells[0].innerText
+      );
+
+    const tenNV =
+      cells[1].innerText.trim();
+
+    //
+    // GET %
+    //
+
+    function getPercent(tableId){
+
+      const rows =
+        document.querySelectorAll(
+          `#${tableId} tbody tr`
+        );
+
+      for(let r of rows){
+
+        const tds =
+          r.querySelectorAll('td');
+
+        if(tds.length < 3){
+
+          continue;
+
+        }
+
+        const rowMaNV =
+          normalizeMaNV(
+            tds[1].innerText
+          );
+
+        if(rowMaNV == maNV){
+
+          const percentText =
+            tds[5].innerText;
+
+          return parseFloat(
+            percentText
+              .replace('%','')
+              .replace(',','.')
+          ) || 0;
+
+        }
+
+      }
+
+      return 0;
+
+    }
+
+    //
+    // DATA KPI
+    //
+
+    const doanhThu =
+      getPercent('kpi01Table');
+
+    const catLieu =
+      getPercent('kpi02Table');
+
+    const dsHot =
+      getPercent('kpi03Table');
+
+    const ttThuoc =
+      getPercent('kpi04Table');
+
+    const khach =
+      getPercent('kpi05Table');
+
+    const tbBill =
+      getPercent('kpi06Table');
+
+    const vaccine =
+      getPercent('kpi07Table');
+
+    //
+    // AVG
+    //
+
+    const avg =
+
+      (
+        doanhThu +
+        catLieu +
+        dsHot +
+        ttThuoc +
+        khach +
+        tbBill +
+        vaccine
+      ) / 7;
+
+    //
+    // PUSH
+    //
+
+    kpiData.push({
+
+      maNV,
+
+      tenNV,
+
+      doanhThu,
+
+      catLieu,
+
+      dsHot,
+
+      ttThuoc,
+
+      khach,
+
+      tbBill,
+
+      vaccine,
+
+      avg
+
+    });
+
+  });
+
+  //
+  // SORT
+  //
+
+  const checkedSort =
+
+    document.querySelector(
+      'input[name="kpiSort"]:checked'
+    )?.value || 'doanhThu';
+
+  kpiData.sort((a,b) =>
+    b[checkedSort] - a[checkedSort]
+  );
+
+  //
+  // COLOR
+  //
+
+  function getColor(v){
+
+    if(v > 100){
+
+      return '#16a34a';
+
+    }
+
+    if(v >= 50){
+
+      return '#2563eb';
+
+    }
+
+    return '#dc2626';
+
+  }
+
+  //
+  // RENDER
+  //
+
+  kpiData.forEach((item,index) => {
+
+    const tr =
+      document.createElement('tr');
+
+    tr.innerHTML = `
+
+      <td style="
+        text-align:center;
+        font-weight:bold;
+      ">
+        ${index + 1}
+      </td>
+
+      <td style="
+        text-align:center;
+        font-weight:bold;
+      ">
+        ${item.maNV}
+      </td>
+
+      <td class="name-col">
+        ${item.tenNV}
+      </td>
+
+      <td style="
+        text-align:center;
+        font-weight:bold;
+        color:${getColor(item.doanhThu)};
+      ">
+        ${item.doanhThu.toFixed(1)}%
+      </td>
+
+      <td style="
+        text-align:center;
+        font-weight:bold;
+        color:${getColor(item.catLieu)};
+      ">
+        ${item.catLieu.toFixed(1)}%
+      </td>
+
+      <td style="
+        text-align:center;
+        font-weight:bold;
+        color:${getColor(item.dsHot)};
+      ">
+        ${item.dsHot.toFixed(1)}%
+      </td>
+
+      <td style="
+        text-align:center;
+        font-weight:bold;
+        color:${getColor(item.ttThuoc)};
+      ">
+        ${item.ttThuoc.toFixed(1)}%
+      </td>
+
+      <td style="
+        text-align:center;
+        font-weight:bold;
+        color:${getColor(item.khach)};
+      ">
+        ${item.khach.toFixed(1)}%
+      </td>
+
+      <td style="
+        text-align:center;
+        font-weight:bold;
+        color:${getColor(item.tbBill)};
+      ">
+        ${item.tbBill.toFixed(1)}%
+      </td>
+
+      <td style="
+        text-align:center;
+        font-weight:bold;
+        color:${getColor(item.vaccine)};
+      ">
+        ${item.vaccine.toFixed(1)}%
+      </td>
+
+    `;
+
+    tbody.appendChild(tr);
+
+  });
+
+  //
+  // TỔNG SHOP
+  //
+
+  const avgDoanhThu =
+    kpiData.reduce((s,x)=>s+x.doanhThu,0) / kpiData.length;
+
+  const avgCatLieu =
+    kpiData.reduce((s,x)=>s+x.catLieu,0) / kpiData.length;
+
+  const avgDsHot =
+    kpiData.reduce((s,x)=>s+x.dsHot,0) / kpiData.length;
+
+  const avgTtThuoc =
+    kpiData.reduce((s,x)=>s+x.ttThuoc,0) / kpiData.length;
+
+  const avgKhach =
+    kpiData.reduce((s,x)=>s+x.khach,0) / kpiData.length;
+
+  const avgTbBill =
+    kpiData.reduce((s,x)=>s+x.tbBill,0) / kpiData.length;
+
+  const avgVaccine =
+    kpiData.reduce((s,x)=>s+x.vaccine,0) / kpiData.length;
+
+  const avgRow =
+    document.createElement('tr');
+
+  avgRow.classList.add('total-row');
+
+  avgRow.innerHTML = `
+
+    <td colspan="3" style="
+      text-align:center;
+      font-weight:bold;
+      background:#000000;
+      color:#ffffff;
+    ">
+      TỔNG SHOP
+    </td>
+
+    <td style="
+      text-align:center;
+      font-weight:bold;
+      background:#000000;
+      color:#ffffff;
+    ">
+      ${avgDoanhThu.toFixed(1)}%
+    </td>
+
+    <td style="
+      text-align:center;
+      font-weight:bold;
+      background:#000000;
+      color:#ffffff;
+    ">
+      ${avgCatLieu.toFixed(1)}%
+    </td>
+
+    <td style="
+      text-align:center;
+      font-weight:bold;
+      background:#000000;
+      color:#ffffff;
+    ">
+      ${avgDsHot.toFixed(1)}%
+    </td>
+
+    <td style="
+      text-align:center;
+      font-weight:bold;
+      background:#000000;
+      color:#ffffff;
+    ">
+      ${avgTtThuoc.toFixed(1)}%
+    </td>
+
+    <td style="
+      text-align:center;
+      font-weight:bold;
+      background:#000000;
+      color:#ffffff;
+    ">
+      ${avgKhach.toFixed(1)}%
+    </td>
+
+    <td style="
+      text-align:center;
+      font-weight:bold;
+      background:#000000;
+      color:#ffffff;
+    ">
+      ${avgTbBill.toFixed(1)}%
+    </td>
+
+    <td style="
+      text-align:center;
+      font-weight:bold;
+      background:#000000;
+      color:#ffffff;
+    ">
+      ${avgVaccine.toFixed(1)}%
+    </td>
+
+  `;
+
+  tbody.appendChild(avgRow);
+
+}
+
+//
+// AUTO UPDATE
+//
+
+document.addEventListener('change', e => {
+
+  if(
+    e.target.name === 'kpiSort'
+  ){
+
+    generateKPI10();
+
+  }
+
+});
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// AUTO LOAD
+//
+
+window.addEventListener('load', () => {
+
+  generateKPI10();
+
+});
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function handleSearchEnter(event){
+
+  if(event.key === 'Enter'){
+
+    searchTable(event.target.value);
+  }
+}
+
+function searchTable(query){
+
+  if(!hot) return;
+
+  const searchPlugin =
+    hot.getPlugin('search');
+
+  searchPlugin.query('');
+
+  if(!query || query.trim() === ''){
+
+    hot.render();
+    return;
+  }
+
+  const result =
+    searchPlugin.query(query);
+
+  hot.render();
+
+  if(result.length === 0){
+    return;
+  }
+
+  const first = result[0];
+
+  hot.selectCell(first.row, first.col);
+
+  hot.render();
+
+  requestAnimationFrame(() => {
+
+    const holder =
+      hot.rootElement.querySelector('.wtHolder');
+
+    const cell =
+      hot.getCell(first.row, first.col);
+
+    if(!holder || !cell) return;
+
+    const holderRect =
+      holder.getBoundingClientRect();
+
+    const cellRect =
+      cell.getBoundingClientRect();
+
+    //
+    // LÙI 1 Ô (trên + trái)
+    //
+
+    const offsetY =
+      cellRect.top - holderRect.top - cellRect.height;
+
+    const offsetX =
+      cellRect.left - holderRect.left - cellRect.width;
+
+
+holder.scrollTop += offsetY;
+holder.scrollLeft += offsetX;
+
+  });
+}
+
+function handleVXSearchEnter(event){
+
+  if(event.key === 'Enter'){
+
+    searchVXTable(event.target.value);
+  }
+}
+
+function searchVXTable(query){
+
+  if(!vxHot) return;
+
+  const searchPlugin =
+    vxHot.getPlugin('search');
+
+  searchPlugin.query('');
+
+  if(!query || query.trim() === ''){
+
+    vxHot.render();
+    return;
+  }
+
+  const result =
+    searchPlugin.query(query);
+
+  vxHot.render();
+
+  if(result.length === 0){
+    return;
+  }
+
+  const first = result[0];
+
+  vxHot.selectCell(first.row, first.col);
+
+  vxHot.render();
+
+  requestAnimationFrame(() => {
+
+    const holder =
+      vxHot.rootElement.querySelector('.wtHolder');
+
+    const cell =
+      vxHot.getCell(first.row, first.col);
+
+    if(!holder || !cell) return;
+
+    const holderRect =
+      holder.getBoundingClientRect();
+
+    const cellRect =
+      cell.getBoundingClientRect();
+
+    const offsetY =
+      cellRect.top - holderRect.top - cellRect.height;
+
+    const offsetX =
+      cellRect.left - holderRect.left - cellRect.width;
+
+    holder.scrollTop += offsetY;
+    holder.scrollLeft += offsetX;
+
+  });
+}
+//
+// INIT
+//
+//
+// EXPORT KPI IMAGE
+//
+
+function exportKPIImage(tableId, fileName){
+
+  const table =
+    document.getElementById(tableId);
+
+  if(!table){
+
+    alert('Không tìm thấy bảng');
+    return;
+  }
+
+  //
+  // Tạo vùng clone để ảnh đẹp hơn
+  //
+
+  const wrapper =
+    document.createElement('div');
+
+  wrapper.style.padding = '20px';
+  wrapper.style.background = '#ffffff';
+  wrapper.style.width = 'fit-content';
+
+  //
+  // clone table
+  //
+
+  const clonedTable =
+    table.cloneNode(true);
+
+  wrapper.appendChild(clonedTable);
+
+  document.body.appendChild(wrapper);
+
+  //
+  // render image
+  //
+
+  html2canvas(wrapper, {
+
+    scale: 2,
+    useCORS: true,
+    backgroundColor: '#ffffff'
+
+  }).then(canvas => {
+
+    //
+    // download image
+    //
+
+    const link =
+      document.createElement('a');
+
+    const now = new Date();
+
+    const timeText =
+      now.getFullYear() + '-' +
+      String(now.getMonth()+1).padStart(2,'0') + '-' +
+      String(now.getDate()).padStart(2,'0') + '_' +
+      String(now.getHours()).padStart(2,'0') + '-' +
+      String(now.getMinutes()).padStart(2,'0');
+
+    link.download =
+      fileName + '_' + timeText + '.png';
+
+    link.href =
+      canvas.toDataURL('image/png');
+
+    link.click();
+
+    //
+    // remove temp
+    //
+
+    document.body.removeChild(wrapper);
+
+  });
+
+}
+
+
+// danh sách nhân Viên
+
+const defaultTargets = [
+
+  {
+    ma:'02558',
+    ten:'Nguyễn Thanh Giang',
+    doanhThu:'441333333',
+    tbBill:'210000',
+    hot:'132666667',
+    tyTrong:'50%',
+    luotKhach:'2129',
+    canDate:'0',
+    catLieu:'14000000',
+    vaccine:'18900000'
+  },
+
+  {
+    ma:'58419',
+    ten:'Bùi Thị Thu Hà',
+    doanhThu:'441333333',
+    tbBill:'210000',
+    hot:'132666667',
+    tyTrong:'50%',
+    luotKhach:'2129',
+    canDate:'0',
+    catLieu:'14000000',
+    vaccine:'18900000'
+  },
+
+  {
+    ma:'64720',
+    ten:'Nguyễn Khánh Chí',
+    doanhThu:'441333333',
+    tbBill:'210000',
+    hot:'132666667',
+    tyTrong:'50%',
+    luotKhach:'2129',
+    canDate:'0',
+    catLieu:'14000000',
+    vaccine:'18900000'
+  },
+
+  {
+    ma:'59587',
+    ten:'Nguyễn Gia Huy',
+    doanhThu:'0',
+    tbBill:'0',
+    hot:'0',
+    tyTrong:'0%',
+    luotKhach:'0',
+    canDate:'0',
+    catLieu:'0',
+    vaccine:'0'
+  },
+
+  {
+    ma:'69426',
+    ten:'Nguyễn Văn Nhật',
+    doanhThu:'0',
+    tbBill:'0',
+    hot:'0',
+    tyTrong:'0%',
+    luotKhach:'0',
+    canDate:'0',
+    catLieu:'0',
+    vaccine:'0'
+  }
+
+];
+
+function appendTargetRow(data){
+
+  const tbody =
+    document.querySelector(
+      '#targetTable tbody'
+    );
+
+  const tr =
+    document.createElement('tr');
+
+  tr.innerHTML = `
+
+    <td class="editable" contenteditable="true">
+      ${data.ma || ''}
+    </td>
+
+    <td class="editable name-col" contenteditable="true">
+      ${data.ten || ''}
+    </td>
+
+    <td class="editable number money" contenteditable="true">
+      ${data.doanhThu || 0}
+    </td>
+
+    <td class="editable number money" contenteditable="true">
+      ${data.tbBill || 0}
+    </td>
+
+    <td class="editable number money" contenteditable="true">
+      ${data.hot || 0}
+    </td>
+
+    <td class="editable" contenteditable="true">
+      ${data.tyTrong || '0%'}
+    </td>
+
+    <td class="editable number money" contenteditable="true">
+      ${data.luotKhach || 0}
+    </td>
+
+    <td class="editable number money" contenteditable="true">
+      ${data.canDate || 0}
+    </td>
+
+    <td class="editable number money" contenteditable="true">
+      ${data.catLieu || 0}
+    </td>
+
+    <td class="editable number money" contenteditable="true">
+      ${data.vaccine || 0}
+    </td>
+
+    <td>
+
+      <div class="delete-btn-wrap">
+
+        <div class="row-number"></div>
+
+<button
+  class="target-delete-btn"
+  onclick="deleteRow(this)"
+>
+  Xóa
+</button>
+
+      </div>
+
+    </td>
+
+  `;
+
+  tbody.appendChild(tr);
+
+}
+
+function createDefaultTargets(){
+
+  const tbody =
+    document.querySelector(
+      '#targetTable tbody'
+    );
+
+  //
+  // NẾU ĐÃ CÓ DATA
+  //
+
+  if(
+    tbody.querySelector(
+      'tr:not(.total-row)'
+    )
+  ){
+    return;
+  }
+
+  defaultTargets.forEach(item => {
+
+    appendTargetRow(item);
+
+  });
+
+  //
+  // UPDATE
+  //
+
+  formatAllMoney();
+
+  updateTargetSTT();
+
+  updateTargetTotal();
+
+}
+
+window.onload = function(){
+
+  const today = new Date();
+
+  // số ngày trong tháng hiện tại
+  const totalDaysInMonth = new Date(
+    today.getFullYear(),
+    today.getMonth() + 1,
+    0
+  ).getDate();
+
+  // hôm qua = ngày đã chạy mặc định
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  const passedDays = yesterday.getDate();
+
+  document.getElementById('passedDaysInput').value = passedDays;
+  document.getElementById('totalDaysInput').value = totalDaysInMonth;
+  createDefaultTargets();
+    formatAllMoney();
+
+}
+
+//
+// ENTER GIỐNG EXCEL
+//
+
+document.addEventListener('keydown', function(e){
+
+  const cell = e.target;
+
+  //
+  // CHỈ ÁP DỤNG CHO Ô editable
+  //
+
+  if(
+    e.key === 'Enter' &&
+    cell.classList.contains('editable')
+  ){
+
+    e.preventDefault();
+
+    //
+    // TÌM Ô HIỆN TẠI
+    //
+
+    const currentTd = cell.closest('td');
+
+    const currentTr = cell.closest('tr');
+
+    if(!currentTd || !currentTr) return;
+
+    //
+    // INDEX CỘT
+    //
+
+    const colIndex =
+      Array.from(currentTr.children)
+      .indexOf(currentTd);
+
+    //
+    // HÀNG TIẾP THEO
+    //
+
+    const nextTr =
+      currentTr.nextElementSibling;
+
+    //
+    // NẾU CÓ HÀNG DƯỚI
+    //
+
+    if(nextTr){
+
+      const nextCell =
+        nextTr.children[colIndex];
+
+      if(
+        nextCell &&
+        nextCell.classList.contains('editable')
+      ){
+
+        nextCell.focus();
+
+        placeCaretAtEnd(nextCell);
+      }
+    }
+  }
+
+});
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+</body>
+</html>

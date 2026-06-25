@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tra cứu sản phẩm y tế</title>
+
+<style>
+body{
+  font-family: Arial;
+  background:#eef3f8;
+  padding:20px;
+}
+
+.box{
+  max-width:620px;
+  margin:auto;
+  background:white;
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+h2{text-align:center;}
+
+input{
+  width:95%;
+  padding:12px;
+  font-size:18px;
+  border:1px solid #ccc;
+  border-radius:8px;
+  margin-bottom:15px;
+}
+
+.result{
+  background:#f8fafc;
+  padding:15px;
+  border-radius:8px;
+  line-height:1.7;
+}
+
+.item{ margin-bottom:10px; }
+
+.badge{
+  padding:5px 10px;
+  border-radius:6px;
+  color:white;
+  font-size:14px;
+}
+
+.red{ background:#e74c3c;}
+.green{ background:#2ecc71;}
+.orange{ background:#f39c12;}
+.blue{ background:#3498db;}
+.gray{ background:#7f8c8d;}
+
+.warning{
+  background:#ffecec;
+  padding:10px;
+  border-radius:8px;
+  color:#c0392b;
+  font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+  <h2>🔍 Tra cứu mã sản phẩm y tế</h2>
+
+  <input id="code" placeholder="Nhập mã (VD-, VN-, ATTP, 12 số...)" oninput="analyze()">
+
+  <div class="result" id="result">
+    Nhập mã để xem kết quả...
+  </div>
+</div>
+
+<script>
+
+// ===== COUNTRY =====
+const countryRanges = [
+  { from: 0, to: 19, name: "Mỹ" },
+  { from: 30, to: 39, name: "Mỹ" },
+  { from: 60, to: 139, name: "Mỹ/Canada" },
+
+  { from: 300, to: 379, name: "Pháp" },
+  { from: 380, to: 380, name: "Bulgaria" },
+  { from: 383, to: 383, name: "Slovenia" },
+  { from: 385, to: 385, name: "Croatia" },
+  { from: 387, to: 387, name: "Bosnia" },
+
+  { from: 400, to: 440, name: "Đức" },
+  { from: 450, to: 459, name: "Nhật Bản" },
+  { from: 460, to: 469, name: "Nga" },
+
+  { from: 471, to: 471, name: "Đài Loan" },
+  { from: 474, to: 474, name: "Estonia" },
+  { from: 475, to: 475, name: "Latvia" },
+  { from: 476, to: 476, name: "Azerbaijan" },
+  { from: 477, to: 477, name: "Lithuania" },
+  { from: 478, to: 478, name: "Uzbekistan" },
+  { from: 479, to: 479, name: "Sri Lanka" },
+
+  { from: 480, to: 480, name: "Philippines" },
+  { from: 481, to: 481, name: "Belarus" },
+  { from: 482, to: 482, name: "Ukraine" },
+  { from: 484, to: 484, name: "Moldova" },
+  { from: 485, to: 485, name: "Armenia" },
+  { from: 486, to: 486, name: "Georgia" },
+  { from: 487, to: 487, name: "Kazakhstan" },
+
+  { from: 489, to: 489, name: "Hồng Kông" },
+
+  { from: 490, to: 499, name: "Nhật Bản" },
+  { from: 500, to: 509, name: "Anh" },
+  { from: 520, to: 521, name: "Hy Lạp" },
+  { from: 528, to: 528, name: "Lebanon" },
+  { from: 529, to: 529, name: "Síp" },
+  { from: 531, to: 531, name: "Macedonia" },
+  { from: 535, to: 535, name: "Malta" },
+  { from: 539, to: 539, name: "Ireland" },
+
+  { from: 540, to: 549, name: "Bỉ/Luxembourg" },
+  { from: 560, to: 560, name: "Bồ Đào Nha" },
+  { from: 569, to: 569, name: "Iceland" },
+  { from: 570, to: 579, name: "Đan Mạch" },
+  { from: 590, to: 590, name: "Ba Lan" },
+  { from: 594, to: 594, name: "Romania" },
+  { from: 599, to: 599, name: "Hungary" },
+
+  { from: 600, to: 601, name: "Nam Phi" },
+  { from: 603, to: 603, name: "Ghana" },
+  { from: 608, to: 608, name: "Bahrain" },
+  { from: 609, to: 609, name: "Mauritius" },
+  { from: 611, to: 611, name: "Morocco" },
+  { from: 613, to: 613, name: "Algeria" },
+  { from: 616, to: 616, name: "Kenya" },
+  { from: 618, to: 618, name: "Bờ Biển Ngà" },
+  { from: 619, to: 619, name: "Tunisia" },
+
+  { from: 621, to: 621, name: "Syria" },
+  { from: 622, to: 622, name: "Ai Cập" },
+  { from: 624, to: 624, name: "Libya" },
+  { from: 625, to: 625, name: "Jordan" },
+  { from: 626, to: 626, name: "Iran" },
+  { from: 627, to: 627, name: "Kuwait" },
+  { from: 628, to: 628, name: "Saudi Arabia" },
+  { from: 629, to: 629, name: "UAE" },
+
+  { from: 640, to: 649, name: "Phần Lan" },
+  { from: 690, to: 699, name: "Trung Quốc" },
+  { from: 700, to: 709, name: "Na Uy" },
+  { from: 729, to: 729, name: "Israel" },
+  { from: 730, to: 739, name: "Thụy Điển" },
+
+  { from: 740, to: 740, name: "Guatemala" },
+  { from: 741, to: 741, name: "El Salvador" },
+  { from: 742, to: 742, name: "Honduras" },
+  { from: 743, to: 743, name: "Nicaragua" },
+  { from: 744, to: 744, name: "Costa Rica" },
+  { from: 745, to: 745, name: "Panama" },
+  { from: 746, to: 746, name: "Dominican" },
+
+  { from: 750, to: 750, name: "Mexico" },
+  { from: 754, to: 755, name: "Canada" },
+  { from: 759, to: 759, name: "Venezuela" },
+  { from: 760, to: 769, name: "Thụy Sĩ" },
+
+  { from: 770, to: 771, name: "Colombia" },
+  { from: 773, to: 773, name: "Uruguay" },
+  { from: 775, to: 775, name: "Peru" },
+  { from: 777, to: 777, name: "Bolivia" },
+  { from: 779, to: 779, name: "Argentina" },
+  { from: 780, to: 780, name: "Chile" },
+  { from: 784, to: 784, name: "Paraguay" },
+  { from: 786, to: 786, name: "Ecuador" },
+  { from: 789, to: 790, name: "Brazil" },
+
+  { from: 800, to: 839, name: "Ý" },
+  { from: 840, to: 849, name: "Tây Ban Nha" },
+  { from: 850, to: 850, name: "Cuba" },
+  { from: 858, to: 858, name: "Slovakia" },
+  { from: 859, to: 859, name: "Czech" },
+  { from: 860, to: 860, name: "Serbia" },
+  { from: 865, to: 865, name: "Mongolia" },
+  { from: 867, to: 867, name: "Triều Tiên" },
+  { from: 868, to: 869, name: "Thổ Nhĩ Kỳ" },
+
+  { from: 870, to: 879, name: "Hà Lan" },
+  { from: 880, to: 880, name: "Hàn Quốc" },
+  { from: 884, to: 884, name: "Campuchia" },
+  { from: 885, to: 885, name: "Thái Lan" },
+  { from: 888, to: 888, name: "Singapore" },
+  { from: 890, to: 890, name: "Ấn Độ" },
+  { from: 893, to: 893, name: "Việt Nam" },
+  { from: 899, to: 899, name: "Indonesia" },
+
+  { from: 900, to: 919, name: "Áo" },
+  { from: 930, to: 939, name: "Úc" },
+  { from: 940, to: 949, name: "New Zealand" },
+  { from: 955, to: 955, name: "Malaysia" }
+];
+
+// ===== MAP =====
+const typeMap = {
+  "1": "Hóa dược",
+  "2": "Dược liệu (Đông dược)",
+  "3": "Vắc xin",
+  "4": "Sinh phẩm",
+  "5": "Nguyên liệu",
+  "6": "Gia công",
+  "7": "Chuyển giao CN"
+};
+
+const prescriptionMap = {
+  "0": "Không kê đơn",
+  "1": "Kê đơn"
+};
+
+const controlMap = {
+  "0": "Bình thường",
+  "1": "Gây nghiện",
+  "2": "Hướng thần",
+  "3": "Tiền chất",
+  "4": "Thuốc độc",
+  "5": "Thuốc cấm",
+  "6": "Phóng xạ"
+};
+
+// ===== GET COUNTRY =====
+function getCountry(code){
+  let num = parseInt(code);
+  for(let c of countryRanges){
+    if(num >= c.from && num <= c.to){
+      return c.name;
+    }
+  }
+  return "Không rõ";
+}
+
+// ===== PHÂN LOẠI MÃ CŨ =====
+function analyzeOld(code){
+
+  code = code.toUpperCase();
+
+  // VD - THUỐC NỘI
+  if(code.startsWith("VD-")){
+    return `
+      <div class="item"><b>💊 Thuốc nội</b></div>
+      <div class="item">Sản xuất tại Việt Nam</div>
+      <div class="item"><b>Mã:</b> ${code}</div>
+    `;
+  }
+
+// VN - THUỐC NGOẠI
+if(code.startsWith("VN-")){
+  return `
+    <div class="item"><b>💊 Thuốc ngoại</b></div>
+    <div class="item">Nhập khẩu từ nước ngoài</div>
+    <div class="item"><b>Mã:</b> ${code}</div>
+  `;
+}
+
+// 👇 DÁN NGAY ĐÂY
+if(code.startsWith("VS-")){
+  return `
+    <div class="item"><b>💉 Vắc xin / Sinh phẩm</b></div>
+    <div class="item">Dùng trong tiêm chủng / miễn dịch</div>
+    <div class="item"><b>Mã:</b> ${code}</div>
+  `;
+}
+
+  // ĐÔNG Y (-H)
+  if(code.includes("-H")){
+    return `
+      <div class="item"><b>🌿 Thuốc Đông y</b></div>
+      <div class="item">Thảo dược / dược liệu</div>
+      <div class="item"><b>Mã:</b> ${code}</div>
+    `;
+  }
+
+  // GIA CÔNG
+  if(code.includes("GC")){
+    return `
+      <div class="item"><b>🏭 Thuốc gia công</b></div>
+      <div class="item">Sản xuất theo hợp đồng</div>
+      <div class="item"><b>Mã:</b> ${code}</div>
+    `;
+  }
+
+  // QUẢN LÝ ĐẶC BIỆT
+  if(code.includes("QLĐB")){
+    return `
+      <div class="item"><b>⚠️ Thuốc quản lý đặc biệt</b></div>
+      <div class="warning">Cần kiểm soát nghiêm ngặt</div>
+      <div class="item"><b>Mã:</b> ${code}</div>
+    `;
+  }
+
+  // TPCN
+  if(code.includes("ATTP") || code.includes("XNCB") || code.includes("ĐKSP")){
+    return `
+      <div class="item"><b>🍀 Thực phẩm chức năng</b></div>
+      <div class="warning">❗ Không phải là thuốc</div>
+      <div class="item"><b>Mã:</b> ${code}</div>
+    `;
+  }
+
+  // MỸ PHẨM
+  if(code.includes("CBMP")){
+    return `
+      <div class="item"><b>💄 Mỹ phẩm</b></div>
+      <div class="item">Số công bố mỹ phẩm</div>
+      <div class="item"><b>Mã:</b> ${code}</div>
+    `;
+  }
+
+  // VTYT
+  if(code.includes("PCBA")){
+    return `
+      <div class="item"><b>🏥 Vật tư y tế</b></div>
+      <div class="item">Khẩu trang, nước muối...</div>
+      <div class="item"><b>Mã:</b> ${code}</div>
+    `;
+  }
+
+  return `
+    <div class="warning">🚨 Không nhận diện được mã</div>
+    <div class="item"><b>Mã:</b> ${code}</div>
+  `;
+}
+
+// ===== MAIN =====
+function analyze(){
+  let raw = document.getElementById("code").value.trim();
+  let result = document.getElementById("result");
+
+  if(!raw){
+    result.innerHTML = "Nhập mã để xem kết quả...";
+    return;
+  }
+
+  // ===== MÃ CŨ =====
+  if(raw.includes("-") || raw.includes("/")){
+    result.innerHTML = analyzeOld(raw);
+    return;
+  }
+
+  // ===== MÃ MỚI =====
+  let code = raw.replace(/\D/g,'');
+
+  if(code.length < 12){
+    result.innerHTML = `⏳ Đang nhập (${code.length}/12)`;
+    return;
+  }
+
+  if(code.length > 12){
+    result.innerHTML = "❌ Quá 12 số";
+    return;
+  }
+
+  let country = code.slice(0,3);
+  let type = code[3];
+  let prescription = code[4];
+  let control = code[5];
+  let serial = code.slice(6,10);
+
+  let yy = parseInt(code.slice(10,12));
+  let year = yy >= 50 ? "19"+yy : "20"+yy;
+
+  result.innerHTML = `
+    <div class="item"><b>🌍 Quốc gia:</b> ${getCountry(country)} (${country})</div>
+    <div class="item"><b>💊 Nhóm:</b> ${typeMap[type] || "Không rõ"}</div>
+    <div class="item"><b>📋 Kê đơn:</b> ${prescriptionMap[prescription] || "Không rõ"}</div>
+    <div class="item"><b>⚠️ Kiểm soát:</b> ${controlMap[control] || "Không rõ"}</div>
+    <hr>
+    <div class="item"><b>🔢 Số cấp:</b> ${serial}</div>
+    <div class="item"><b>📅 Năm:</b> ${year}</div>
+  `;
+}
+
+</script>
+
+</body>
+</html>
